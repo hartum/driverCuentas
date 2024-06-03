@@ -1,0 +1,7 @@
+{
+  "name": "DriverCuentas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
