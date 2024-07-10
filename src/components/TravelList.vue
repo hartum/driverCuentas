@@ -141,7 +141,10 @@
 							</IonItem>
 
 							<IonItemOptions side="end">
-								<ion-item-option color="danger">
+								<ion-item-option
+									color="danger"
+									@click="confirmRemoveTravel(travel.id, $event)"
+								>
 									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
 								</ion-item-option>
 							</IonItemOptions>
@@ -209,6 +212,12 @@
 				</ion-fab>
 			</div>
 		</IonContent>
+		<ion-action-sheet
+			:header="actionSheetHeader"
+			:buttons="actionSheetButtons"
+			:is-open="actionSheetOpen"
+			@didDismiss="handleActionSheetDismiss"
+		></ion-action-sheet>
 	</ion-page>
 </template>
 <script setup>
@@ -247,6 +256,7 @@
 		IonListHeader,
 		IonFabList,
 		IonButton,
+		IonActionSheet,
 	} from '@ionic/vue';
 	import {
 		trash,
@@ -267,7 +277,7 @@
 	import { ref, onMounted } from 'vue';
 	//import { useSettingsStore } from '../store/settingsStore'; // Importa la store
 	import { useRouter } from 'vue-router'; // Importa el router
-	import { getTravels } from '@/services/travelService'; // Importar el servicio
+	import { getTravels, deleteTravel } from '@/services/travelService'; // Importar el servicio
 	import { Preferences } from '@capacitor/preferences';
 
 	const borraTabla = async () => {
@@ -320,15 +330,6 @@
 		router.push(path);
 	};
 
-	/*const loadTravelList = () => {
-		try {
-			travelList.value = alasql('SELECT * FROM travels');
-			console.log('recuperado de la BBDD', travelList.value);
-		} catch (error) {
-			console.error('Error loading travel list:', error);
-		}
-	};*/
-
 	onMounted(async () => {
 		console.log('onMounted');
 		let fechaInicial = moment();
@@ -346,6 +347,55 @@
 	const editTravel = (id) => {
 		console.log(`Hola, el ID del viaje es : ${id}`);
 		router.push(`/travelform/${id}`);
+	};
+	// CONFIRMACIÓN BORRAR VIAJE
+	let slidingTravel = ref(null);
+	const actionSheetHeader = ref('');
+	const actionSheetOpen = ref(false);
+	const travelToRemove = ref(null);
+	const actionSheetButtons = [
+		{
+			text: 'Borrar viaje',
+			role: 'destructive',
+			data: {
+				action: 'delete',
+			},
+		},
+		{
+			text: 'Cancelar',
+			role: 'cancel',
+			data: {
+				action: 'cancel',
+			},
+		},
+	];
+	const handleActionSheetDismiss = async (event) => {
+		const role = event.detail.role;
+		if (role === 'destructive' && travelToRemove.value !== null) {
+			try {
+				await deleteTravel(travelToRemove.value);
+				travelList.value = travelList.value.filter(
+					(travel) => travel.id !== travelToRemove.value
+				);
+				travelToRemove.value = null;
+			} catch (error) {
+				console.error('Error eliminando el viaje:', error);
+			}
+		}
+		closeSlidingTravel();
+		actionSheetOpen.value = false;
+	};
+	const closeSlidingTravel = () => {
+		if (slidingTravel.value) {
+			slidingTravel.value.close();
+			slidingTravel.value = null;
+		}
+	};
+	const confirmRemoveTravel = (id, event) => {
+		travelToRemove.value = id;
+		slidingTravel.value = event.target.closest('ion-item-sliding');
+		actionSheetHeader.value = '¿Deseas eliminar el servicio el viaje?';
+		actionSheetOpen.value = true;
 	};
 </script>
 <style lang="scss" scoped>

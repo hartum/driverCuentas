@@ -164,7 +164,7 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								Guardar
+								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje' }}
 							</ionButton>
 						</ion-col>
 					</ion-row>
@@ -245,7 +245,11 @@
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
-	import { addTravel } from '@/services/travelService'; // Importar el servicio
+	import {
+		addTravel,
+		selectByID,
+		updateTravel,
+	} from '@/services/travelService'; // Importar el servicio
 
 	const props = defineProps({
 		amount: {
@@ -279,9 +283,11 @@
 	};
 
 	const travelId = route.params.travelId;
+	const modeForm = travelId ? 'edit' : 'create';
 
-	onMounted(() => {
-		console.log(travelId);
+	onMounted(async () => {
+		console.log('travelId', travelId);
+		console.log('modeForm', modeForm);
 		// Establecer el valor del servicio por defecto
 		if (servicesList.length > 0) {
 			service.value = servicesList[0];
@@ -301,6 +307,19 @@
 
 		// Establecer el valor del primer diá de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
+
+		// Si estamos en modo de edición, cargar los datos del viaje
+		if (modeForm === 'edit') {
+			const travel = await selectByID(parseInt(travelId));
+			if (travel) {
+				amountForm.value = travel.amount;
+				locationStart.value = travel.origin;
+				locationEnd.value = travel.destination;
+				service.value = travel.service;
+				pay.value = travel.payMethod;
+				datetimeStart.value = travel.startDate;
+			}
+		}
 	});
 
 	// Guardar el viaje
@@ -312,15 +331,29 @@
 		}
 
 		try {
-			await addTravel(
-				parseFloat(amountForm.value),
-				locationStart.value,
-				locationEnd.value,
-				service.value,
-				pay.value,
-				datetimeStart.value,
-				'' // endDate no está especificado en los datos proporcionados
-			);
+			if (modeForm === 'edit') {
+				await updateTravel(
+					parseInt(travelId),
+					parseFloat(amountForm.value),
+					locationStart.value,
+					locationEnd.value,
+					service.value,
+					pay.value,
+					datetimeStart.value,
+					'' // endDate no está especificado en los datos proporcionados
+				);
+			} else {
+				await addTravel(
+					parseFloat(amountForm.value),
+					locationStart.value,
+					locationEnd.value,
+					service.value,
+					pay.value,
+					datetimeStart.value,
+					'' // endDate no está especificado en los datos proporcionados
+				);
+			}
+
 			const now = moment().format('YYYY-MM-DDTHH:mm:ss');
 			router.push('/tabs/tab1/' + now);
 		} catch (error) {
