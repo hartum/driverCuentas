@@ -12,7 +12,6 @@ export const useSettingsStore = defineStore('settings', {
       zoom: 4,
     },
     servicesList: ['Privado', 'Uber', 'Bolt', 'Taxi'],
-    //database: null,
   }),
   actions: {
     setStartDayOfWeek(day) {
@@ -27,8 +26,5 @@ export const useSettingsStore = defineStore('settings', {
     setServicesList(services) {
       this.servicesList = services;
     },
-    /*setDatabase(db) {
-      this.database = db;
-    },*/
   },
 });

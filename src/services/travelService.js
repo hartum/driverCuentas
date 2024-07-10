@@ -38,7 +38,7 @@ export const deleteTravel = async (id) => {
 };
 
 // Función para eliminar la tabla
-export const deleteTable = async () => {
+export const deleteTravelTable = async () => {
   alasql('DROP TABLE IF EXISTS travels');
   await saveDatabaseToPreferences();
   console.log('La tabla travels ha sido eliminada');

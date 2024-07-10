@@ -282,7 +282,6 @@
 
 	const borraTabla = async () => {
 		console.log('borraTabla');
-		//deleteTable();
 		await Preferences.remove({ key: 'database' });
 	};
 

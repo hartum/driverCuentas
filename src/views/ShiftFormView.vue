@@ -2,61 +2,53 @@
 	<IonPage>
 		<IonHeader>
 			<IonToolbar>
-				<IonTitle> Nuevo turno </IonTitle>
+				<IonTitle>Nuevo Turno</IonTitle>
 			</IonToolbar>
 		</IonHeader>
-		<!-- CONTENT  -->
 		<IonContent class="form-container">
-			<!-- CARD -->
-			<ion-card class="shift-card">
-				<!--  CARD HEADER -->
-				<ion-card-header class="shift-header">
-					<ion-card-title class="shift-title">
-						<ion-icon
+			<IonCard class="shift-card">
+				<IonCardHeader class="shift-header">
+					<IonCardTitle class="shift-title">
+						<IonIcon
 							:icon="timeOutline"
 							class="shift-header-icon"
 							size="large"
 						/>
-						17:00h - 20:00h
-					</ion-card-title>
-				</ion-card-header>
-				<!-- FOOTER	 -->
+						{{ formatTime(startDate) }} - {{ formatTime(endDate) }}
+					</IonCardTitle>
+				</IonCardHeader>
 				<div class="shift-footer ion-padding">
 					<div>
 						<div>
-							<ion-icon :icon="timerOutline"></ion-icon>
-							<b> 134</b>Km
+							<IonIcon :icon="timerOutline"></IonIcon>
+							<b>{{ totalKm }}</b> Km
 						</div>
-
 						<div>
-							<ion-icon :icon="waterOutline"></ion-icon>
-							<b> 38</b>€
+							<IonIcon :icon="waterOutline"></IonIcon>
+							<b>{{ gasoline }}</b> €
 						</div>
 					</div>
-
 					<div class="shift-footer-right">
 						<div>SubTotal</div>
-						<div class="shift-total">300.00 €</div>
+						<div class="shift-total">{{ totalShift }} €</div>
 					</div>
 				</div>
-			</ion-card>
-			<ion-accordion-group
+			</IonCard>
+			<IonAccordionGroup
 				value="shiftTime"
 				expand="inset"
 				class="accordion-group"
 			>
-				<!-- ITEM ACORDEON HORARIO-->
 				<IonAccordion value="shiftTime">
-					<ion-item slot="header" color="light">
-						<ion-label>Horario Turno</ion-label>
-					</ion-item>
-					<!-- contenido acordeon 1 -->
+					<IonItem slot="header" color="light">
+						<IonLabel>Horario</IonLabel>
+					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonList lines="none">
 							<IonItem>
-								<ion-label>Inicio</ion-label>
+								<IonLabel>Inicio turno</IonLabel>
 								<IonDatetimeButton
-									datetime="timePicker"
+									datetime="startPicker"
 									mode="ios"
 								></IonDatetimeButton>
 								<IonModal :keep-contents-mounted="true">
@@ -64,19 +56,20 @@
 										locale="es-ES"
 										:first-day-of-week="1"
 										:show-default-buttons="true"
-										id="timePicker"
-										v-model="selectedTime"
+										id="startPicker"
+										v-model="startDate"
 										mode="ios"
-										display-format="HH:mm"
-										picker-format="HH:mm"
+										display-format="YYYY-MM-DD HH:mm:ss"
+										picker-format="YYYY-MM-DD HH:mm:ss"
 										:hour-cycles="['h23']"
+										@ionChange="checkDateValidity"
 									></IonDatetime>
 								</IonModal>
 							</IonItem>
 							<IonItem>
-								<ion-label>Fin</ion-label>
+								<IonLabel>Fin turno</IonLabel>
 								<IonDatetimeButton
-									datetime="timePicker"
+									datetime="endPicker"
 									mode="ios"
 								></IonDatetimeButton>
 								<IonModal :keep-contents-mounted="true">
@@ -84,12 +77,13 @@
 										locale="es-ES"
 										:first-day-of-week="1"
 										:show-default-buttons="true"
-										id="timePicker"
-										v-model="selectedTime"
+										id="endPicker"
+										v-model="endDate"
 										mode="ios"
-										display-format="HH:mm"
-										picker-format="HH:mm"
+										display-format="YYYY-MM-DD HH:mm:ss"
+										picker-format="YYYY-MM-DD HH:mm:ss"
 										:hour-cycles="['h23']"
+										@ionChange="checkDateValidity"
 									></IonDatetime>
 								</IonModal>
 							</IonItem>
@@ -97,11 +91,9 @@
 					</div>
 				</IonAccordion>
 				<IonAccordion value="gas">
-					<!-- CABECERA -->
-					<ion-item slot="header" color="light">
-						<ion-label>Gasolina</ion-label>
-					</ion-item>
-					<!-- CONTENIDO -->
+					<IonItem slot="header" color="light">
+						<IonLabel>Gasolina</IonLabel>
+					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonItem lines="none">
 							<IonInput
@@ -109,7 +101,7 @@
 								label-placement="fixed"
 								type="number"
 								placeholder="000.00"
-								v-model="kmStart"
+								v-model="gasoline"
 								inputmode="decimal"
 								max="999"
 								maxlength="6"
@@ -121,20 +113,18 @@
 					</div>
 				</IonAccordion>
 				<IonAccordion value="km">
-					<!-- CABECERA -->
-					<ion-item slot="header" color="light">
-						<ion-label>Kilometraje</ion-label>
-					</ion-item>
-					<!-- CONTENIDO -->
+					<IonItem slot="header" color="light">
+						<IonLabel>Kilometraje</IonLabel>
+					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonItem lines="none">
 							<IonSegment v-model="kmMode">
-								<ion-segment-button value="calculatedKm">
-									<ion-label>Calculado</ion-label>
-								</ion-segment-button>
-								<ion-segment-button value="fix">
-									<ion-label>Fijo</ion-label>
-								</ion-segment-button>
+								<IonSegmentButton value="calculatedKm">
+									<IonLabel>Calculado</IonLabel>
+								</IonSegmentButton>
+								<IonSegmentButton value="fix">
+									<IonLabel>Fijo</IonLabel>
+								</IonSegmentButton>
 							</IonSegment>
 						</IonItem>
 						<IonItem v-show="kmMode == 'calculatedKm'" lines="none">
@@ -186,34 +176,32 @@
 					</div>
 				</IonAccordion>
 				<IonAccordion value="total">
-					<!-- CABECERA -->
-					<ion-item slot="header" color="light">
-						<ion-label>Total</ion-label>
-					</ion-item>
-					<!-- CONTENIDO -->
+					<IonItem slot="header" color="light">
+						<IonLabel>Total</IonLabel>
+					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonItem lines="none">
 							<IonSegment v-model="totalMode">
-								<ion-segment-button value="calculatedTotal">
-									<ion-label>Calculado</ion-label>
-								</ion-segment-button>
-								<ion-segment-button value="fixTotal">
-									<ion-label>Fijo</ion-label>
-								</ion-segment-button>
+								<IonSegmentButton value="calculatedTotal">
+									<IonLabel>Calculado</IonLabel>
+								</IonSegmentButton>
+								<IonSegmentButton value="fixTotal">
+									<IonLabel>Fijo</IonLabel>
+								</IonSegmentButton>
 							</IonSegment>
 						</IonItem>
 						<IonItem v-show="totalMode == 'calculatedTotal'" lines="none">
 							<p>
 								El <b>Total</b> se calcula automáticamente sumando los viajes
-								dentro del turno y restando los gastos. <br /><br /><b
-									>La gasolina</b
-								>
-								se toma como un gasto y se resta al total.
+								dentro del turno y restando los gastos.
+								<br />
+								<br />
+								<b>La gasolina</b> se toma como un gasto y se resta al total.
 							</p>
 						</IonItem>
 						<IonItem v-show="totalMode == 'fixTotal'" lines="none">
 							<IonInput
-								label="Total turno"
+								label="Total"
 								label-placement="fixed"
 								type="number"
 								placeholder="000000.00"
@@ -227,15 +215,23 @@
 						</IonItem>
 					</div>
 				</IonAccordion>
-			</ion-accordion-group>
+			</IonAccordionGroup>
+			<IonToast
+				:is-open="showToast"
+				message="La fecha y hora de fin de turno debe ser mayor que la fecha y hora de inicio"
+				:duration="1500"
+				:icon="warningOutline"
+				@didDismiss="() => (showToast = false)"
+				position-anchor="form-footer"
+				position="bottom"
+			></IonToast>
 		</IonContent>
-		<!-- FOOTER  -->
-		<IonFooter>
+		<IonFooter id="form-footer">
 			<IonToolbar>
-				<ion-grid>
-					<ion-row>
-						<ion-col>
-							<ionButton
+				<IonGrid>
+					<IonRow>
+						<IonCol>
+							<IonButton
 								fill="outline"
 								expand="block"
 								shape="round"
@@ -243,72 +239,102 @@
 								@click="handleCancel"
 							>
 								Cancelar
-							</ionButton></ion-col
-						>
-						<ion-col>
-							<ionButton
+							</IonButton>
+						</IonCol>
+						<IonCol>
+							<IonButton
 								expand="block"
 								shape="round"
 								mode="ios"
 								@click="handleSave"
 							>
 								Guardar
-							</ionButton>
-						</ion-col>
-					</ion-row>
-				</ion-grid>
+							</IonButton>
+						</IonCol>
+					</IonRow>
+				</IonGrid>
 			</IonToolbar>
 		</IonFooter>
 	</IonPage>
 </template>
+
 <script setup>
 	import {
+		IonPage,
 		IonHeader,
 		IonToolbar,
 		IonTitle,
-		IonPage,
 		IonContent,
-		IonButton,
-		IonGrid,
-		IonRow,
-		IonCol,
-		IonItem,
-		IonLabel,
+		IonCard,
+		IonCardHeader,
+		IonCardTitle,
+		IonIcon,
 		IonDatetimeButton,
 		IonDatetime,
 		IonModal,
-		IonFooter,
+		IonAccordionGroup,
+		IonAccordion,
+		IonItem,
+		IonLabel,
 		IonList,
+		IonInput,
 		IonSegment,
 		IonSegmentButton,
-		IonIcon,
-		IonInput,
-		IonCard,
-		IonCardTitle,
-		IonCardHeader,
-		IonAccordion,
-		IonAccordionGroup,
+		IonFooter,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonButton,
+		IonToast,
 	} from '@ionic/vue';
-	import { timeOutline, timerOutline, waterOutline } from 'ionicons/icons';
-	import { useRouter } from 'vue-router';
+	import {
+		timeOutline,
+		timerOutline,
+		waterOutline,
+		warningOutline,
+	} from 'ionicons/icons';
 	import { ref } from 'vue';
-	const selectedTime = ref(new Date().toISOString());
-	const kmMode = ref('calculatedKm');
-	const totalMode = ref('calculatedTotal');
+	import { useRouter } from 'vue-router';
+	import moment from 'moment';
+
+	const router = useRouter();
+
+	const startDate = ref(moment().format('YYYY-MM-DDTHH:mm'));
+	const endDate = ref(moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'));
+	const gasoline = ref(0);
+	const totalKm = ref(0);
 	const kmStart = ref(null);
 	const kmEnd = ref(null);
-	const router = useRouter(); // Initialize the router
 	const totalShift = ref(0);
+	const kmMode = ref('calculatedKm');
+	const totalMode = ref('calculatedTotal');
+	const showToast = ref(false);
+
+	const formatTime = (date) => {
+		return moment(date).format('HH:mm');
+	};
+
 	const handleSave = () => {
-		// Navigate to the desired route
+		// Lógica para guardar el turno
+		console.log('Guardar turno');
 		router.push('/tabs/tab1/');
 	};
 
 	const handleCancel = () => {
-		// Navigate to the desired route
 		router.push('/tabs/tab1/');
 	};
+
+	const checkDateValidity = () => {
+		const start = moment(startDate.value);
+		const end = moment(endDate.value);
+
+		if (end.isSameOrBefore(start)) {
+			showToast.value = true;
+			endDate.value = moment(start).add(1, 'hour').format('YYYY-MM-DDTHH:mm');
+		}
+	};
 </script>
+
 <style lang="scss">
 	ion-content::part(background) {
 		background: url('/bg_shift_form.jpg') center center / cover no-repeat;
