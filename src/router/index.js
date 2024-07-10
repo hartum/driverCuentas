@@ -16,7 +16,7 @@ const routes = [
         redirect: '/tabs/tab1'
       },
       {
-        path: 'tab1/:fab?',
+        path: 'tab1/:refresh?',
         component: () => import('@/views/TravelView.vue')
       },
       {
@@ -42,8 +42,8 @@ const routes = [
     component: () => import('@/views/SettingsView.vue')
   },
   {
-    path:'/shift',
-    component: () => import('@/views/ShiftView.vue')
+    path:'/shift/:shiftId?',
+    component: () => import('@/views/ShiftFormView.vue')
   },
   {
     path: '/noteform',

@@ -198,10 +198,10 @@
 						<ion-icon :icon="add"></ion-icon>
 					</ion-fab-button>
 					<ion-fab-list side="top">
-						<ion-fab-button color="primary" href="/noteform">
+						<ion-fab-button color="primary" @click="navigateTo('/noteform')">
 							<ion-icon :icon="reader" />
 						</ion-fab-button>
-						<ion-fab-button color="primary" href="/shift">
+						<ion-fab-button color="primary" @click="navigateTo('/shift')">
 							<ion-icon :icon="time" />
 						</ion-fab-button>
 
@@ -373,6 +373,7 @@
 		const role = event.detail.role;
 		if (role === 'destructive' && travelToRemove.value !== null) {
 			try {
+				console.log('Eliminando el viaje', travelToRemove.value);
 				await deleteTravel(travelToRemove.value);
 				travelList.value = travelList.value.filter(
 					(travel) => travel.id !== travelToRemove.value

@@ -1,33 +1,10 @@
 import alasql from 'alasql';
 import { Preferences } from '@capacitor/preferences';
 
-// Inicializar la base de datos y la tabla travels
-export const initializeDatabase = async () => {
-  const { value } = await Preferences.get({ key: 'database' });
-
-  if (value) {
-    const db = JSON.parse(value);
-    alasql.databases.alasql = db;
-    alasql.use('alasql');
-  } else {
-    alasql('CREATE TABLE IF NOT EXISTS travels (id INT PRIMARY KEY AUTO_INCREMENT, amount FLOAT, origin STRING, destination STRING, service STRING, payMethod STRING, startDate DATE, endDate DATE)');
-    await saveDatabaseToPreferences();
-  }
-};
-
 // Función para guardar la base de datos en Preferences
 const saveDatabaseToPreferences = async () => {
   const db = alasql.databases.alasql;
   await Preferences.set({ key: 'database', value: JSON.stringify(db) });
-};
-
-// Función para cargar la base de datos desde Preferences
-export const loadDatabase = async () => {
-  const { value } = await Preferences.get({ key: 'database' });
-  if (value) {
-    return JSON.parse(value);
-  }
-  return null;
 };
 
 // Función para agregar un viaje

@@ -2,7 +2,9 @@
 	<ion-page>
 		<IonHeader v-show="!isMapVisible">
 			<IonToolbar>
-				<IonTitle> Nuevo Viaje </IonTitle>
+				<IonTitle>
+					{{ modeForm === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
+				</IonTitle>
 			</IonToolbar>
 		</IonHeader>
 		<IonContent
@@ -28,7 +30,7 @@
 					</IonInput>
 				</IonItem>
 
-				<ion-accordion-group :value="'travel'" class="accordion-group">
+				<ion-accordion-group value="travel" class="accordion-group">
 					<ion-accordion value="travel">
 						<ion-item slot="header" color="light">
 							<ion-label><b>Detalles del Viaje</b></ion-label>

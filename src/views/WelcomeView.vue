@@ -11,7 +11,7 @@
 	import { Preferences } from '@capacitor/preferences';
 	import { useRouter } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { initializeDatabase, loadDatabase } from '../services/travelService';
+	import { initializeDatabase } from '../services/databaseService';
 	import IntroView from './IntroView.vue';
 
 	const compSettings = ref(null);
@@ -28,10 +28,6 @@
 				settingsStore.setMapDetails(appSettings.mapDetails);
 				settingsStore.setServicesList(appSettings.servicesList);
 				console.log('map details:', appSettings.mapDetails);
-
-				// Cargar base de datos en la store
-				const db = await loadDatabase();
-				settingsStore.setDatabase(db);
 
 				router.push('/tabs/tab1');
 			} else {
