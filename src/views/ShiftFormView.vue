@@ -6,7 +6,7 @@
 			</IonToolbar>
 		</IonHeader>
 		<!-- CONTENT  -->
-		<IonContent class="form-container" color="light">
+		<IonContent class="form-container">
 			<!-- CARD -->
 			<ion-card class="shift-card">
 				<!--  CARD HEADER -->
@@ -41,7 +41,7 @@
 				</div>
 			</ion-card>
 			<ion-accordion-group
-				:value="['shiftTime']"
+				value="shiftTime"
 				expand="inset"
 				class="accordion-group"
 			>
@@ -298,6 +298,7 @@
 	const kmStart = ref(null);
 	const kmEnd = ref(null);
 	const router = useRouter(); // Initialize the router
+	const totalShift = ref(0);
 	const handleSave = () => {
 		// Navigate to the desired route
 		router.push('/tabs/tab1/');
@@ -309,6 +310,10 @@
 	};
 </script>
 <style lang="scss">
+	ion-content::part(background) {
+		background: url('/bg_shift_form.jpg') center center / cover no-repeat;
+		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
+	}
 	.shift-card {
 		border: 1px solid #ccc;
 		.shift-header {
@@ -324,7 +329,6 @@
 			}
 		}
 		.shift-footer {
-			/*border-top: 1px #ccc solid;*/
 			display: flex;
 			text-align: left;
 			font-size: 1.5em;
