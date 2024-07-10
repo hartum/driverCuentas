@@ -242,7 +242,7 @@
 		warningOutline,
 	} from 'ionicons/icons';
 	import { ref, onMounted, watch, defineProps } from 'vue';
-	import { useRouter } from 'vue-router';
+	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
 	import { addTravel } from '@/services/travelService'; // Importar el servicio
@@ -269,6 +269,7 @@
 
 	const pay = ref('app');
 	const router = useRouter();
+	const route = useRoute();
 	const servicesList = settingsStore.servicesList;
 
 	const payIcons = {
@@ -277,7 +278,10 @@
 		card: cardOutline,
 	};
 
+	const travelId = route.params.travelId;
+
 	onMounted(() => {
+		console.log(travelId);
 		// Establecer el valor del servicio por defecto
 		if (servicesList.length > 0) {
 			service.value = servicesList[0];
@@ -317,7 +321,8 @@
 				datetimeStart.value,
 				'' // endDate no está especificado en los datos proporcionados
 			);
-			router.push('/tabs/tab1/');
+			const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+			router.push('/tabs/tab1/' + now);
 		} catch (error) {
 			console.error('Error guardando el viaje:', error);
 		}
@@ -325,7 +330,8 @@
 
 	// Cancelar el viaje
 	const handleCancel = () => {
-		router.push('/tabs/tab1/');
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push('/tabs/tab1/' + now);
 	};
 
 	const openMap = (mode) => {

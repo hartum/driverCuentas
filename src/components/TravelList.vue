@@ -267,7 +267,7 @@
 	import { ref, onMounted } from 'vue';
 	//import { useSettingsStore } from '../store/settingsStore'; // Importa la store
 	import { useRouter } from 'vue-router'; // Importa el router
-	//import { getTravels, deleteTable } from '@/services/travelService'; // Importar el servicio
+	import { getTravels } from '@/services/travelService'; // Importar el servicio
 	import { Preferences } from '@capacitor/preferences';
 
 	const borraTabla = async () => {
@@ -277,7 +277,7 @@
 	};
 
 	const router = useRouter(); // Inicializa el router
-	// const settingsStore = useSettingsStore(); // Usa la store
+
 	const payIcons = {
 		app: phonePortraitOutline,
 		cash: cashOutline,
@@ -292,20 +292,6 @@
 			weekDay: 'Lun',
 			time: '01:13',
 			money: '139.51',
-		},
-		{
-			id: 18,
-			date: '2024/01/30',
-			weekDay: 'Mar',
-			time: '03:36',
-			money: '231.41',
-		},
-		{
-			id: 5,
-			date: '2024/02/21',
-			weekDay: 'Mié',
-			time: '10:05',
-			money: '28.11',
 		},
 	]);
 
@@ -324,20 +310,6 @@
 			time: '03:36',
 			money: '231.41',
 		},
-		{
-			id: 5,
-			date: '21 Feb 2024',
-			weekDay: 'Mié',
-			time: '10:05',
-			money: '28.00',
-		},
-		{
-			id: 32,
-			date: '28 Feb 2024',
-			weekDay: 'Mié',
-			time: '22:03',
-			money: '297.00',
-		},
 	]);
 
 	let travelList = ref([]);
@@ -348,20 +320,32 @@
 		router.push(path);
 	};
 
+	/*const loadTravelList = () => {
+		try {
+			travelList.value = alasql('SELECT * FROM travels');
+			console.log('recuperado de la BBDD', travelList.value);
+		} catch (error) {
+			console.error('Error loading travel list:', error);
+		}
+	};*/
+
 	onMounted(async () => {
+		console.log('onMounted');
 		let fechaInicial = moment();
 		//let fechaNombredia = fechaInicial.format('ddd');
 		//let fechaDia = fechaInicial.format('ddd, dMMM');
 		let semanaMes = Math.ceil(fechaInicial.date() / 7) + 'ª Semana';
 		fechaVista.value = semanaMes;
 
-		//const travels = await getTravels();
-		//travelList.value = travels;
-		//console.log('recuperado de la BBDD', travelList.value);
+		//loadTravelList();
+		const travels = await getTravels();
+		travelList.value = travels;
+		console.log('recuperado de la BBDD', travelList.value);
 	});
 
 	const editTravel = (id) => {
 		console.log(`Hola, el ID del viaje es : ${id}`);
+		router.push(`/travelform/${id}`);
 	};
 </script>
 <style lang="scss" scoped>

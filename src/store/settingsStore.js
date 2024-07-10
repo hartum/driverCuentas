@@ -12,6 +12,7 @@ export const useSettingsStore = defineStore('settings', {
       zoom: 4,
     },
     servicesList: ['Privado', 'Uber', 'Bolt', 'Taxi'],
+    database: null,
   }),
   actions: {
     setStartDayOfWeek(day) {
@@ -22,10 +23,12 @@ export const useSettingsStore = defineStore('settings', {
     },
     setMapDetails(details) {
       this.mapDetails = details;
-      // console.log("los detalles que me llegan del mapa al store son:", this.mapDetails);
     },
     setServicesList(services) {
       this.servicesList = services;
+    },
+    setDatabase(db) {
+      this.database = db;
     },
   },
 });

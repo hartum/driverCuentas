@@ -16,7 +16,7 @@ const routes = [
         redirect: '/tabs/tab1'
       },
       {
-        path: 'tab1',
+        path: 'tab1/:fab?',
         component: () => import('@/views/TravelView.vue')
       },
       {
@@ -30,11 +30,11 @@ const routes = [
     ]
   },
   {
-    path: '/travellist',
+    path: '/travellist/:travelId?',
     component: () => import('@/components/TravelList.vue')
   },
   {
-    path: '/travelform',
+    path: '/travelform/:travelId?',
     component: () => import('@/views/TravelForm.vue')
   },
   {
