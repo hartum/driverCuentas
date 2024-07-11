@@ -41,150 +41,126 @@
 			</div>
 			<!--TRAVEL LIST -->
 			<ion-content class="container-travels">
-				<ion-card class="shift-card" mode="ios">
-					<!-- // CARD HEADER -->
-					<ion-card-header class="shift-header">
-						<ion-card-title class="shift-title">
-							<ion-icon
-								:icon="timeOutline"
-								color="primary"
-								class="shift-header-icon"
-								size="large"
-							/>
-
-							17:00h - 20:00h
-							<ion-icon
-								:icon="chevronForwardOutline"
-								color="primary"
-								class="shift-header-icon"
-								size="large"
-							/>
-						</ion-card-title>
-					</ion-card-header>
-					<!-- CARD CONTENT -->
-					<ion-card-content>
-						<IonList lines="none" mode="ios">
-							<!-- TRAVEL LIST (travelList2) -->
-							<IonItemSliding v-for="travel in travelList2" :key="travel.id">
-								<IonItem class="item-travel">
-									<IonLabel>
-										<ion-icon
-											:icon="cardOutline"
-											size="small"
-											class="icon-travel"
-										></ion-icon>
-										<span class="week-day">{{ travel.weekDay }}</span>
-										<!-- <span class="date">{{ travel.date }}</span> -->
-										-
-										<span class="time">{{ travel.time }}</span>
-
-										<span class="money">{{ travel.money }} €</span>
-									</IonLabel>
-								</IonItem>
-
-								<IonItemOptions side="end">
-									<ion-item-option color="danger">
-										<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-									</ion-item-option>
-								</IonItemOptions>
-							</IonItemSliding>
-							<!--
-							<ionItem> <span class="shift-info"> Fin - 17:00</span> </ionItem>
-							-->
-						</IonList>
-					</ion-card-content>
-					<!-- // CARD FOOTER	 -->
-					<div class="shift-footer ion-padding">
-						<div>
-							<div>
-								<b> 134</b>Km
-								<ion-icon :icon="timerOutline"></ion-icon>
-							</div>
-
-							<div>
-								<b> 38</b>€
-								<ion-icon :icon="waterOutline"></ion-icon>
-							</div>
-						</div>
-
-						<div class="shift-footer-right">
-							<div>SubTotal</div>
-							<div class="shift-total">300.00 €</div>
-						</div>
-					</div>
-				</ion-card>
-				<div class="ion-padding travel-list">
-					<div style="background-color: #fff" v-if="travelList.length == 0">
+				<div class="travel-list">
+					<div
+						v-if="travelList.length == 0 && shiftsList.length == 0"
+						style="background-color: #fff"
+					>
 						Aún no hay viajes
 					</div>
-					<!-- TRAVEL LIST (travelList) -->
-					<IonList lines="none" mode="ios" v-else>
-						<IonItemSliding v-for="travel in travelList" :key="travel.id">
-							<IonItem
-								class="item-travel"
-								button="true"
-								@click="editTravel(travel.id)"
-							>
-								<IonLabel>
-									<ion-icon
-										:icon="payIcons[travel.payMethod]"
-										size="small"
-										class="icon-travel"
-									></ion-icon>
-									<span>{{
-										moment(travel.startDate).format('DD MMM - HH:mm')
-									}}</span>
-									<span class="money">
-										<b>{{ travel.amount }}</b> €
-									</span>
-								</IonLabel>
-							</IonItem>
-
-							<IonItemOptions side="end">
-								<ion-item-option
-									color="danger"
-									@click="confirmRemoveTravel(travel.id, $event)"
-								>
-									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-								</ion-item-option>
-							</IonItemOptions>
-						</IonItemSliding>
-					</IonList>
-				</div>
-				<div class="ion-padding travel-list">
-					<!-- TRAVEL LIST (travelList) -->
-					<IonList lines="none" mode="ios">
-						<ion-list-header mode="ios">
-							<ion-label>4ª semana Junio</ion-label>
-						</ion-list-header>
-						<IonItemSliding v-for="travel in travelListFake" :key="travel.id">
-							<IonItem class="item-travel">
-								<IonLabel>
-									<ion-icon
-										:icon="cardOutline"
-										size="small"
-										class="icon-travel"
-									></ion-icon>
-									<span class="week-day">{{ travel.weekDay }}</span>
-									<!-- <span class="date">{{ travel.date }}</span> -->
-									-
-									<span class="time">{{ travel.time }}</span>
-
-									<span class="money"
-										><b>{{ travel.money }}</b> €</span
+					<div v-else>
+						<!-- TRAVEL LIST (travelList) -->
+						<div class="ion-padding">
+							<IonList lines="none" mode="ios">
+								<IonItemSliding v-for="travel in travelList" :key="travel.id">
+									<IonItem
+										class="item-travel"
+										button="true"
+										@click="editTravel(travel.id)"
 									>
-								</IonLabel>
-							</IonItem>
+										<IonLabel>
+											<ion-icon
+												:icon="payIcons[travel.payMethod]"
+												size="small"
+												class="icon-travel"
+											></ion-icon>
+											<span>{{
+												moment(travel.startDate).format('DD MMM - HH:mm')
+											}}</span>
+											<span class="money">
+												<b>{{ travel.amount }}</b> €
+											</span>
+										</IonLabel>
+									</IonItem>
 
-							<IonItemOptions side="end">
-								<ion-item-option color="danger">
-									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-								</ion-item-option>
-							</IonItemOptions>
-						</IonItemSliding>
-					</IonList>
+									<IonItemOptions side="end">
+										<ion-item-option
+											color="danger"
+											@click="confirmRemoveTravel(travel.id, $event)"
+										>
+											<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+										</ion-item-option>
+									</IonItemOptions>
+								</IonItemSliding>
+							</IonList>
+						</div>
+						<!-- SHIFT CARD -->
+						<ion-card
+							class="shift-card"
+							mode="ios"
+							v-for="shift in shiftsList"
+							:key="shift.id"
+						>
+							<!-- CARD HEADER -->
+							<ion-card-header class="shift-header">
+								<ion-card-title class="shift-title">
+									<!-- ITEM SLIDING -->
+									<IonItemSliding>
+										<IonItem
+											button="true"
+											lines="none"
+											@click="editShift(shift.id)"
+										>
+											<ion-icon
+												:icon="timeOutline"
+												color="primary"
+												class="shift-header-icon"
+												size="large"
+											/>
+											<span class="shift-tittle-info">
+												{{ moment(shift.startDate).format('HH:mm') }}h -
+												{{ moment(shift.endDate).format('HH:mm') }}h
+											</span>
+										</IonItem>
+										<IonItemOptions side="end">
+											<ion-item-option
+												color="danger"
+												@click="confirmRemoveShift(shift.id, $event)"
+											>
+												<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+											</ion-item-option>
+										</IonItemOptions>
+									</IonItemSliding>
+								</ion-card-title>
+							</ion-card-header>
+							<ion-card-content></ion-card-content>
+							<!-- // CARD FOOTER	 -->
+							<div class="shift-footer ion-padding">
+								<div>
+									<div v-if="shift.modeKM == 'fix'">
+										<b>{{ shift.totalKm }}</b>
+										km
+										<ion-icon :icon="timerOutline"></ion-icon>
+									</div>
+									<div v-else>
+										<b>{{ shift.finalKm - shift.initialKm }}</b>
+										km
+										<ion-icon :icon="timerOutline"></ion-icon>
+									</div>
+
+									<div>
+										<b>{{ shift.gasoline }}</b>
+										€
+										<ion-icon :icon="waterOutline"></ion-icon>
+									</div>
+								</div>
+
+								<div class="shift-footer-right">
+									<div>SubTotal</div>
+									<div
+										v-if="shift.modeTotalShift == 'fixTotal'"
+										class="shift-total"
+									>
+										{{ shift.totalShift }} €
+									</div>
+									<div v-else class="shift-total">*Calculado €</div>
+								</div>
+							</div>
+						</ion-card>
+					</div>
 				</div>
-				<ion-button @click="borraTabla">Borra la tabla</ion-button>
+
+				<ion-button @click="borraDB">Borra la BBDD</ion-button>
 			</ion-content>
 			<div class="total-container">
 				Total: <span class="total">300.00 €</span>
@@ -220,6 +196,7 @@
 		></ion-action-sheet>
 	</ion-page>
 </template>
+
 <script setup>
 	import moment from 'moment';
 	moment.locale('es', {
@@ -271,19 +248,14 @@
 		phonePortraitOutline,
 		carSport,
 		waterOutline,
-		chevronForwardOutline,
 		reader,
 	} from 'ionicons/icons';
 	import { ref, onMounted } from 'vue';
 	//import { useSettingsStore } from '../store/settingsStore'; // Importa la store
 	import { useRouter } from 'vue-router'; // Importa el router
 	import { getTravels, deleteTravel } from '@/services/travelService'; // Importar el servicio
+	import { getShifts, deleteShift } from '@/services/shiftService';
 	import { Preferences } from '@capacitor/preferences';
-
-	const borraTabla = async () => {
-		console.log('borraTabla');
-		await Preferences.remove({ key: 'database' });
-	};
 
 	const router = useRouter(); // Inicializa el router
 
@@ -294,34 +266,9 @@
 	};
 
 	const timeNavigator = ref('month');
-	let travelListFake = ref([
-		{
-			id: 30,
-			date: '2024/01/21',
-			weekDay: 'Lun',
-			time: '01:13',
-			money: '139.51',
-		},
-	]);
-
-	let travelList2 = ref([
-		{
-			id: 30,
-			date: '21 Ene 2024',
-			weekDay: 'Lun',
-			time: '01:13',
-			money: '139.00',
-		},
-		{
-			id: 18,
-			date: '30 Ene 2024',
-			weekDay: 'Mar',
-			time: '03:36',
-			money: '231.41',
-		},
-	]);
 
 	let travelList = ref([]);
+	let shiftsList = ref([]);
 
 	const fechaVista = ref();
 
@@ -330,31 +277,32 @@
 	};
 
 	onMounted(async () => {
-		console.log('onMounted');
 		let fechaInicial = moment();
-		//let fechaNombredia = fechaInicial.format('ddd');
-		//let fechaDia = fechaInicial.format('ddd, dMMM');
 		let semanaMes = Math.ceil(fechaInicial.date() / 7) + 'ª Semana';
 		fechaVista.value = semanaMes;
 
-		//loadTravelList();
 		const travels = await getTravels();
 		travelList.value = travels;
-		console.log('recuperado de la BBDD', travelList.value);
+		console.log('Tabla viajes', travelList.value);
+
+		const shifts = await getShifts();
+		shiftsList.value = shifts;
+		console.log('Tabla turnos', shiftsList.value);
 	});
 
+	// EDITAR VIAJE
 	const editTravel = (id) => {
-		console.log(`Hola, el ID del viaje es : ${id}`);
 		router.push(`/travelform/${id}`);
 	};
+
 	// CONFIRMACIÓN BORRAR VIAJE
 	let slidingTravel = ref(null);
 	const actionSheetHeader = ref('');
 	const actionSheetOpen = ref(false);
 	const travelToRemove = ref(null);
-	const actionSheetButtons = [
+	const actionSheetButtons = ref([
 		{
-			text: 'Borrar viaje',
+			text: 'Borrar',
 			role: 'destructive',
 			data: {
 				action: 'delete',
@@ -367,37 +315,70 @@
 				action: 'cancel',
 			},
 		},
-	];
+	]);
+
 	const handleActionSheetDismiss = async (event) => {
 		const role = event.detail.role;
 		if (role === 'destructive' && travelToRemove.value !== null) {
 			try {
-				console.log('Eliminando el viaje', travelToRemove.value);
-				await deleteTravel(travelToRemove.value);
-				travelList.value = travelList.value.filter(
-					(travel) => travel.id !== travelToRemove.value
-				);
-				travelToRemove.value = null;
+				if (actionSheetHeader.value.includes('viaje')) {
+					console.log('Eliminando el viaje', travelToRemove.value);
+					await deleteTravel(travelToRemove.value);
+					travelList.value = travelList.value.filter(
+						(travel) => travel.id !== travelToRemove.value
+					);
+					travelToRemove.value = null;
+				} else if (actionSheetHeader.value.includes('turno')) {
+					console.log('Eliminando el turno', travelToRemove.value);
+					await deleteShift(travelToRemove.value);
+					shiftsList.value = shiftsList.value.filter(
+						(shift) => shift.id !== travelToRemove.value
+					);
+					travelToRemove.value = null;
+				}
 			} catch (error) {
-				console.error('Error eliminando el viaje:', error);
+				console.error('Error eliminando:', error);
 			}
 		}
-		closeSlidingTravel();
+		closeSlidingItem();
 		actionSheetOpen.value = false;
 	};
-	const closeSlidingTravel = () => {
+
+	const closeSlidingItem = () => {
 		if (slidingTravel.value) {
 			slidingTravel.value.close();
 			slidingTravel.value = null;
 		}
 	};
+
 	const confirmRemoveTravel = (id, event) => {
 		travelToRemove.value = id;
 		slidingTravel.value = event.target.closest('ion-item-sliding');
 		actionSheetHeader.value = '¿Deseas eliminar el servicio el viaje?';
 		actionSheetOpen.value = true;
 	};
+
+	// EDITAR TURNO
+	const editShift = (id) => {
+		console.log(`El ID del turno es : ${id}`);
+		router.push(`/shift/${id}`);
+	};
+
+	// CONFIRMACIÓN BORRAR TURNO
+	const confirmRemoveShift = (id, event) => {
+		travelToRemove.value = id;
+		slidingTravel.value = event.target.closest('ion-item-sliding');
+		actionSheetHeader.value = '¿Deseas eliminar el turno?';
+		actionSheetOpen.value = true;
+	};
+
+	// BORRAR DATABASE
+	const borraDB = async () => {
+		console.log('borra BBDD');
+		await Preferences.remove({ key: 'database' });
+	};
 </script>
+
 <style lang="scss" scoped>
 	ion-content::part(background) {
 		background: url('/bg_travel_list.jpg') center center / cover no-repeat;
@@ -412,9 +393,14 @@
 			border-bottom: 1px #ccc solid;
 			background-color: #f8f8ff;
 			text-align: center;
+
 			.shift-title {
-				font-weight: 300 !important ;
-				color: var(--ion-color-primary);
+				.shift-tittle-info {
+					font-size: 28px;
+					font-weight: 300 !important ;
+					color: var(--ion-color-primary);
+				}
+
 				.shift-header-icon {
 					vertical-align: bottom;
 					margin: 0 9px;

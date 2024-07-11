@@ -249,7 +249,7 @@
 	import MapViewer from '../components/MapViewer.vue';
 	import {
 		addTravel,
-		selectByID,
+		selectTravelByID,
 		updateTravel,
 	} from '@/services/travelService'; // Importar el servicio
 
@@ -312,7 +312,7 @@
 
 		// Si estamos en modo de edición, cargar los datos del viaje
 		if (modeForm === 'edit') {
-			const travel = await selectByID(parseInt(travelId));
+			const travel = await selectTravelByID(parseInt(travelId));
 			if (travel) {
 				amountForm.value = travel.amount;
 				locationStart.value = travel.origin;

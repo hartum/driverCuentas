@@ -20,7 +20,7 @@ export const getTravels = async () => {
 };
 
 // Función para seleccionar un viaje por ID
-export const selectByID = async (id) => {
+export const selectTravelByID = async (id) => {
   const result = alasql('SELECT * FROM travels WHERE id = ?', [id]);
   return result.length ? result[0] : null;
 };

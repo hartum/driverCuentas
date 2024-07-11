@@ -2,7 +2,9 @@
 	<IonPage>
 		<IonHeader>
 			<IonToolbar>
-				<IonTitle>Nuevo Turno</IonTitle>
+				<IonTitle>{{
+					modeForm === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
+				}}</IonTitle>
 			</IonToolbar>
 		</IonHeader>
 		<IonContent class="form-container">
@@ -14,23 +16,35 @@
 							class="shift-header-icon"
 							size="large"
 						/>
-						{{ formatTime(startDate) }} - {{ formatTime(endDate) }}
+						{{ formatTime(form.startDate) }} - {{ formatTime(form.endDate) }}
 					</IonCardTitle>
 				</IonCardHeader>
 				<div class="shift-footer ion-padding">
 					<div>
-						<div>
+						<div
+							v-show="
+								(form.totalKm > 0 && form.modeKM == 'fix') ||
+								(form.finalKm - form.initialKm > 0 &&
+									form.modeKM == 'calculatedKm')
+							"
+						>
 							<IonIcon :icon="timerOutline"></IonIcon>
-							<b>{{ totalKm }}</b> Km
+
+							<b v-if="form.modeKM == 'fix'">{{ form.totalKm }}</b>
+							<b v-else>{{ form.finalKm - form.initialKm }}</b>
+							Km
 						</div>
-						<div>
+						<div v-show="form.gasoline > 0">
 							<IonIcon :icon="waterOutline"></IonIcon>
-							<b>{{ gasoline }}</b> €
+							<b>{{ form.gasoline }}</b> {{ currency }}
 						</div>
 					</div>
 					<div class="shift-footer-right">
 						<div>SubTotal</div>
-						<div class="shift-total">{{ totalShift }} €</div>
+						<div v-if="form.modeTotalShift == 'fixTotal'" class="shift-total">
+							{{ form.totalShift + ' ' + currency }}
+						</div>
+						<div v-else><i>*calculado</i> {{ currency }}</div>
 					</div>
 				</div>
 			</IonCard>
@@ -54,10 +68,10 @@
 								<IonModal :keep-contents-mounted="true">
 									<IonDatetime
 										locale="es-ES"
-										:first-day-of-week="1"
+										:first-day-of-week="firstDayOfWeek"
 										:show-default-buttons="true"
 										id="startPicker"
-										v-model="startDate"
+										v-model="form.startDate"
 										mode="ios"
 										display-format="YYYY-MM-DD HH:mm:ss"
 										picker-format="YYYY-MM-DD HH:mm:ss"
@@ -75,10 +89,10 @@
 								<IonModal :keep-contents-mounted="true">
 									<IonDatetime
 										locale="es-ES"
-										:first-day-of-week="1"
+										:first-day-of-week="firstDayOfWeek"
 										:show-default-buttons="true"
 										id="endPicker"
-										v-model="endDate"
+										v-model="form.endDate"
 										mode="ios"
 										display-format="YYYY-MM-DD HH:mm:ss"
 										picker-format="YYYY-MM-DD HH:mm:ss"
@@ -101,13 +115,13 @@
 								label-placement="fixed"
 								type="number"
 								placeholder="000.00"
-								v-model="gasoline"
+								v-model="form.gasoline"
 								inputmode="decimal"
 								max="999"
 								maxlength="6"
 								min="0"
 							>
-								<span slot="end">€</span>
+								<span slot="end">{{ currency }}</span>
 							</IonInput>
 						</IonItem>
 					</div>
@@ -118,7 +132,7 @@
 					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonItem lines="none">
-							<IonSegment v-model="kmMode">
+							<IonSegment v-model="form.modeKM">
 								<IonSegmentButton value="calculatedKm">
 									<IonLabel>Calculado</IonLabel>
 								</IonSegmentButton>
@@ -127,14 +141,14 @@
 								</IonSegmentButton>
 							</IonSegment>
 						</IonItem>
-						<IonItem v-show="kmMode == 'calculatedKm'" lines="none">
+						<IonItem v-show="form.modeKM == 'calculatedKm'" lines="none">
 							<IonInput
 								class="money-input"
 								label="Inicio turno"
 								label-placement="fixed"
 								type="number"
 								placeholder="000000.00"
-								v-model="kmStart"
+								v-model.number="form.initialKm"
 								inputmode="decimal"
 								max="999"
 								maxlength="6"
@@ -143,14 +157,14 @@
 								<span slot="end">Km</span>
 							</IonInput>
 						</IonItem>
-						<IonItem v-show="kmMode == 'calculatedKm'" lines="none">
+						<IonItem v-show="form.modeKM == 'calculatedKm'">
 							<IonInput
 								class="money-input"
 								label="Fin turno"
 								label-placement="fixed"
 								type="number"
 								placeholder="000000.00"
-								v-model="kmEnd"
+								v-model.number="form.finalKm"
 								inputmode="decimal"
 								max="999999"
 								maxlength="8"
@@ -159,13 +173,22 @@
 								<span slot="end">Km</span>
 							</IonInput>
 						</IonItem>
-						<IonItem v-show="kmMode == 'fix'" lines="none">
+						<IonItem v-show="form.modeKM == 'calculatedKm'" lines="none">
+							<div>En este turno</div>
+							<span slot="end">
+								<span class="km-diff">
+									{{ form.finalKm - form.initialKm }}
+								</span>
+								Km
+							</span>
+						</IonItem>
+						<IonItem v-show="form.modeKM == 'fix'" lines="none">
 							<IonInput
-								label="Este turno"
+								label="En este turno"
 								label-placement="fixed"
 								type="number"
 								placeholder="000000.00"
-								v-model="kmEnd"
+								v-model.number="form.totalKm"
 								inputmode="decimal"
 								max="999999"
 								maxlength="8"
@@ -181,7 +204,7 @@
 					</IonItem>
 					<div slot="content" class="ion-padding">
 						<IonItem lines="none">
-							<IonSegment v-model="totalMode">
+							<IonSegment v-model="form.modeTotalShift">
 								<IonSegmentButton value="calculatedTotal">
 									<IonLabel>Calculado</IonLabel>
 								</IonSegmentButton>
@@ -190,27 +213,33 @@
 								</IonSegmentButton>
 							</IonSegment>
 						</IonItem>
-						<IonItem v-show="totalMode == 'calculatedTotal'" lines="none">
+						<IonItem
+							v-show="form.modeTotalShift == 'calculatedTotal'"
+							lines="none"
+						>
 							<p>
 								El <b>Total</b> se calcula automáticamente sumando los viajes
 								dentro del turno y restando los gastos.
 								<br />
 								<br />
-								<b>La gasolina</b> se toma como un gasto y se resta al total.
+								<i
+									><b>*La gasolina</b> se toma como un gasto y se resta al
+									total.</i
+								>
 							</p>
 						</IonItem>
-						<IonItem v-show="totalMode == 'fixTotal'" lines="none">
+						<IonItem v-show="form.modeTotalShift == 'fixTotal'" lines="none">
 							<IonInput
 								label="Total"
 								label-placement="fixed"
 								type="number"
 								placeholder="000000.00"
-								v-model="totalShift"
+								v-model.number="form.totalShift"
 								inputmode="decimal"
 								max="999999"
 								maxlength="8"
 							>
-								<span slot="end">€</span>
+								<span slot="end">{{ currency }}</span>
 							</IonInput>
 						</IonItem>
 					</div>
@@ -222,6 +251,15 @@
 				:duration="1500"
 				:icon="warningOutline"
 				@didDismiss="() => (showToast = false)"
+				position-anchor="form-footer"
+				position="bottom"
+			></IonToast>
+			<IonToast
+				:is-open="showKmToast"
+				message="El kilometraje final no puede ser menor que el inicial"
+				:duration="1500"
+				:icon="warningOutline"
+				@didDismiss="() => (showKmToast = false)"
 				position-anchor="form-footer"
 				position="bottom"
 			></IonToast>
@@ -248,7 +286,7 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								Guardar
+								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno' }}
 							</IonButton>
 						</IonCol>
 					</IonRow>
@@ -293,49 +331,130 @@
 		waterOutline,
 		warningOutline,
 	} from 'ionicons/icons';
-	import { ref } from 'vue';
-	import { useRouter } from 'vue-router';
+	import { ref, onMounted } from 'vue';
+	import { useRouter, useRoute } from 'vue-router';
+	import { useSettingsStore } from '../store/settingsStore';
 	import moment from 'moment';
+	import {
+		addShift,
+		updateShift,
+		selectShiftByID,
+	} from '../services/shiftService';
 
+	const settingsStore = useSettingsStore();
+	const currency = ref('€');
 	const router = useRouter();
+	const route = useRoute();
 
-	const startDate = ref(moment().format('YYYY-MM-DDTHH:mm'));
-	const endDate = ref(moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'));
-	const gasoline = ref(0);
-	const totalKm = ref(0);
-	const kmStart = ref(null);
-	const kmEnd = ref(null);
-	const totalShift = ref(0);
-	const kmMode = ref('calculatedKm');
-	const totalMode = ref('calculatedTotal');
+	const form = ref({
+		startDate: moment().format('YYYY-MM-DDTHH:mm'),
+		endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+		initialKm: 0,
+		finalKm: 0,
+		totalKm: 0,
+		modeKM: 'calculatedKm',
+		gasoline: 0,
+		totalShift: 0,
+		modeTotalShift: 'calculatedTotal',
+	});
+
+	const firstDayOfWeek = ref(1);
 	const showToast = ref(false);
+	const showKmToast = ref(false);
+
+	const shiftId = route.params.shiftId;
+	const modeForm = shiftId ? 'edit' : 'create';
+
+	onMounted(async () => {
+		console.log('shiftId', shiftId);
+		console.log('modeForm', modeForm);
+
+		// Establecer el valor de la moneda por defecto
+		switch (settingsStore.selectedCurrency) {
+			case 'EUR':
+				currency.value = '€';
+				break;
+			case 'USD':
+				currency.value = '$';
+				break;
+			default:
+				currency.value = settingsStore.selectedCurrency;
+		}
+
+		// Establecer el valor del primer día de la semana por defecto
+		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
+
+		if (modeForm === 'edit') {
+			const shift = await selectShiftByID(parseInt(shiftId));
+			if (shift) {
+				form.value = { ...shift };
+			}
+		}
+	});
 
 	const formatTime = (date) => {
 		return moment(date).format('HH:mm');
 	};
 
-	const handleSave = () => {
-		// Lógica para guardar el turno
-		console.log('Guardar turno');
-		router.push('/tabs/tab1/');
+	const handleSave = async () => {
+		// Validar que los km finales no sean menores que los km iniciales si el modo es calculado
+		const initialKm = Number(form.value.initialKm);
+		const finalKm = Number(form.value.finalKm);
+
+		if (form.value.modeKM === 'calculatedKm' && finalKm < initialKm) {
+			showKmToast.value = true;
+			return;
+		}
+
+		if (modeForm === 'edit') {
+			await updateShift(
+				parseInt(shiftId),
+				form.value.startDate,
+				form.value.endDate,
+				initialKm,
+				finalKm,
+				form.value.totalKm,
+				form.value.modeKM,
+				form.value.gasoline,
+				form.value.totalShift,
+				form.value.modeTotalShift
+			);
+		} else {
+			await addShift(
+				form.value.startDate,
+				form.value.endDate,
+				initialKm,
+				finalKm,
+				form.value.totalKm,
+				form.value.modeKM,
+				form.value.gasoline,
+				form.value.totalShift,
+				form.value.modeTotalShift
+			);
+		}
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push('/tabs/tab1/' + now);
 	};
 
 	const handleCancel = () => {
-		router.push('/tabs/tab1/');
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push('/tabs/tab1/' + now);
 	};
 
 	const checkDateValidity = () => {
-		const start = moment(startDate.value);
-		const end = moment(endDate.value);
+		const start = moment(form.value.startDate);
+		const end = moment(form.value.endDate);
 
 		if (end.isSameOrBefore(start)) {
 			showToast.value = true;
-			endDate.value = moment(start).add(1, 'hour').format('YYYY-MM-DDTHH:mm');
+			form.value.endDate = moment(start)
+				.add(1, 'hour')
+				.format('YYYY-MM-DDTHH:mm');
 		}
 	};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	ion-content::part(background) {
 		background: url('/bg_shift_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
@@ -350,7 +469,7 @@
 				font-weight: 300 !important ;
 				.shift-header-icon {
 					vertical-align: bottom;
-					margin: 0 9px;
+					margin: 0 9px 0 -15px;
 				}
 			}
 		}
@@ -383,6 +502,10 @@
 		}
 		.native-input {
 			text-align: right;
+		}
+		.km-diff {
+			font-weight: bold;
+			margin-right: 10px;
 		}
 	}
 </style>
