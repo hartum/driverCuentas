@@ -8,7 +8,7 @@
 		<IonContent class="travels-view-container">
 			<!--TIME RANGE NAVIGATOR -->
 			<div class="travel-filters ion-padding">
-				<IonSegment v-model="timeNavigator">
+				<IonSegment v-model="timeNavigator" @ionChange="updateFechaVista()">
 					<IonSegmentButton value="day">
 						<IonLabel>Día</IonLabel>
 					</IonSegmentButton>
@@ -30,7 +30,7 @@
 					size="large"
 					color="primary"
 					:icon="arrowBackCircle"
-					@click="navigateDate('previous')"
+					@click="navigateDate('prev')"
 				></IonIcon>
 				{{ fechaVista }}
 				<IonIcon
@@ -326,7 +326,8 @@
 	};
 
 	const timeNavigator = ref('month');
-	const fechaVista = ref(moment().format('MMM YYYY'));
+	const fechaVista = ref(moment().format('YYYY-MM-DD'));
+	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
 
 	let travelList = ref([]);
 	let shiftsList = ref([]);
@@ -337,61 +338,46 @@
 	};
 
 	const updateFechaVista = () => {
+		let currentWeek, month, year;
 		switch (timeNavigator.value) {
 			case 'day':
-				fechaVista.value = moment().format('DD MMM YYYY');
+				fechaVista.value = moment(fechaUnica.value).format('DD MMM YYYY');
 				break;
 			case 'week':
-				fechaVista.value = moment().format('W-YYYY');
+				currentWeek = Math.ceil(moment(fechaUnica.value).date() / 7);
+				month = moment(fechaUnica.value).format('MMM');
+				year = moment(fechaUnica.value).format('YYYY');
+				fechaVista.value = `${currentWeek}ª semana - ${month} ${year}`;
 				break;
 			case 'month':
-				fechaVista.value = moment().format('MMM YYYY');
+				fechaVista.value = moment(fechaUnica.value).format('MMM YYYY');
 				break;
 			case 'year':
-				fechaVista.value = moment().format('YYYY');
+				fechaVista.value = moment(fechaUnica.value).format('YYYY');
 				break;
 		}
 	};
 
 	const navigateDate = (direction) => {
+		const amount = direction === 'next' ? 1 : -1;
+		let duration;
 		switch (timeNavigator.value) {
 			case 'day':
-				fechaVista.value =
-					direction === 'next'
-						? moment(fechaVista.value, 'DD MMM YYYY')
-								.add(1, 'day')
-								.format('DD MMM YYYY')
-						: moment(fechaVista.value, 'DD MMM YYYY')
-								.subtract(1, 'day')
-								.format('DD MMM YYYY');
+				duration = moment.duration(amount, 'days');
 				break;
 			case 'week':
-				fechaVista.value =
-					direction === 'next'
-						? moment(fechaVista.value, 'W-YYYY').add(1, 'week').format('W-YYYY')
-						: moment(fechaVista.value, 'W-YYYY')
-								.subtract(1, 'week')
-								.format('W-YYYY');
+				duration = moment.duration(amount, 'weeks');
 				break;
 			case 'month':
-				fechaVista.value =
-					direction === 'next'
-						? moment(fechaVista.value, 'MMM YYYY')
-								.add(1, 'month')
-								.format('MMM YYYY')
-						: moment(fechaVista.value, 'MMM YYYY')
-								.subtract(1, 'month')
-								.format('MMM YYYY');
+				duration = moment.duration(amount, 'months');
 				break;
 			case 'year':
-				fechaVista.value =
-					direction === 'next'
-						? moment(fechaVista.value, 'YYYY').add(1, 'year').format('YYYY')
-						: moment(fechaVista.value, 'YYYY')
-								.subtract(1, 'year')
-								.format('YYYY');
+				duration = moment.duration(amount, 'years');
 				break;
 		}
+		const newDate = moment(fechaUnica.value).add(duration);
+		fechaUnica.value = newDate.format('YYYY-MM-DD');
+		updateFechaVista();
 	};
 
 	onMounted(async () => {
