@@ -1,5 +1,5 @@
 <template>
-	<ion-page>
+	<IonPage>
 		<IonHeader>
 			<IonToolbar>
 				<IonTitle> Lista de viajes </IonTitle>
@@ -8,49 +8,71 @@
 		<IonContent class="travels-view-container">
 			<!--TIME RANGE NAVIGATOR -->
 			<div class="travel-filters ion-padding">
-				<ion-segment v-model="timeNavigator">
-					<ion-segment-button value="day">
-						<ion-label>Día</ion-label>
-					</ion-segment-button>
-					<ion-segment-button value="week">
-						<ion-label>Semana</ion-label>
-					</ion-segment-button>
-					<ion-segment-button value="month">
-						<ion-label>Mes</ion-label>
-					</ion-segment-button>
-					<ion-segment-button value="year">
-						<ion-label>Año</ion-label>
-					</ion-segment-button>
-				</ion-segment>
+				<IonSegment v-model="timeNavigator">
+					<IonSegmentButton value="day">
+						<IonLabel>Día</IonLabel>
+					</IonSegmentButton>
+					<IonSegmentButton value="week">
+						<IonLabel>Semana</IonLabel>
+					</IonSegmentButton>
+					<IonSegmentButton value="month">
+						<IonLabel>Mes</IonLabel>
+					</IonSegmentButton>
+					<IonSegmentButton value="year">
+						<IonLabel>Año</IonLabel>
+					</IonSegmentButton>
+				</IonSegment>
 			</div>
 
 			<!--DATE NAVIGATOR -->
 			<div class="time-navigator">
-				<ion-icon
+				<IonIcon
 					size="large"
 					color="primary"
 					:icon="arrowBackCircle"
-				></ion-icon>
+					@click="navigateDate('previous')"
+				></IonIcon>
 				{{ fechaVista }}
-				<ion-icon
+				<IonIcon
 					size="large"
 					color="primary"
 					:icon="arrowForwardCircle"
-				></ion-icon>
+					@click="navigateDate('next')"
+				></IonIcon>
 				<!--BUTTON ADD  -->
 			</div>
 			<!--TRAVEL LIST -->
-			<ion-content class="container-travels">
+			<IonContent class="container-items">
 				<div class="travel-list">
 					<div
-						v-if="travelList.length == 0 && shiftsList.length == 0"
-						style="background-color: #fff"
+						v-if="
+							travelList.length == 0 &&
+							shiftsList.length == 0 &&
+							notesList.length == 0
+						"
 					>
-						Aún no hay viajes
+						<IonCard>
+							<IonCardHeader>
+								<IonCardTitle>Crea un viaje o turno</IonCardTitle>
+								<IonCardSubtitle>Sin viajes para esta fecha</IonCardSubtitle>
+							</IonCardHeader>
+							<IonCardContent>
+								<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
+								<IonButton @click="navigateTo('/travelform')">
+									<IonIcon slot="start" :icon="carSport"></IonIcon>
+									Nuevo viaje
+								</IonButton>
+								<IonButton @click="navigateTo('/shift')">
+									<IonIcon slot="start" :icon="time"></IonIcon>
+									Nuevo turno
+								</IonButton>
+							</IonCardContent>
+						</IonCard>
 					</div>
 					<div v-else>
-						<!-- TRAVEL LIST (travelList) -->
+						<!-- TRAVELS, SHIFTS AND NOTES LIST  -->
 						<div class="ion-padding">
+							<!-- TRAVEL LIST -->
 							<IonList lines="none" mode="ios">
 								<IonItemSliding v-for="travel in travelList" :key="travel.id">
 									<IonItem
@@ -59,41 +81,81 @@
 										@click="editTravel(travel.id)"
 									>
 										<IonLabel>
-											<ion-icon
+											<IonIcon
 												:icon="payIcons[travel.payMethod]"
 												size="small"
 												class="icon-travel"
-											></ion-icon>
+											></IonIcon>
 											<span>{{
 												moment(travel.startDate).format('DD MMM - HH:mm')
 											}}</span>
-											<span class="money">
-												<b>{{ travel.amount }}</b> €
+											<span class="money income">
+												<b>{{ travel.amount }}{{ currency }} </b>
 											</span>
 										</IonLabel>
 									</IonItem>
-
 									<IonItemOptions side="end">
-										<ion-item-option
+										<IonItemOption
 											color="danger"
-											@click="confirmRemoveTravel(travel.id, $event)"
+											@click="confirmRemoveItem(travel.id, 'viaje', $event)"
 										>
-											<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-										</ion-item-option>
+											<IonIcon slot="icon-only" :icon="trash"></IonIcon>
+										</IonItemOption>
 									</IonItemOptions>
 								</IonItemSliding>
 							</IonList>
 						</div>
-						<!-- SHIFT CARD -->
-						<ion-card
+						<!-- NOTES LIST -->
+						<div class="ion-padding">
+							<IonList lines="none" mode="ios">
+								<IonItemSliding v-for="note in notesList" :key="note.id">
+									<IonItem
+										class="item-note"
+										button="true"
+										@click="editNote(note.id)"
+									>
+										<IonLabel>
+											<IonIcon
+												:icon="reader"
+												size="small"
+												class="icon-note"
+											></IonIcon>
+											<span>{{
+												moment(note.noteDate).format('DD MMM - HH:mm')
+											}}</span>
+											<span
+												class="money"
+												:class="{
+													income: note.noteType == 'income',
+													expense: note.noteType == 'expense',
+												}"
+												v-if="note.amount > 0"
+											>
+												<b>{{ note.amount }}{{ currency }} </b>
+											</span>
+										</IonLabel>
+									</IonItem>
+									<IonItemOptions side="end">
+										<IonItemOption
+											color="danger"
+											@click="confirmRemoveItem(note.id, 'nota', $event)"
+										>
+											<IonIcon slot="icon-only" :icon="trash"></IonIcon>
+										</IonItemOption>
+									</IonItemOptions>
+								</IonItemSliding>
+							</IonList>
+						</div>
+						<!-- SHIFT LIST -->
+						<IonCard
 							class="shift-card"
 							mode="ios"
 							v-for="shift in shiftsList"
 							:key="shift.id"
 						>
 							<!-- CARD HEADER -->
-							<ion-card-header class="shift-header">
-								<ion-card-title class="shift-title">
+							<IonCardHeader class="shift-header">
+								<IonCardTitle class="shift-title">
 									<!-- ITEM SLIDING -->
 									<IonItemSliding>
 										<IonItem
@@ -101,100 +163,96 @@
 											lines="none"
 											@click="editShift(shift.id)"
 										>
-											<ion-icon
+											<IonIcon
 												:icon="timeOutline"
 												color="primary"
 												class="shift-header-icon"
 												size="large"
 											/>
-											<span class="shift-tittle-info">
-												{{ moment(shift.startDate).format('HH:mm') }}h -
-												{{ moment(shift.endDate).format('HH:mm') }}h
-											</span>
+											<span class="shift-tittle-info"
+												>{{ moment(shift.startDate).format('HH:mm') }}h -
+												{{ moment(shift.endDate).format('HH:mm') }}h</span
+											>
 										</IonItem>
 										<IonItemOptions side="end">
-											<ion-item-option
+											<IonItemOption
 												color="danger"
-												@click="confirmRemoveShift(shift.id, $event)"
+												@click="confirmRemoveItem(shift.id, 'turno', $event)"
 											>
-												<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-											</ion-item-option>
+												<IonIcon slot="icon-only" :icon="trash"></IonIcon>
+											</IonItemOption>
 										</IonItemOptions>
 									</IonItemSliding>
-								</ion-card-title>
-							</ion-card-header>
-							<ion-card-content></ion-card-content>
+								</IonCardTitle>
+							</IonCardHeader>
+							<IonCardContent></IonCardContent>
 							<!-- // CARD FOOTER	 -->
 							<div class="shift-footer ion-padding">
 								<div>
 									<div v-if="shift.modeKM == 'fix'">
 										<b>{{ shift.totalKm }}</b>
 										km
-										<ion-icon :icon="timerOutline"></ion-icon>
+										<IonIcon :icon="timerOutline"></IonIcon>
 									</div>
 									<div v-else>
 										<b>{{ shift.finalKm - shift.initialKm }}</b>
 										km
-										<ion-icon :icon="timerOutline"></ion-icon>
+										<IonIcon :icon="timerOutline"></IonIcon>
 									</div>
-
 									<div>
 										<b>{{ shift.gasoline }}</b>
-										€
-										<ion-icon :icon="waterOutline"></ion-icon>
+										{{ currency }}
+										<IonIcon :icon="waterOutline"></IonIcon>
 									</div>
 								</div>
-
 								<div class="shift-footer-right">
 									<div>SubTotal</div>
 									<div
 										v-if="shift.modeTotalShift == 'fixTotal'"
 										class="shift-total"
 									>
-										{{ shift.totalShift }} €
+										{{ shift.totalShift }} {{ currency }}
 									</div>
-									<div v-else class="shift-total">*Calculado €</div>
+									<div v-else><b>*Esperando viajes</b></div>
 								</div>
 							</div>
-						</ion-card>
+						</IonCard>
 					</div>
 				</div>
-
-				<ion-button @click="borraDB">Borra la BBDD</ion-button>
-			</ion-content>
+				<IonButton @click="borraDB">Borra la BBDD</IonButton>
+			</IonContent>
 			<div class="total-container">
 				Total: <span class="total">300.00 €</span>
-				<ion-fab
+				<IonFab
 					slot="fixed"
 					horizontal="right"
 					vertical="top"
 					class="add-travel"
 				>
-					<ion-fab-button mode="ios">
-						<ion-icon :icon="add"></ion-icon>
-					</ion-fab-button>
-					<ion-fab-list side="top">
-						<ion-fab-button color="primary" @click="navigateTo('/noteform')">
-							<ion-icon :icon="reader" />
-						</ion-fab-button>
-						<ion-fab-button color="primary" @click="navigateTo('/shift')">
-							<ion-icon :icon="time" />
-						</ion-fab-button>
-
-						<ion-fab-button color="primary" @click="navigateTo('/travelform')">
-							<ion-icon :icon="carSport" />
-						</ion-fab-button>
-					</ion-fab-list>
-				</ion-fab>
+					<IonFabButton mode="ios">
+						<IonIcon :icon="add"></IonIcon>
+					</IonFabButton>
+					<IonFabList side="top">
+						<IonFabButton color="primary" @click="navigateTo('/noteform')">
+							<IonIcon :icon="reader" />
+						</IonFabButton>
+						<IonFabButton color="primary" @click="navigateTo('/shift')">
+							<IonIcon :icon="time" />
+						</IonFabButton>
+						<IonFabButton color="primary" @click="navigateTo('/travelform')">
+							<IonIcon :icon="carSport" />
+						</IonFabButton>
+					</IonFabList>
+				</IonFab>
 			</div>
 		</IonContent>
-		<ion-action-sheet
+		<IonActionSheet
 			:header="actionSheetHeader"
 			:buttons="actionSheetButtons"
 			:is-open="actionSheetOpen"
 			@didDismiss="handleActionSheetDismiss"
-		></ion-action-sheet>
-	</ion-page>
+		></IonActionSheet>
+	</IonPage>
 </template>
 
 <script setup>
@@ -229,8 +287,8 @@
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
+		IonCardSubtitle,
 		IonCardContent,
-		IonListHeader,
 		IonFabList,
 		IonButton,
 		IonActionSheet,
@@ -251,14 +309,16 @@
 		reader,
 	} from 'ionicons/icons';
 	import { ref, onMounted } from 'vue';
-	//import { useSettingsStore } from '../store/settingsStore'; // Importa la store
-	import { useRouter } from 'vue-router'; // Importa el router
-	import { getTravels, deleteTravel } from '@/services/travelService'; // Importar el servicio
+	import { useRouter } from 'vue-router';
+	import { useSettingsStore } from '../store/settingsStore';
+	import { getTravels, deleteTravel } from '@/services/travelService';
 	import { getShifts, deleteShift } from '@/services/shiftService';
+	import { getNotes, deleteNote } from '@/services/noteService';
 	import { Preferences } from '@capacitor/preferences';
 
-	const router = useRouter(); // Inicializa el router
-
+	const currency = ref('€');
+	const router = useRouter();
+	const settingsStore = useSettingsStore();
 	const payIcons = {
 		app: phonePortraitOutline,
 		cash: cashOutline,
@@ -266,20 +326,88 @@
 	};
 
 	const timeNavigator = ref('month');
+	const fechaVista = ref(moment().format('MMM YYYY'));
 
 	let travelList = ref([]);
 	let shiftsList = ref([]);
-
-	const fechaVista = ref();
+	let notesList = ref([]);
 
 	const navigateTo = (path) => {
 		router.push(path);
 	};
 
+	const updateFechaVista = () => {
+		switch (timeNavigator.value) {
+			case 'day':
+				fechaVista.value = moment().format('DD MMM YYYY');
+				break;
+			case 'week':
+				fechaVista.value = moment().format('W-YYYY');
+				break;
+			case 'month':
+				fechaVista.value = moment().format('MMM YYYY');
+				break;
+			case 'year':
+				fechaVista.value = moment().format('YYYY');
+				break;
+		}
+	};
+
+	const navigateDate = (direction) => {
+		switch (timeNavigator.value) {
+			case 'day':
+				fechaVista.value =
+					direction === 'next'
+						? moment(fechaVista.value, 'DD MMM YYYY')
+								.add(1, 'day')
+								.format('DD MMM YYYY')
+						: moment(fechaVista.value, 'DD MMM YYYY')
+								.subtract(1, 'day')
+								.format('DD MMM YYYY');
+				break;
+			case 'week':
+				fechaVista.value =
+					direction === 'next'
+						? moment(fechaVista.value, 'W-YYYY').add(1, 'week').format('W-YYYY')
+						: moment(fechaVista.value, 'W-YYYY')
+								.subtract(1, 'week')
+								.format('W-YYYY');
+				break;
+			case 'month':
+				fechaVista.value =
+					direction === 'next'
+						? moment(fechaVista.value, 'MMM YYYY')
+								.add(1, 'month')
+								.format('MMM YYYY')
+						: moment(fechaVista.value, 'MMM YYYY')
+								.subtract(1, 'month')
+								.format('MMM YYYY');
+				break;
+			case 'year':
+				fechaVista.value =
+					direction === 'next'
+						? moment(fechaVista.value, 'YYYY').add(1, 'year').format('YYYY')
+						: moment(fechaVista.value, 'YYYY')
+								.subtract(1, 'year')
+								.format('YYYY');
+				break;
+		}
+	};
+
 	onMounted(async () => {
-		let fechaInicial = moment();
-		let semanaMes = Math.ceil(fechaInicial.date() / 7) + 'ª Semana';
-		fechaVista.value = semanaMes;
+		// Establecer el valor de la moneda por defecto
+		switch (settingsStore.selectedCurrency) {
+			case 'EUR':
+				currency.value = '€';
+				break;
+			case 'USD':
+				currency.value = '$';
+				break;
+			default:
+				currency.value = settingsStore.selectedCurrency;
+		}
+
+		updateFechaVista();
 
 		const travels = await getTravels();
 		travelList.value = travels;
@@ -288,18 +416,21 @@
 		const shifts = await getShifts();
 		shiftsList.value = shifts;
 		console.log('Tabla turnos', shiftsList.value);
+
+		const notes = await getNotes();
+		notesList.value = notes;
+		console.log('Tabla notas', notesList.value);
 	});
 
-	// EDITAR VIAJE
 	const editTravel = (id) => {
 		router.push(`/travelform/${id}`);
 	};
 
-	// CONFIRMACIÓN BORRAR VIAJE
-	let slidingTravel = ref(null);
+	let slidingItem = ref(null);
 	const actionSheetHeader = ref('');
 	const actionSheetOpen = ref(false);
-	const travelToRemove = ref(null);
+	const itemToRemove = ref(null);
+	const itemTypeToRemove = ref(null);
 	const actionSheetButtons = ref([
 		{
 			text: 'Borrar',
@@ -319,23 +450,29 @@
 
 	const handleActionSheetDismiss = async (event) => {
 		const role = event.detail.role;
-		if (role === 'destructive' && travelToRemove.value !== null) {
+		if (role === 'destructive' && itemToRemove.value !== null) {
 			try {
-				if (actionSheetHeader.value.includes('viaje')) {
-					console.log('Eliminando el viaje', travelToRemove.value);
-					await deleteTravel(travelToRemove.value);
+				if (itemTypeToRemove.value === 'viaje') {
+					console.log('Eliminando el viaje', itemToRemove.value);
+					await deleteTravel(itemToRemove.value);
 					travelList.value = travelList.value.filter(
-						(travel) => travel.id !== travelToRemove.value
+						(travel) => travel.id !== itemToRemove.value
 					);
-					travelToRemove.value = null;
-				} else if (actionSheetHeader.value.includes('turno')) {
-					console.log('Eliminando el turno', travelToRemove.value);
-					await deleteShift(travelToRemove.value);
+				} else if (itemTypeToRemove.value === 'turno') {
+					console.log('Eliminando el turno', itemToRemove.value);
+					await deleteShift(itemToRemove.value);
 					shiftsList.value = shiftsList.value.filter(
-						(shift) => shift.id !== travelToRemove.value
+						(shift) => shift.id !== itemToRemove.value
 					);
-					travelToRemove.value = null;
+				} else if (itemTypeToRemove.value === 'nota') {
+					console.log('Eliminando la nota', itemToRemove.value);
+					await deleteNote(itemToRemove.value);
+					notesList.value = notesList.value.filter(
+						(note) => note.id !== itemToRemove.value
+					);
 				}
+				itemToRemove.value = null;
+				itemTypeToRemove.value = null;
 			} catch (error) {
 				console.error('Error eliminando:', error);
 			}
@@ -345,34 +482,30 @@
 	};
 
 	const closeSlidingItem = () => {
-		if (slidingTravel.value) {
-			slidingTravel.value.close();
-			slidingTravel.value = null;
+		if (slidingItem.value) {
+			slidingItem.value.close();
+			slidingItem.value = null;
 		}
 	};
 
-	const confirmRemoveTravel = (id, event) => {
-		travelToRemove.value = id;
-		slidingTravel.value = event.target.closest('ion-item-sliding');
-		actionSheetHeader.value = '¿Deseas eliminar el servicio el viaje?';
+	const confirmRemoveItem = (id, type, event) => {
+		itemToRemove.value = id;
+		itemTypeToRemove.value = type;
+		slidingItem.value = event.target.closest('ion-item-sliding');
+		actionSheetHeader.value = `¿Deseas eliminar el ${type}?`;
 		actionSheetOpen.value = true;
 	};
 
-	// EDITAR TURNO
 	const editShift = (id) => {
 		console.log(`El ID del turno es : ${id}`);
 		router.push(`/shift/${id}`);
 	};
 
-	// CONFIRMACIÓN BORRAR TURNO
-	const confirmRemoveShift = (id, event) => {
-		travelToRemove.value = id;
-		slidingTravel.value = event.target.closest('ion-item-sliding');
-		actionSheetHeader.value = '¿Deseas eliminar el turno?';
-		actionSheetOpen.value = true;
+	const editNote = (id) => {
+		console.log(`El ID de la nota es : ${id}`);
+		router.push(`/noteform/${id}`);
 	};
 
-	// BORRAR DATABASE
 	const borraDB = async () => {
 		console.log('borra BBDD');
 		await Preferences.remove({ key: 'database' });
@@ -381,7 +514,7 @@
 
 <style lang="scss" scoped>
 	ion-content::part(background) {
-		background: url('/bg_travel_list.jpg') center center / cover no-repeat;
+		background: url('/bg_notes_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
 	}
 	ion-card {
@@ -393,14 +526,12 @@
 			border-bottom: 1px #ccc solid;
 			background-color: #f8f8ff;
 			text-align: center;
-
 			.shift-title {
 				.shift-tittle-info {
 					font-size: 28px;
 					font-weight: 300 !important ;
 					color: var(--ion-color-primary);
 				}
-
 				.shift-header-icon {
 					vertical-align: bottom;
 					margin: 0 9px;
@@ -438,11 +569,12 @@
 				vertical-align: middle;
 			}
 		}
-		.container-travels {
+		.container-items {
 			height: calc(99vh - 250px);
 			overflow-y: auto;
 			margin-top: 20px;
-			.item-travel {
+			.item-travel,
+			.item-note {
 				color: #535353;
 				line-height: 1.2em;
 				border-bottom: 1px dashed #ccc;
@@ -468,18 +600,24 @@
 					display: inline-block;
 					text-align: right;
 				}
-				.icon-travel {
+				.icon-travel,
+				.icon-note {
 					vertical-align: middle;
 					color: #4b4a4a;
 					width: 1.5em;
 					height: 1.5em;
+				}
+				.income {
+					color: #087702;
+				}
+				.expense {
+					color: #bc0404;
 				}
 			}
 		}
 		.total-container {
 			color: #535353;
 			font-size: 1.7em;
-			/*font-weight: bold;*/
 			padding: 8px 60px 8px 20px;
 			border-top: 1px dashed #ccc;
 			background-color: #f7f7f7;
@@ -499,10 +637,8 @@
 	.shift-info {
 		background-color: #ccc;
 		padding: 5px;
-
 		font-weight: bold;
 		font-size: 1em;
-		/*border-radius: 0px 5px 5px 0px;*/
 		border-radius: 5px;
 		margin-right: 1px;
 	}

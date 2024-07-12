@@ -3,7 +3,7 @@
 		<IonHeader v-show="!isMapVisible">
 			<IonToolbar>
 				<IonTitle>
-					{{ modeForm === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
+					{{ modeForm.value === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
 				</IonTitle>
 			</IonToolbar>
 		</IonHeader>
@@ -140,8 +140,8 @@
 				:duration="1500"
 				:icon="warningOutline"
 				@didDismiss="showToast = false"
-				position-anchor="form-footer"
 				position="bottom"
+				swipe-gesture="vertical"
 			></ion-toast>
 		</IonContent>
 		<IonFooter v-if="!isMapVisible" id="form-footer">
@@ -166,7 +166,9 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje' }}
+								{{
+									modeForm.value === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje'
+								}}
 							</ionButton>
 						</ion-col>
 					</ion-row>
@@ -243,7 +245,7 @@
 		phonePortraitOutline,
 		warningOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted, watch, defineProps } from 'vue';
+	import { ref, onMounted, watch } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
@@ -253,15 +255,8 @@
 		updateTravel,
 	} from '@/services/travelService'; // Importar el servicio
 
-	const props = defineProps({
-		amount: {
-			type: Number,
-			default: 0,
-		},
-	});
-
 	const settingsStore = useSettingsStore();
-	const amountForm = ref(props.amount);
+	const amountForm = ref(0);
 	const currency = ref('€');
 	const datetimeStart = ref(moment().format('YYYY-MM-DDTHH:mm'));
 	const firstDayOfWeek = ref(1);
@@ -276,6 +271,9 @@
 	const pay = ref('app');
 	const router = useRouter();
 	const route = useRoute();
+	const travelId = ref(route.params.travelId);
+
+	const modeForm = ref(travelId.value ? 'edit' : 'create');
 	const servicesList = settingsStore.servicesList;
 
 	const payIcons = {
@@ -284,35 +282,23 @@
 		card: cardOutline,
 	};
 
-	const travelId = route.params.travelId;
-	const modeForm = travelId ? 'edit' : 'create';
+	const resetForm = () => {
+		amountForm.value = 0;
+		currency.value = '€';
+		datetimeStart.value = moment().format('YYYY-MM-DDTHH:mm');
+		locationStart.value = {};
+		locationEnd.value = {};
+		service.value = servicesList.length > 0 ? servicesList[0] : '';
+		pay.value = 'app';
+	};
 
-	onMounted(async () => {
-		console.log('travelId', travelId);
-		console.log('modeForm', modeForm);
-		// Establecer el valor del servicio por defecto
-		if (servicesList.length > 0) {
-			service.value = servicesList[0];
-		}
-
-		// Establecer el valor de la moneda por defecto
-		switch (settingsStore.selectedCurrency) {
-			case 'EUR':
-				currency.value = '€';
-				break;
-			case 'USD':
-				currency.value = '$';
-				break;
-			default:
-				currency.value = settingsStore.selectedCurrency;
-		}
-
-		// Establecer el valor del primer diá de la semana por defecto
+	const loadTravel = async () => {
+		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 		// Si estamos en modo de edición, cargar los datos del viaje
-		if (modeForm === 'edit') {
-			const travel = await selectTravelByID(parseInt(travelId));
+		if (modeForm.value === 'edit') {
+			const travel = await selectTravelByID(parseInt(travelId.value));
 			if (travel) {
 				amountForm.value = travel.amount;
 				locationStart.value = travel.origin;
@@ -321,7 +307,19 @@
 				pay.value = travel.payMethod;
 				datetimeStart.value = travel.startDate;
 			}
+		} else {
+			resetForm();
 		}
+	};
+
+	onMounted(loadTravel);
+
+	// Observar cambios en la ruta
+	watch(route, async (newRoute) => {
+		travelId.value = newRoute.params.travelId;
+		modeForm.value = travelId.value ? 'edit' : 'create';
+		resetForm();
+		await loadTravel();
 	});
 
 	// Guardar el viaje
@@ -333,9 +331,9 @@
 		}
 
 		try {
-			if (modeForm === 'edit') {
+			if (modeForm.value === 'edit') {
 				await updateTravel(
-					parseInt(travelId),
+					parseInt(travelId.value),
 					parseFloat(amountForm.value),
 					locationStart.value,
 					locationEnd.value,
@@ -446,5 +444,8 @@
 		background-color: aqua;
 		width: 100%;
 		height: 100%;
+	}
+	ion-toast {
+		--background: #ffdd00;
 	}
 </style>

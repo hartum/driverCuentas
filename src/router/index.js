@@ -35,7 +35,7 @@ const routes = [
   },
   {
     path: '/travelform/:travelId?',
-    component: () => import('@/views/TravelForm.vue')
+    component: () => import('@/views/TravelFormView.vue')
   },
   {
     path: '/settings',
@@ -46,8 +46,8 @@ const routes = [
     component: () => import('@/views/ShiftFormView.vue')
   },
   {
-    path: '/noteform',
-    component: () => import('@/views/NoteView.vue')
+    path: '/noteform/:noteId?',
+    component: () => import('@/views/NoteFormView.vue')
   },
   {
     path: '/test',

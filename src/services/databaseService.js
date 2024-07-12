@@ -13,6 +13,7 @@ export const initializeDatabase = async () => {
     // Si la tabla travels no existe, crearla
     alasql('CREATE TABLE IF NOT EXISTS travels (id INT PRIMARY KEY AUTO_INCREMENT, amount FLOAT, origin STRING, destination STRING, service STRING, payMethod STRING, startDate DATE, endDate DATE)');
     alasql('CREATE TABLE IF NOT EXISTS shifts (id INT PRIMARY KEY AUTO_INCREMENT, startDate DATETIME, endDate DATETIME, initialKm FLOAT, finalKm FLOAT, totalKm FLOAT, modeKM STRING, gasoline FLOAT, totalShift FLOAT, modeTotalShift STRING)');
+    alasql('CREATE TABLE IF NOT EXISTS notes (id INT PRIMARY KEY AUTO_INCREMENT, noteType STRING, amount FLOAT, noteDate DATE, description STRING)');
     await saveDatabaseToPreferences();
   }
 };

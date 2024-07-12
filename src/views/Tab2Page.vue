@@ -2,17 +2,12 @@
 	<ion-page>
 		<ion-header>
 			<ion-toolbar>
-				<ion-title>Tab 2</ion-title>
+				<ion-title>Estadisticas</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content :fullscreen="true">
-			<ion-header collapse="condense">
-				<ion-toolbar>
-					<ion-title size="large">Tab 1</ion-title>
-				</ion-toolbar>
-			</ion-header>
-			<h1>Mapa Integrado</h1>
-			<MapViewer />
+		<ion-content class="ion-padding">
+			<h1>En construcción</h1>
+			<ion-icon size="large" :icon="barChartSharp" class="icon"></ion-icon>
 		</ion-content>
 	</ion-page>
 </template>
@@ -24,8 +19,14 @@
 		IonToolbar,
 		IonTitle,
 		IonContent,
+		IonIcon,
 	} from '@ionic/vue';
-	import MapViewer from '../components/MapViewer.vue';
+	import { barChartSharp } from 'ionicons/icons';
 </script>
 
-<style></style>
+<style>
+	.icon {
+		width: 350px;
+		height: 350px;
+	}
+</style>

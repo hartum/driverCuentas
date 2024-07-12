@@ -3,7 +3,7 @@
 		<IonHeader>
 			<IonToolbar>
 				<IonTitle>{{
-					modeForm === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
+					modeForm.value === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
 				}}</IonTitle>
 			</IonToolbar>
 		</IonHeader>
@@ -115,7 +115,7 @@
 								label-placement="fixed"
 								type="number"
 								placeholder="000.00"
-								v-model="form.gasoline"
+								v-model.number="form.gasoline"
 								inputmode="decimal"
 								max="999"
 								maxlength="6"
@@ -251,7 +251,6 @@
 				:duration="1500"
 				:icon="warningOutline"
 				@didDismiss="() => (showToast = false)"
-				position-anchor="form-footer"
 				position="bottom"
 			></IonToast>
 			<IonToast
@@ -262,6 +261,7 @@
 				@didDismiss="() => (showKmToast = false)"
 				position-anchor="form-footer"
 				position="bottom"
+				swipe-gesture="vertical"
 			></IonToast>
 		</IonContent>
 		<IonFooter id="form-footer">
@@ -286,7 +286,9 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno' }}
+								{{
+									modeForm.value === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno'
+								}}
 							</IonButton>
 						</IonCol>
 					</IonRow>
@@ -331,7 +333,7 @@
 		waterOutline,
 		warningOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted } from 'vue';
+	import { ref, onMounted, watch } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import moment from 'moment';
@@ -345,6 +347,8 @@
 	const currency = ref('€');
 	const router = useRouter();
 	const route = useRoute();
+	const shiftId = ref(route.params.shiftId);
+	const modeForm = ref(shiftId.value ? 'edit' : 'create');
 
 	const form = ref({
 		startDate: moment().format('YYYY-MM-DDTHH:mm'),
@@ -362,34 +366,43 @@
 	const showToast = ref(false);
 	const showKmToast = ref(false);
 
-	const shiftId = route.params.shiftId;
-	const modeForm = shiftId ? 'edit' : 'create';
+	const resetForm = () => {
+		form.value = {
+			startDate: moment().format('YYYY-MM-DDTHH:mm'),
+			endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+			initialKm: 0,
+			finalKm: 0,
+			totalKm: 0,
+			modeKM: 'calculatedKm',
+			gasoline: 0,
+			totalShift: 0,
+			modeTotalShift: 'calculatedTotal',
+		};
+	};
 
-	onMounted(async () => {
-		console.log('shiftId', shiftId);
-		console.log('modeForm', modeForm);
-
-		// Establecer el valor de la moneda por defecto
-		switch (settingsStore.selectedCurrency) {
-			case 'EUR':
-				currency.value = '€';
-				break;
-			case 'USD':
-				currency.value = '$';
-				break;
-			default:
-				currency.value = settingsStore.selectedCurrency;
-		}
-
+	const loadShift = async () => {
 		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
-		if (modeForm === 'edit') {
-			const shift = await selectShiftByID(parseInt(shiftId));
+		// Si estamos en modo de edición, cargar los datos del turno
+		if (modeForm.value === 'edit') {
+			const shift = await selectShiftByID(parseInt(shiftId.value));
 			if (shift) {
 				form.value = { ...shift };
 			}
+		} else {
+			resetForm();
 		}
+	};
+
+	onMounted(loadShift);
+
+	// Observar cambios en la ruta
+	watch(route, async (newRoute) => {
+		shiftId.value = newRoute.params.shiftId;
+		modeForm.value = shiftId.value ? 'edit' : 'create';
+		resetForm();
+		await loadShift();
 	});
 
 	const formatTime = (date) => {
@@ -406,9 +419,9 @@
 			return;
 		}
 
-		if (modeForm === 'edit') {
+		if (modeForm.value === 'edit') {
 			await updateShift(
-				parseInt(shiftId),
+				parseInt(shiftId.value),
 				form.value.startDate,
 				form.value.endDate,
 				initialKm,
@@ -507,5 +520,8 @@
 			font-weight: bold;
 			margin-right: 10px;
 		}
+	}
+	ion-toast {
+		--background: #ffdd00;
 	}
 </style>
