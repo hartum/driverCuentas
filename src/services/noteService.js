@@ -13,11 +13,11 @@ export const addNote = async (noteType, amount, noteDate, description) => {
   await saveDatabaseToPreferences();
 };
 
-// Obtener todas las notas
-export const getNotes = async () => {
-  const result = alasql('SELECT * FROM notes');
+// Obtener todas las notas entre dos fechas
+export const getNotes = async (initialDate, endDate) => {
+  const result = alasql('SELECT * FROM notes WHERE noteDate >= ? AND noteDate <= ?', [initialDate, endDate]);
   return result;
-};
+}
 
 // Obtener una nota por ID
 export const getNoteById = async (id) => {

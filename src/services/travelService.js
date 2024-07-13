@@ -13,9 +13,9 @@ export const addTravel = async (amount, origin, destination, service, payMethod,
   await saveDatabaseToPreferences();
 };
 
-// Función para obtener todos los viajes
-export const getTravels = async () => {
-  const result = alasql('SELECT * FROM travels');
+// Función para obtener todos los viajes entre dos fechas
+export const getTravels = async (initialDate, endDate) => {
+  const result = alasql('SELECT * FROM travels WHERE startDate >= ? AND startDate <= ?', [initialDate, endDate]);
   return result;
 };
 

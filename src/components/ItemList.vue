@@ -167,7 +167,7 @@
 </template>
 
 <script setup>
-	import { ref, onMounted, defineProps } from 'vue';
+	import { ref, onMounted, defineProps, watch } from 'vue';
 	import moment from 'moment';
 	import {
 		IonList,
@@ -203,6 +203,7 @@
 	import { getNotes, deleteNote } from '@/services/noteService';
 	import { useSettingsStore } from '../store/settingsStore';
 	import { Preferences } from '@capacitor/preferences';
+
 	const props = defineProps({
 		initialDate: {
 			type: String,
@@ -237,9 +238,20 @@
 	};
 
 	const loadItems = async () => {
-		travelList.value = await getTravels();
-		shiftsList.value = await getShifts();
-		notesList.value = await getNotes();
+		const initialDate = moment(props.initialDate, 'YYYY-MM-DD HH:mm').format(
+			'YYYY-MM-DDTHH:mm'
+		);
+		const endDate = moment(props.endDate, 'YYYY-MM-DD HH:mm').format(
+			'YYYY-MM-DDTHH:mm'
+		);
+
+		travelList.value = await getTravels(initialDate, endDate);
+		shiftsList.value = await getShifts(initialDate, endDate);
+		notesList.value = await getNotes(initialDate, endDate);
+
+		console.log('Tabla viajes', travelList.value);
+		console.log('Tabla turnos', shiftsList.value);
+		console.log('Tabla notas', notesList.value);
 	};
 
 	const navigateTo = (path) => {
@@ -329,6 +341,13 @@
 		console.log('borra BBDD');
 		await Preferences.remove({ key: 'database' });
 	};
+
+	watch(
+		() => [props.initialDate, props.endDate],
+		() => {
+			loadItems();
+		}
+	);
 
 	onMounted(async () => {
 		loadItems();

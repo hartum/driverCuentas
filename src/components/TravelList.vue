@@ -38,12 +38,6 @@
 				</IonFabList>
 			</IonFab>
 		</div>
-		<IonActionSheet
-			:header="actionSheetHeader"
-			:buttons="actionSheetButtons"
-			:is-open="actionSheetOpen"
-			@didDismiss="handleActionSheetDismiss"
-		></IonActionSheet>
 	</IonPage>
 </template>
 
@@ -69,15 +63,11 @@
 		IonFab,
 		IonFabButton,
 		IonFabList,
-		IonActionSheet,
 	} from '@ionic/vue';
 	import { add, time, carSport, reader } from 'ionicons/icons';
 	import { ref, onMounted } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { getTravels, deleteTravel } from '@/services/travelService';
-	import { getShifts, deleteShift } from '@/services/shiftService';
-	import { getNotes, deleteNote } from '@/services/noteService';
 	import TimeNavigator from '@/components/TimeNavigator.vue'; // Import the new component
 	import ItemList from '@/components/ItemList.vue';
 
@@ -88,10 +78,6 @@
 	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
 	const router = useRouter();
 	const settingsStore = useSettingsStore();
-
-	let travelList = ref([]);
-	let shiftsList = ref([]);
-	let notesList = ref([]);
 
 	// Establecer el valor del primer día de la semana por defecto
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
@@ -151,81 +137,7 @@
 			default:
 				currency.value = settingsStore.selectedCurrency;
 		}
-
-		const travels = await getTravels();
-		travelList.value = travels;
-		console.log('Tabla viajes', travelList.value);
-
-		const shifts = await getShifts();
-		shiftsList.value = shifts;
-		console.log('Tabla turnos', shiftsList.value);
-
-		const notes = await getNotes();
-		notesList.value = notes;
-		console.log('Tabla notas', notesList.value);
 	});
-
-	let slidingItem = ref(null);
-	const actionSheetHeader = ref('');
-	const actionSheetOpen = ref(false);
-	const itemToRemove = ref(null);
-	const itemTypeToRemove = ref(null);
-	const actionSheetButtons = ref([
-		{
-			text: 'Borrar',
-			role: 'destructive',
-			data: {
-				action: 'delete',
-			},
-		},
-		{
-			text: 'Cancelar',
-			role: 'cancel',
-			data: {
-				action: 'cancel',
-			},
-		},
-	]);
-
-	const handleActionSheetDismiss = async (event) => {
-		const role = event.detail.role;
-		if (role === 'destructive' && itemToRemove.value !== null) {
-			try {
-				if (itemTypeToRemove.value === 'viaje') {
-					console.log('Eliminando el viaje', itemToRemove.value);
-					await deleteTravel(itemToRemove.value);
-					travelList.value = travelList.value.filter(
-						(travel) => travel.id !== itemToRemove.value
-					);
-				} else if (itemTypeToRemove.value === 'turno') {
-					console.log('Eliminando el turno', itemToRemove.value);
-					await deleteShift(itemToRemove.value);
-					shiftsList.value = shiftsList.value.filter(
-						(shift) => shift.id !== itemToRemove.value
-					);
-				} else if (itemTypeToRemove.value === 'nota') {
-					console.log('Eliminando la nota', itemToRemove.value);
-					await deleteNote(itemToRemove.value);
-					notesList.value = notesList.value.filter(
-						(note) => note.id !== itemToRemove.value
-					);
-				}
-				itemToRemove.value = null;
-				itemTypeToRemove.value = null;
-			} catch (error) {
-				console.error('Error eliminando:', error);
-			}
-		}
-		closeSlidingItem();
-		actionSheetOpen.value = false;
-	};
-
-	const closeSlidingItem = () => {
-		if (slidingItem.value) {
-			slidingItem.value.close();
-			slidingItem.value = null;
-		}
-	};
 </script>
 
 <style lang="scss" scoped>
