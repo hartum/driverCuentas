@@ -8,38 +8,11 @@
 		<IonContent class="travels-view-container">
 			<!--TIME RANGE NAVIGATOR -->
 			<div class="travel-filters ion-padding">
-				<IonSegment v-model="timeNavigator" @ionChange="updateFechaVista()">
-					<IonSegmentButton value="day">
-						<IonLabel>Día</IonLabel>
-					</IonSegmentButton>
-					<IonSegmentButton value="week">
-						<IonLabel>Semana</IonLabel>
-					</IonSegmentButton>
-					<IonSegmentButton value="month">
-						<IonLabel>Mes</IonLabel>
-					</IonSegmentButton>
-					<IonSegmentButton value="year">
-						<IonLabel>Año</IonLabel>
-					</IonSegmentButton>
-				</IonSegment>
-			</div>
-
-			<!--DATE NAVIGATOR -->
-			<div class="time-navigator">
-				<IonIcon
-					size="large"
-					color="primary"
-					:icon="arrowBackCircle"
-					@click="navigateDate('prev')"
-				></IonIcon>
-				{{ fechaVista }}
-				<IonIcon
-					size="large"
-					color="primary"
-					:icon="arrowForwardCircle"
-					@click="navigateDate('next')"
-				></IonIcon>
-				<!--BUTTON ADD  -->
+				<TimeNavigator
+					:initial-date="fechaUnica"
+					:initial-navigator="'month'"
+					@date-changed="handleDateChanged"
+				/>
 			</div>
 			<!--TRAVEL LIST -->
 			<IonContent class="container-items">
@@ -279,8 +252,6 @@
 		IonItemOption,
 		IonItemSliding,
 		IonLabel,
-		IonSegment,
-		IonSegmentButton,
 		IonIcon,
 		IonFab,
 		IonFabButton,
@@ -295,8 +266,6 @@
 	} from '@ionic/vue';
 	import {
 		trash,
-		arrowBackCircle,
-		arrowForwardCircle,
 		add,
 		time,
 		timeOutline,
@@ -315,7 +284,9 @@
 	import { getShifts, deleteShift } from '@/services/shiftService';
 	import { getNotes, deleteNote } from '@/services/noteService';
 	import { Preferences } from '@capacitor/preferences';
+	import TimeNavigator from '@/components/TimeNavigator.vue'; // Import the new component
 
+	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
 	const currency = ref('€');
 	const router = useRouter();
 	const settingsStore = useSettingsStore();
@@ -325,10 +296,6 @@
 		card: cardOutline,
 	};
 
-	const timeNavigator = ref('month');
-	const fechaVista = ref(moment().format('YYYY-MM-DD'));
-	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
-
 	let travelList = ref([]);
 	let shiftsList = ref([]);
 	let notesList = ref([]);
@@ -337,47 +304,9 @@
 		router.push(path);
 	};
 
-	const updateFechaVista = () => {
-		let currentWeek, month, year;
-		switch (timeNavigator.value) {
-			case 'day':
-				fechaVista.value = moment(fechaUnica.value).format('DD MMM YYYY');
-				break;
-			case 'week':
-				currentWeek = Math.ceil(moment(fechaUnica.value).date() / 7);
-				month = moment(fechaUnica.value).format('MMM');
-				year = moment(fechaUnica.value).format('YYYY');
-				fechaVista.value = `${currentWeek}ª semana - ${month} ${year}`;
-				break;
-			case 'month':
-				fechaVista.value = moment(fechaUnica.value).format('MMM YYYY');
-				break;
-			case 'year':
-				fechaVista.value = moment(fechaUnica.value).format('YYYY');
-				break;
-		}
-	};
-
-	const navigateDate = (direction) => {
-		const amount = direction === 'next' ? 1 : -1;
-		let duration;
-		switch (timeNavigator.value) {
-			case 'day':
-				duration = moment.duration(amount, 'days');
-				break;
-			case 'week':
-				duration = moment.duration(amount, 'weeks');
-				break;
-			case 'month':
-				duration = moment.duration(amount, 'months');
-				break;
-			case 'year':
-				duration = moment.duration(amount, 'years');
-				break;
-		}
-		const newDate = moment(fechaUnica.value).add(duration);
-		fechaUnica.value = newDate.format('YYYY-MM-DD');
-		updateFechaVista();
+	const handleDateChanged = (newDate) => {
+		console.log(newDate);
+		// Reload your data based on the new date if needed
 	};
 
 	onMounted(async () => {
@@ -393,7 +322,7 @@
 				currency.value = settingsStore.selectedCurrency;
 		}
 
-		updateFechaVista();
+		//updateFechaVista();
 
 		const travels = await getTravels();
 		travelList.value = travels;
@@ -546,15 +475,6 @@
 		}
 	}
 	.travels-view-container {
-		.time-navigator {
-			color: #fff;
-			position: relative;
-			padding: 10px 0;
-			text-align: center;
-			* {
-				vertical-align: middle;
-			}
-		}
 		.container-items {
 			height: calc(99vh - 250px);
 			overflow-y: auto;
@@ -631,9 +551,7 @@
 	ion-item::part(native) {
 		background: transparent;
 	}
-	ion-segment {
-		--background: rgba(255, 255, 255, 0.5);
-	}
+
 	.list-ios {
 		background: rgba(255, 255, 255, 0.8);
 		border-radius: 8px;
