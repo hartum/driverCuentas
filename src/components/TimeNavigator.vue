@@ -1,6 +1,6 @@
 <template>
 	<div class="time-navigator">
-		<IonSegment v-model="timeNavigator" @ionChange="updateFechaVista">
+		<IonSegment v-model="timeNavigator" @ionChange="handleSegmentChange">
 			<IonSegmentButton value="day">
 				<IonLabel>Día</IonLabel>
 			</IonSegmentButton>
@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-	import { ref, watch, onMounted } from 'vue';
+	import { ref, onMounted } from 'vue';
 	import { IonSegment, IonSegmentButton, IonLabel, IonIcon } from '@ionic/vue';
 	import { arrowBackCircle, arrowForwardCircle } from 'ionicons/icons';
 	import moment from 'moment';
@@ -94,14 +94,23 @@
 		const newDate = moment(fechaUnica.value).add(duration);
 		fechaUnica.value = newDate.format('YYYY-MM-DD');
 		updateFechaVista();
-		emit('date-changed', fechaUnica.value);
+		emit('date-changed', {
+			newDate: fechaUnica.value,
+			type: timeNavigator.value,
+		});
+	};
+
+	const handleSegmentChange = () => {
+		updateFechaVista();
+		emit('date-changed', {
+			newDate: fechaUnica.value,
+			type: timeNavigator.value,
+		});
 	};
 
 	onMounted(() => {
 		updateFechaVista();
 	});
-
-	watch(timeNavigator, updateFechaVista);
 </script>
 
 <style lang="scss" scoped>

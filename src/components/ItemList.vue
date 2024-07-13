@@ -207,6 +207,12 @@
 		initialDate: {
 			type: String,
 			required: false,
+			default: () => moment().startOf('month').format('YYYY-MM-DD HH:mm'),
+		},
+		endDate: {
+			type: String,
+			required: false,
+			default: () => moment().endOf('month').format('YYYY-MM-DD HH:mm'),
 		},
 	});
 
