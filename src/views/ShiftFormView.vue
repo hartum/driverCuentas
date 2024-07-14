@@ -3,7 +3,7 @@
 		<IonHeader>
 			<IonToolbar>
 				<IonTitle>{{
-					modeForm.value === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
+					modeForm === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
 				}}</IonTitle>
 			</IonToolbar>
 		</IonHeader>
@@ -286,9 +286,7 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								{{
-									modeForm.value === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno'
-								}}
+								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno' }}
 							</IonButton>
 						</IonCol>
 					</IonRow>
@@ -349,7 +347,6 @@
 	const route = useRoute();
 	const shiftId = ref(route.params.shiftId);
 	const modeForm = ref(shiftId.value ? 'edit' : 'create');
-
 	const form = ref({
 		startDate: moment().format('YYYY-MM-DDTHH:mm'),
 		endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),

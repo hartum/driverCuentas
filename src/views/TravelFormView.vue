@@ -3,7 +3,7 @@
 		<IonHeader v-show="!isMapVisible">
 			<IonToolbar>
 				<IonTitle>
-					{{ modeForm.value === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
+					{{ modeForm === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
 				</IonTitle>
 			</IonToolbar>
 		</IonHeader>
@@ -166,9 +166,7 @@
 								mode="ios"
 								@click="handleSave"
 							>
-								{{
-									modeForm.value === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje'
-								}}
+								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje' }}
 							</ionButton>
 						</ion-col>
 					</ion-row>
