@@ -23,7 +23,7 @@
 				</IonItemSliding>
 			</IonCardTitle>
 		</IonCardHeader>
-		<IonCardContent> </IonCardContent>
+		<IonCardContent><slot></slot> </IonCardContent>
 		<div class="shift-footer ion-padding">
 			<div>
 				<div v-if="shift.modeKM == 'fix'">

@@ -60,7 +60,8 @@
 				:currency="currency"
 				@edit-shift="editShift"
 				@delete-shift="confirmRemoveItem"
-			/>
+				>Holaaaaa</ShiftItem
+			>
 
 			<IonButton @click="borraDB">Borra la BBDD</IonButton>
 		</div>
@@ -266,94 +267,6 @@
 </script>
 
 <style scoped>
-	/*
-	ion-card {
-		--background: rgba(255, 255, 255, 0.8);
-	}
-		
-	.travel-list {
-		.item-travel,
-		.item-note {
-			color: #535353;
-			line-height: 1.2em;
-			border-bottom: 1px dashed #ccc;
-			.date {
-				min-width: 85px;
-				text-align: left;
-			}
-			.week-day {
-				min-width: 35px;
-				text-align: center;
-			}
-			.time {
-				min-width: 45px;
-			}
-			.money {
-				font-size: 1.4em;
-				vertical-align: text-bottom;
-				float: right;
-				color: #666;
-			}
-			span {
-				vertical-align: middle;
-				display: inline-block;
-				text-align: right;
-			}
-			.icon-travel,
-			.icon-note {
-				vertical-align: middle;
-				color: #4b4a4a;
-				width: 1.5em;
-				height: 1.5em;
-			}
-			.income {
-				color: #087702;
-			}
-			.expense {
-				color: #bc0404;
-			}
-		}
-	}
-	/*
-	.shift-card {
-		border: 1px solid #ccc;
-		.shift-header {
-			border-bottom: 1px #ccc solid;
-			background-color: #f8f8ff;
-			text-align: center;
-			.shift-title {
-				.shift-tittle-info {
-					font-size: 28px;
-					font-weight: 300 !important;
-					color: var(--ion-color-primary);
-				}
-				.shift-header-icon {
-					vertical-align: bottom;
-					margin: 0 9px;
-				}
-			}
-		}
-		.shift-footer {
-			border-top: 1px #ccc solid;
-			display: flex;
-			text-align: right;
-			.shift-footer-right {
-				.shift-total {
-					font-size: 1.7em;
-				}
-				&:first-child {
-					flex-grow: 4;
-				}
-				&:last-child {
-					flex-grow: 1;
-					padding-right: 20px;
-				}
-			}
-		}
-	}
-	ion-item::part(native) {
-		background: transparent;
-	}*/
 	.list-ios {
 		background: rgba(255, 255, 255, 0.8);
 		border-radius: 8px;
