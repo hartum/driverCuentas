@@ -42,38 +42,14 @@
 			<!-- NOTES LIST -->
 			<div class="ion-padding">
 				<IonList lines="none" mode="ios">
-					<IonItemSliding v-for="note in notesList" :key="note.id">
-						<IonItem class="item-note" button="true" @click="editNote(note.id)">
-							<IonLabel>
-								<IonIcon
-									:icon="reader"
-									size="small"
-									class="icon-note"
-								></IonIcon>
-								<span>{{
-									moment(note.noteDate).format('DD MMM - HH:mm')
-								}}</span>
-								<span
-									class="money"
-									:class="{
-										income: note.noteType == 'income',
-										expense: note.noteType == 'expense',
-									}"
-									v-if="note.amount > 0"
-								>
-									<b>{{ note.amount }}{{ currency }} </b>
-								</span>
-							</IonLabel>
-						</IonItem>
-						<IonItemOptions side="end">
-							<IonItemOption
-								color="danger"
-								@click="confirmRemoveItem(note.id, 'nota', $event)"
-							>
-								<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-							</IonItemOption>
-						</IonItemOptions>
-					</IonItemSliding>
+					<NoteItem
+						v-for="noteItem in notesList"
+						:key="noteItem.id"
+						:note="noteItem"
+						:currency="currency"
+						@edit-note="editNote"
+						@delete-note="confirmRemoveItem2"
+					/>
 				</IonList>
 			</div>
 			<!-- SHIFT LIST -->
@@ -154,7 +130,6 @@
 		IonItemOptions,
 		IonItemOption,
 		IonItemSliding,
-		IonLabel,
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
@@ -170,7 +145,6 @@
 		timeOutline,
 		timerOutline,
 		waterOutline,
-		reader,
 		carSport,
 	} from 'ionicons/icons';
 	import { useRouter } from 'vue-router';
@@ -180,6 +154,7 @@
 	import { useSettingsStore } from '../store/settingsStore';
 	import { Preferences } from '@capacitor/preferences';
 	import TravelItem from './TravelItem.vue';
+	import NoteItem from './NoteItem.vue';
 
 	const props = defineProps({
 		initialDate: {
@@ -286,11 +261,11 @@
 		},
 	]);
 
-	const confirmRemoveItem2 = ({ id, event }) => {
+	const confirmRemoveItem2 = ({ id, event, itemType }) => {
 		itemToRemove.value = id;
-		itemTypeToRemove.value = 'viaje';
+		itemTypeToRemove.value = itemType;
 		slidingItem.value = event.target.closest('ion-item-sliding');
-		actionSheetHeader.value = `¿Deseas eliminar el viaje?`;
+		actionSheetHeader.value = `¿Deseas eliminar ${itemType}?`;
 		actionSheetOpen.value = true;
 	};
 

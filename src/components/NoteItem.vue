@@ -1,20 +1,23 @@
 <template>
 	<IonItemSliding>
-		<IonItem class="item-travel" button="true" @click="editTravel">
+		<IonItem class="item-note" button="true" @click="editNote">
 			<IonLabel>
-				<IonIcon
-					:icon="payIcons[travel.payMethod]"
-					size="small"
-					class="icon-travel"
-				></IonIcon>
-				<span>{{ formatDate(travel.startDate) }}</span>
-				<span class="money income">
-					<b>{{ travel.amount }}{{ currency }} </b>
+				<IonIcon :icon="reader" size="small" class="icon-note"></IonIcon>
+				<span>{{ formatDate(note.noteDate) }}</span>
+				<span
+					class="money"
+					:class="{
+						income: note.noteType == 'income',
+						expense: note.noteType == 'expense',
+					}"
+					v-if="note.amount > 0"
+				>
+					<b>{{ note.amount }}{{ currency }} </b>
 				</span>
 			</IonLabel>
 		</IonItem>
 		<IonItemOptions side="end">
-			<IonItemOption color="danger" @click="confirmRemoveTravel($event)">
+			<IonItemOption color="danger" @click="confirmRemoveNote($event)">
 				<IonIcon slot="icon-only" :icon="trash"></IonIcon>
 			</IonItemOption>
 		</IonItemOptions>
@@ -32,15 +35,10 @@
 		IonItemOption,
 		IonIcon,
 	} from '@ionic/vue';
-	import {
-		trash,
-		phonePortraitOutline,
-		cashOutline,
-		cardOutline,
-	} from 'ionicons/icons';
+	import { trash, reader } from 'ionicons/icons';
 
 	const props = defineProps({
-		travel: {
+		note: {
 			type: Object,
 			required: true,
 		},
@@ -50,20 +48,14 @@
 		},
 	});
 
-	const emit = defineEmits(['edit-travel', 'delete-travel']);
+	const emit = defineEmits(['edit-note', 'delete-note']);
 
-	const payIcons = {
-		app: phonePortraitOutline,
-		cash: cashOutline,
-		card: cardOutline,
+	const editNote = () => {
+		emit('edit-note', props.note.id);
 	};
 
-	const editTravel = () => {
-		emit('edit-travel', props.travel.id);
-	};
-
-	const confirmRemoveTravel = (event) => {
-		emit('delete-travel', { id: props.travel.id, event, itemType: 'viaje' });
+	const confirmRemoveNote = (event) => {
+		emit('delete-note', { id: props.note.id, event, itemType: 'nota' });
 	};
 
 	const formatDate = (date) => {
@@ -75,7 +67,7 @@
 	ion-item::part(native) {
 		background: transparent;
 	}
-	.item-travel {
+	.item-note {
 		color: #535353;
 		line-height: 1.2em;
 		border-bottom: 1px dashed #ccc;
@@ -88,7 +80,7 @@
 		color: #666;
 	}
 
-	.icon-travel {
+	.icon-note {
 		vertical-align: middle;
 		color: #4b4a4a;
 		width: 1.5em;
@@ -97,5 +89,9 @@
 
 	.income {
 		color: #087702;
+	}
+
+	.expense {
+		color: #bc0404;
 	}
 </style>
