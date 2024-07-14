@@ -35,7 +35,7 @@
 						:travel="travelItem"
 						:currency="currency"
 						@edit-travel="editTravel"
-						@delete-travel="confirmRemoveItem2"
+						@delete-travel="confirmRemoveItem"
 					/>
 				</IonList>
 			</div>
@@ -48,68 +48,20 @@
 						:note="noteItem"
 						:currency="currency"
 						@edit-note="editNote"
-						@delete-note="confirmRemoveItem2"
+						@delete-note="confirmRemoveItem"
 					/>
 				</IonList>
 			</div>
 			<!-- SHIFT LIST -->
-			<IonCard
-				class="shift-card"
-				mode="ios"
-				v-for="shift in shiftsList"
-				:key="shift.id"
-			>
-				<IonCardHeader class="shift-header">
-					<IonCardTitle class="shift-title">
-						<IonItemSliding>
-							<IonItem button="true" lines="none" @click="editShift(shift.id)">
-								<IonIcon
-									:icon="timeOutline"
-									color="primary"
-									class="shift-header-icon"
-									size="large"
-								/>
-								<span class="shift-tittle-info"
-									>{{ moment(shift.startDate).format('HH:mm') }}h -
-									{{ moment(shift.endDate).format('HH:mm') }}h</span
-								>
-							</IonItem>
-							<IonItemOptions side="end">
-								<IonItemOption
-									color="danger"
-									@click="confirmRemoveItem(shift.id, 'turno', $event)"
-								>
-									<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-								</IonItemOption>
-							</IonItemOptions>
-						</IonItemSliding>
-					</IonCardTitle>
-				</IonCardHeader>
-				<IonCardContent></IonCardContent>
-				<div class="shift-footer ion-padding">
-					<div>
-						<div v-if="shift.modeKM == 'fix'">
-							<b>{{ shift.totalKm }}</b> km
-							<IonIcon :icon="timerOutline"></IonIcon>
-						</div>
-						<div v-else>
-							<b>{{ shift.finalKm - shift.initialKm }}</b> km
-							<IonIcon :icon="timerOutline"></IonIcon>
-						</div>
-						<div>
-							<b>{{ shift.gasoline }}</b> {{ currency }}
-							<IonIcon :icon="waterOutline"></IonIcon>
-						</div>
-					</div>
-					<div class="shift-footer-right">
-						<div>SubTotal</div>
-						<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
-							{{ shift.totalShift }} {{ currency }}
-						</div>
-						<div v-else><b>*Esperando viajes</b></div>
-					</div>
-				</div>
-			</IonCard>
+			<ShiftItem
+				v-for="shiftItem in shiftsList"
+				:key="shiftItem.id"
+				:shift="shiftItem"
+				:currency="currency"
+				@edit-shift="editShift"
+				@delete-shift="confirmRemoveItem"
+			/>
+
 			<IonButton @click="borraDB">Borra la BBDD</IonButton>
 		</div>
 	</div>
@@ -126,10 +78,6 @@
 	import moment from 'moment';
 	import {
 		IonList,
-		IonItem,
-		IonItemOptions,
-		IonItemOption,
-		IonItemSliding,
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
@@ -139,14 +87,7 @@
 		IonIcon,
 		IonActionSheet,
 	} from '@ionic/vue';
-	import {
-		trash,
-		time,
-		timeOutline,
-		timerOutline,
-		waterOutline,
-		carSport,
-	} from 'ionicons/icons';
+	import { time, carSport } from 'ionicons/icons';
 	import { useRouter } from 'vue-router';
 	import { getTravels, deleteTravel } from '@/services/travelService';
 	import { getShifts, deleteShift } from '@/services/shiftService';
@@ -155,6 +96,7 @@
 	import { Preferences } from '@capacitor/preferences';
 	import TravelItem from './TravelItem.vue';
 	import NoteItem from './NoteItem.vue';
+	import ShiftItem from './ShiftItem.vue';
 
 	const props = defineProps({
 		initialDate: {
@@ -261,7 +203,7 @@
 		},
 	]);
 
-	const confirmRemoveItem2 = ({ id, event, itemType }) => {
+	const confirmRemoveItem = ({ id, event, itemType }) => {
 		itemToRemove.value = id;
 		itemTypeToRemove.value = itemType;
 		slidingItem.value = event.target.closest('ion-item-sliding');
@@ -324,9 +266,11 @@
 </script>
 
 <style scoped>
+	/*
 	ion-card {
 		--background: rgba(255, 255, 255, 0.8);
 	}
+		
 	.travel-list {
 		.item-travel,
 		.item-note {
@@ -370,7 +314,7 @@
 			}
 		}
 	}
-
+	/*
 	.shift-card {
 		border: 1px solid #ccc;
 		.shift-header {
@@ -409,7 +353,7 @@
 	}
 	ion-item::part(native) {
 		background: transparent;
-	}
+	}*/
 	.list-ios {
 		background: rgba(255, 255, 255, 0.8);
 		border-radius: 8px;
