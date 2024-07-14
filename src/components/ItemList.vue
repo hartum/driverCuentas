@@ -30,47 +30,21 @@
 				<IonList lines="none" mode="ios">
 					<template v-for="(item, index) in filteredItems" :key="item.id">
 						<template v-if="!processedIndexes.has(index)">
-							<TravelItem
-								v-if="item.type === 'travel'"
-								:travel="item"
-								:currency="currency"
-								@edit-travel="editTravel"
-								@delete-travel="confirmRemoveItem"
-							/>
-							<NoteItem
-								v-if="item.type === 'note'"
-								:note="item"
-								:currency="currency"
-								@edit-note="editNote"
-								@delete-note="confirmRemoveItem"
-							/>
-							<ShiftItem
-								v-if="item.type === 'shift-start'"
-								:shift="item.shift"
-								:currency="currency"
-								@edit-shift="editShift"
-								@delete-shift="confirmRemoveItem"
+							<component
+								:is="componentMap[item.type]"
+								v-bind="getComponentProps(item)"
+								v-on="getComponentEvents(item)"
 							>
-								<template
-									v-for="nestedItem in getNestedItems(index + 1)"
-									:key="nestedItem.id"
-								>
-									<TravelItem
-										v-if="nestedItem.type === 'travel'"
-										:travel="nestedItem"
-										:currency="currency"
-										@edit-travel="editTravel"
-										@delete-travel="confirmRemoveItem"
-									/>
-									<NoteItem
-										v-if="nestedItem.type === 'note'"
-										:note="nestedItem"
-										:currency="currency"
-										@edit-note="editNote"
-										@delete-note="confirmRemoveItem"
+								<template v-if="item.type === 'shift-start'">
+									<component
+										v-for="nestedItem in getNestedItems(index + 1)"
+										:key="nestedItem.id"
+										:is="componentMap[nestedItem.type]"
+										v-bind="getComponentProps(nestedItem)"
+										v-on="getComponentEvents(nestedItem)"
 									/>
 								</template>
-							</ShiftItem>
+							</component>
 						</template>
 					</template>
 				</IonList>
@@ -135,11 +109,17 @@
 			: settingsStore.selectedCurrency
 	);
 
-	let travelList = ref([]);
-	let shiftsList = ref([]);
-	let notesList = ref([]);
-	let allItems = ref([]);
+	const travelList = ref([]);
+	const shiftsList = ref([]);
+	const notesList = ref([]);
+	const allItems = ref([]);
 	const processedIndexes = ref(new Set());
+
+	const componentMap = {
+		travel: TravelItem,
+		note: NoteItem,
+		'shift-start': ShiftItem,
+	};
 
 	const loadItems = async () => {
 		const initialDate = moment(props.initialDate, 'YYYY-MM-DD HH:mm').format(
@@ -153,13 +133,11 @@
 		shiftsList.value = await getShifts(initialDate, endDate);
 		notesList.value = await getNotes(initialDate, endDate);
 
-		// Crear lista modificada de turnos
 		let modifiedShifts = shiftsList.value.flatMap((shift) => [
 			{ type: 'shift-start', date: shift.startDate, shift, isStart: true },
 			{ type: 'shift-end', date: shift.endDate, shift, isStart: false },
 		]);
 
-		// Combinar y ordenar los elementos por fecha, priorizando los turnos
 		allItems.value = [
 			...travelList.value.map((item) => ({
 				...item,
@@ -212,22 +190,18 @@
 				break;
 			}
 			nestedItems.push(nestedItem);
-			processedIndexes.value.add(i); // Marcar este índice como procesado
+			processedIndexes.value.add(i);
 		}
 		return nestedItems;
 	};
 
 	const filteredItems = computed(() => {
-		const items = [];
-		for (let i = 0; i < allItems.value.length; i++) {
-			if (!processedIndexes.value.has(i)) {
-				items.push(allItems.value[i]);
-			}
-		}
-		return items;
+		return allItems.value.filter(
+			(_, index) => !processedIndexes.value.has(index)
+		);
 	});
 
-	let slidingItem = ref(null);
+	const slidingItem = ref(null);
 	const actionSheetHeader = ref('');
 	const actionSheetOpen = ref(false);
 	const itemToRemove = ref(null);
@@ -268,7 +242,7 @@
 				} else if (itemTypeToRemove.value === 'nota') {
 					await deleteNote(itemToRemove.value);
 				}
-				await loadItems(); // Recargar los elementos después de la eliminación
+				await loadItems();
 				itemToRemove.value = null;
 				itemTypeToRemove.value = null;
 			} catch (error) {
@@ -289,7 +263,42 @@
 	const borraDB = async () => {
 		console.log('borra BBDD');
 		await Preferences.remove({ key: 'database' });
-		await loadItems(); // Recargar los elementos después de borrar la BBDD
+		await loadItems();
+	};
+
+	const getComponentProps = (item) => {
+		switch (item.type) {
+			case 'travel':
+				return { travel: item, currency: currency.value };
+			case 'note':
+				return { note: item, currency: currency.value };
+			case 'shift-start':
+				return { shift: item.shift, currency: currency.value };
+			default:
+				return {};
+		}
+	};
+
+	const getComponentEvents = (item) => {
+		switch (item.type) {
+			case 'travel':
+				return {
+					'edit-travel': editTravel,
+					'delete-travel': confirmRemoveItem,
+				};
+			case 'note':
+				return {
+					'edit-note': editNote,
+					'delete-note': confirmRemoveItem,
+				};
+			case 'shift-start':
+				return {
+					'edit-shift': editShift,
+					'delete-shift': confirmRemoveItem,
+				};
+			default:
+				return {};
+		}
 	};
 
 	watch(
