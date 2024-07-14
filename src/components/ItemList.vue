@@ -29,35 +29,14 @@
 			<!-- TRAVELS LIST -->
 			<div class="ion-padding">
 				<IonList lines="none" mode="ios">
-					<IonItemSliding v-for="travel in travelList" :key="travel.id">
-						<IonItem
-							class="item-travel"
-							button="true"
-							@click="editTravel(travel.id)"
-						>
-							<IonLabel>
-								<IonIcon
-									:icon="payIcons[travel.payMethod]"
-									size="small"
-									class="icon-travel"
-								></IonIcon>
-								<span>{{
-									moment(travel.startDate).format('DD MMM - HH:mm')
-								}}</span>
-								<span class="money income">
-									<b>{{ travel.amount }}{{ currency }} </b>
-								</span>
-							</IonLabel>
-						</IonItem>
-						<IonItemOptions side="end">
-							<IonItemOption
-								color="danger"
-								@click="confirmRemoveItem(travel.id, 'viaje', $event)"
-							>
-								<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-							</IonItemOption>
-						</IonItemOptions>
-					</IonItemSliding>
+					<TravelItem
+						v-for="travelItem in travelList"
+						:key="travelItem.id"
+						:travel="travelItem"
+						:currency="currency"
+						@edit-travel="editTravel"
+						@delete-travel="confirmRemoveItem2"
+					/>
 				</IonList>
 			</div>
 			<!-- NOTES LIST -->
@@ -192,10 +171,7 @@
 		timerOutline,
 		waterOutline,
 		reader,
-		phonePortraitOutline,
 		carSport,
-		cashOutline,
-		cardOutline,
 	} from 'ionicons/icons';
 	import { useRouter } from 'vue-router';
 	import { getTravels, deleteTravel } from '@/services/travelService';
@@ -203,6 +179,7 @@
 	import { getNotes, deleteNote } from '@/services/noteService';
 	import { useSettingsStore } from '../store/settingsStore';
 	import { Preferences } from '@capacitor/preferences';
+	import TravelItem from './TravelItem.vue';
 
 	const props = defineProps({
 		initialDate: {
@@ -230,12 +207,7 @@
 	let travelList = ref([]);
 	let shiftsList = ref([]);
 	let notesList = ref([]);
-
-	const payIcons = {
-		app: phonePortraitOutline,
-		cash: cashOutline,
-		card: cardOutline,
-	};
+	let allItems = ref([]);
 
 	const loadItems = async () => {
 		const initialDate = moment(props.initialDate, 'YYYY-MM-DD HH:mm').format(
@@ -249,9 +221,31 @@
 		shiftsList.value = await getShifts(initialDate, endDate);
 		notesList.value = await getNotes(initialDate, endDate);
 
-		console.log('Tabla viajes', travelList.value);
-		console.log('Tabla turnos', shiftsList.value);
-		console.log('Tabla notas', notesList.value);
+		// Crear lista modificada de turnos
+		let modifiedShifts = shiftsList.value.flatMap((shift) => [
+			{ type: 'shift-start', date: shift.startDate, shift, isStart: true },
+			{ type: 'shift-end', date: shift.endDate, shift, isStart: false },
+		]);
+
+		// Combinar y ordenar los elementos por fecha
+		allItems.value = [
+			...travelList.value.map((item) => ({
+				...item,
+				type: 'travel',
+				date: item.startDate,
+			})),
+			...notesList.value.map((item) => ({
+				...item,
+				type: 'note',
+				date: item.noteDate,
+			})),
+			...modifiedShifts,
+		].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+		console.log('viajes', travelList.value);
+		console.log('turnos', shiftsList.value);
+		console.log('notas', notesList.value);
+		console.log('Elementos combinados y ordenados', allItems.value);
 	};
 
 	const navigateTo = (path) => {
@@ -292,11 +286,11 @@
 		},
 	]);
 
-	const confirmRemoveItem = (id, type, event) => {
+	const confirmRemoveItem2 = ({ id, event }) => {
 		itemToRemove.value = id;
-		itemTypeToRemove.value = type;
+		itemTypeToRemove.value = 'viaje';
 		slidingItem.value = event.target.closest('ion-item-sliding');
-		actionSheetHeader.value = `¿Deseas eliminar el ${type}?`;
+		actionSheetHeader.value = `¿Deseas eliminar el viaje?`;
 		actionSheetOpen.value = true;
 	};
 
