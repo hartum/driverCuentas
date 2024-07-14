@@ -27,7 +27,6 @@
 		</div>
 		<div v-else>
 			<div class="ion-padding">
-				<!-- QUIERO QUE ESCRIBAS EL CÓDIGO AQUÍ  -->
 				<IonList lines="none" mode="ios">
 					<template v-for="(item, index) in filteredItems" :key="item.id">
 						<template v-if="!processedIndexes.has(index)">
@@ -76,45 +75,7 @@
 					</template>
 				</IonList>
 			</div>
-			<!-- TRAVELS LIST 
-			<div class="ion-padding">
-				<IonList lines="none" mode="ios">
-					<TravelItem
-						v-for="travelItem in travelList"
-						:key="travelItem.id"
-						:travel="travelItem"
-						:currency="currency"
-						@edit-travel="editTravel"
-						@delete-travel="confirmRemoveItem"
-					/>
-				</IonList>
-			</div>
-		-->
-			<!-- NOTES LIST 
-			<div class="ion-padding">
-				<IonList lines="none" mode="ios">
-					<NoteItem
-						v-for="noteItem in notesList"
-						:key="noteItem.id"
-						:note="noteItem"
-						:currency="currency"
-						@edit-note="editNote"
-						@delete-note="confirmRemoveItem"
-					/>
-				</IonList>
-			</div>
-		-->
-			<!-- SHIFT LIST
-			<ShiftItem
-				v-for="shiftItem in shiftsList"
-				:key="shiftItem.id"
-				:shift="shiftItem"
-				:currency="currency"
-				@edit-shift="editShift"
-				@delete-shift="confirmRemoveItem"
-				>Holaaaaa</ShiftItem
-			>
-		-->
+
 			<IonButton @click="borraDB">Borra la BBDD</IonButton>
 		</div>
 	</div>
@@ -302,20 +263,12 @@
 			try {
 				if (itemTypeToRemove.value === 'viaje') {
 					await deleteTravel(itemToRemove.value);
-					travelList.value = travelList.value.filter(
-						(travel) => travel.id !== itemToRemove.value
-					);
 				} else if (itemTypeToRemove.value === 'turno') {
 					await deleteShift(itemToRemove.value);
-					shiftsList.value = shiftsList.value.filter(
-						(shift) => shift.id !== itemToRemove.value
-					);
 				} else if (itemTypeToRemove.value === 'nota') {
 					await deleteNote(itemToRemove.value);
-					notesList.value = notesList.value.filter(
-						(note) => note.id !== itemToRemove.value
-					);
 				}
+				await loadItems(); // Recargar los elementos después de la eliminación
 				itemToRemove.value = null;
 				itemTypeToRemove.value = null;
 			} catch (error) {
@@ -336,6 +289,7 @@
 	const borraDB = async () => {
 		console.log('borra BBDD');
 		await Preferences.remove({ key: 'database' });
+		await loadItems(); // Recargar los elementos después de borrar la BBDD
 	};
 
 	watch(
