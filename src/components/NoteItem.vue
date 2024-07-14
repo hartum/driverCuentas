@@ -65,7 +65,7 @@
 
 <style scoped>
 	ion-item::part(native) {
-		background: transparent;
+		background: rgba(255, 255, 255, 0.8);
 	}
 	.item-note {
 		color: #535353;

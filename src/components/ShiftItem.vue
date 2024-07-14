@@ -1,5 +1,5 @@
 <template>
-	<IonCard class="shift-card">
+	<IonCard class="shift-card" mode="ios">
 		<IonCardHeader class="shift-header">
 			<IonCardTitle class="shift-title">
 				<IonItemSliding>
@@ -106,6 +106,7 @@
 	}
 	.shift-card {
 		border: 1px solid #ccc;
+		margin: 20px 0;
 		.shift-header {
 			border-bottom: 1px #ccc solid;
 			background-color: #f8f8ff;

@@ -27,27 +27,25 @@
 		</div>
 		<div v-else>
 			<div class="ion-padding">
-				<IonList lines="none" mode="ios">
-					<template v-for="(item, index) in filteredItems" :key="item.id">
-						<template v-if="!processedIndexes.has(index)">
-							<component
-								:is="componentMap[item.type]"
-								v-bind="getComponentProps(item)"
-								v-on="getComponentEvents(item)"
-							>
-								<template v-if="item.type === 'shift-start'">
-									<component
-										v-for="nestedItem in getNestedItems(index + 1)"
-										:key="nestedItem.id"
-										:is="componentMap[nestedItem.type]"
-										v-bind="getComponentProps(nestedItem)"
-										v-on="getComponentEvents(nestedItem)"
-									/>
-								</template>
-							</component>
-						</template>
+				<template v-for="(item, index) in filteredItems" :key="item.id">
+					<template v-if="!processedIndexes.has(index)">
+						<component
+							:is="componentMap[item.type]"
+							v-bind="getComponentProps(item)"
+							v-on="getComponentEvents(item)"
+						>
+							<template v-if="item.type === 'shift-start'">
+								<component
+									v-for="nestedItem in getNestedItems(index + 1)"
+									:key="nestedItem.id"
+									:is="componentMap[nestedItem.type]"
+									v-bind="getComponentProps(nestedItem)"
+									v-on="getComponentEvents(nestedItem)"
+								/>
+							</template>
+						</component>
 					</template>
-				</IonList>
+				</template>
 			</div>
 
 			<IonButton @click="borraDB">Borra la BBDD</IonButton>
@@ -65,7 +63,7 @@
 	import { ref, onMounted, defineProps, watch, computed } from 'vue';
 	import moment from 'moment';
 	import {
-		IonList,
+		//IonList,
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
@@ -314,8 +312,8 @@
 </script>
 
 <style scoped>
-	.list-ios {
+	/*.list-ios {
 		background: rgba(255, 255, 255, 0.8);
 		border-radius: 8px;
-	}
+	}*/
 </style>

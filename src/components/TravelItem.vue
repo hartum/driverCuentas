@@ -71,9 +71,9 @@
 	};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	ion-item::part(native) {
-		background: transparent;
+		background: rgba(255, 255, 255, 0.8);
 	}
 	.item-travel {
 		color: #535353;
