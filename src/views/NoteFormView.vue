@@ -137,7 +137,7 @@
 	import { thumbsUp, thumbsDown, reader, warningOutline } from 'ionicons/icons';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { ref, onMounted, watch } from 'vue';
+	import { ref, onMounted } from 'vue';
 	import { addNote, getNoteById, updateNote } from '@/services/noteService';
 
 	const settingsStore = useSettingsStore();
@@ -145,8 +145,15 @@
 	const router = useRouter();
 	const route = useRoute();
 	const noteId = ref(route.params.noteId);
+	const modeForm = ref(null);
+	if (moment(noteId.value, moment.ISO_8601, true).isValid()) {
+		console.log('create');
+		modeForm.value = 'create';
+	} else {
+		console.log('edit');
+		modeForm.value = 'edit';
+	}
 
-	const modeForm = ref(noteId.value ? 'edit' : 'create');
 	const form = ref({
 		noteType: 'income',
 		noteDate: moment().format('YYYY-MM-DDTHH:mm'),
@@ -156,16 +163,6 @@
 
 	const showToast = ref(false);
 	const toastMessage = ref('');
-
-	const resetForm = () => {
-		form.value = {
-			noteType: 'income',
-			noteDate: moment().format('YYYY-MM-DDTHH:mm'),
-			description: '',
-			amount: '',
-		};
-	};
-
 	const loadNote = async () => {
 		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
@@ -185,14 +182,6 @@
 	};
 
 	onMounted(loadNote);
-
-	// Observar cambios en la ruta
-	watch(route, async (newRoute) => {
-		noteId.value = newRoute.params.noteId;
-		modeForm.value = noteId.value ? 'edit' : 'create';
-		resetForm();
-		await loadNote();
-	});
 
 	const handleSave = async () => {
 		if (

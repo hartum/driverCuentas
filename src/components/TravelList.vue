@@ -26,13 +26,13 @@
 					<IonIcon :icon="add"></IonIcon>
 				</IonFabButton>
 				<IonFabList side="top">
-					<IonFabButton color="primary" @click="navigateTo('/noteform')">
+					<IonFabButton color="primary" @click="navigateTo('/noteform/')">
 						<IonIcon :icon="reader" />
 					</IonFabButton>
-					<IonFabButton color="primary" @click="navigateTo('/shift')">
+					<IonFabButton color="primary" @click="navigateTo('/shift/')">
 						<IonIcon :icon="time" />
 					</IonFabButton>
-					<IonFabButton color="primary" @click="navigateTo('/travelform')">
+					<IonFabButton color="primary" @click="navigateTo('/travelform/')">
 						<IonIcon :icon="carSport" />
 					</IonFabButton>
 				</IonFabList>
@@ -83,7 +83,8 @@
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 	const navigateTo = (path) => {
-		router.push(path);
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push(path + now);
 	};
 
 	const handleDateChanged = ({ newDate, type }) => {

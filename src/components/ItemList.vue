@@ -14,11 +14,11 @@
 				</IonCardHeader>
 				<IonCardContent>
 					<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
-					<IonButton @click="navigateTo('/travelform')">
+					<IonButton @click="navigateTo('/travelform/')">
 						<IonIcon slot="start" :icon="carSport"></IonIcon>
 						Nuevo viaje
 					</IonButton>
-					<IonButton @click="navigateTo('/shift')">
+					<IonButton @click="navigateTo('/shift/')">
 						<IonIcon slot="start" :icon="time"></IonIcon>
 						Nuevo turno
 					</IonButton>
@@ -165,7 +165,8 @@
 	};
 
 	const navigateTo = (path) => {
-		router.push(path);
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push(path + now);
 	};
 
 	const editTravel = (id) => {

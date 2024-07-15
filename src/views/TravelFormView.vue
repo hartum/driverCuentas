@@ -271,7 +271,8 @@
 	const route = useRoute();
 	const travelId = ref(route.params.travelId);
 
-	const modeForm = ref(travelId.value ? 'edit' : 'create');
+	//const modeForm = ref(travelId.value ? 'edit' : 'create');
+	const modeForm = ref(null);
 	const servicesList = settingsStore.servicesList;
 
 	const payIcons = {
@@ -280,15 +281,13 @@
 		card: cardOutline,
 	};
 
-	const resetForm = () => {
-		amountForm.value = 0;
-		currency.value = '€';
-		datetimeStart.value = moment().format('YYYY-MM-DDTHH:mm');
-		locationStart.value = {};
-		locationEnd.value = {};
-		service.value = servicesList.length > 0 ? servicesList[0] : '';
-		pay.value = 'app';
-	};
+	if (moment(travelId.value, moment.ISO_8601, true).isValid()) {
+		console.log('create');
+		modeForm.value = 'create';
+	} else {
+		console.log('edit');
+		modeForm.value = 'edit';
+	}
 
 	const loadTravel = async () => {
 		// Establecer el valor del primer día de la semana por defecto
@@ -305,20 +304,10 @@
 				pay.value = travel.payMethod;
 				datetimeStart.value = travel.startDate;
 			}
-		} else {
-			resetForm();
 		}
 	};
 
 	onMounted(loadTravel);
-
-	// Observar cambios en la ruta
-	watch(route, async (newRoute) => {
-		travelId.value = newRoute.params.travelId;
-		modeForm.value = travelId.value ? 'edit' : 'create';
-		resetForm();
-		await loadTravel();
-	});
 
 	// Guardar el viaje
 	const handleSave = async () => {

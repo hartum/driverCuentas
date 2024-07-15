@@ -331,7 +331,7 @@
 		waterOutline,
 		warningOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted, watch } from 'vue';
+	import { ref, onMounted } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import moment from 'moment';
@@ -345,8 +345,7 @@
 	const currency = ref('€');
 	const router = useRouter();
 	const route = useRoute();
-	const shiftId = ref(route.params.shiftId);
-	const modeForm = ref(shiftId.value ? 'edit' : 'create');
+
 	const form = ref({
 		startDate: moment().format('YYYY-MM-DDTHH:mm'),
 		endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
@@ -362,20 +361,16 @@
 	const firstDayOfWeek = ref(1);
 	const showToast = ref(false);
 	const showKmToast = ref(false);
-
-	const resetForm = () => {
-		form.value = {
-			startDate: moment().format('YYYY-MM-DDTHH:mm'),
-			endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
-			initialKm: 0,
-			finalKm: 0,
-			totalKm: 0,
-			modeKM: 'calculatedKm',
-			gasoline: 0,
-			totalShift: 0,
-			modeTotalShift: 'calculatedTotal',
-		};
-	};
+	const shiftId = ref(route.params.shiftId);
+	//const modeForm = ref(shiftId.value ? 'edit' : 'create');
+	const modeForm = ref(null);
+	if (moment(shiftId.value, moment.ISO_8601, true).isValid()) {
+		console.log('create');
+		modeForm.value = 'create';
+	} else {
+		console.log('edit');
+		modeForm.value = 'edit';
+	}
 
 	const loadShift = async () => {
 		// Establecer el valor del primer día de la semana por defecto
@@ -387,20 +382,10 @@
 			if (shift) {
 				form.value = { ...shift };
 			}
-		} else {
-			resetForm();
 		}
 	};
 
 	onMounted(loadShift);
-
-	// Observar cambios en la ruta
-	watch(route, async (newRoute) => {
-		shiftId.value = newRoute.params.shiftId;
-		modeForm.value = shiftId.value ? 'edit' : 'create';
-		resetForm();
-		await loadShift();
-	});
 
 	const formatTime = (date) => {
 		return moment(date).format('HH:mm');
