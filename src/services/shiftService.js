@@ -1,45 +1,85 @@
 import alasql from 'alasql';
-import { Preferences } from '@capacitor/preferences';
-
-// Función para guardar la base de datos en Preferences
-const saveDatabaseToPreferences = async () => {
-  const db = alasql.databases.alasql;
-  await Preferences.set({ key: 'database', value: JSON.stringify(db) });
-};
+import { saveDatabaseToPreferences, getLastId } from './databaseService';
 
 // Función para agregar un nuevo turno
 export const addShift = async (startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift) => {
-  alasql('INSERT INTO shifts (startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift]);
-  await saveDatabaseToPreferences();
+  try {
+    alasql('BEGIN TRANSACTION');
+    
+    const newId = getLastId('shifts') + 1;
+
+    alasql('INSERT INTO shifts (id, startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+           [newId, startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift]);
+    
+    alasql('COMMIT TRANSACTION');
+    await saveDatabaseToPreferences();
+    return newId;
+  } catch (error) {
+    alasql('ROLLBACK TRANSACTION');
+    console.error('Error adding shift:', error);
+    throw error;
+  }
 };
 
 // Función para obtener todos los turnos entre dos fechas
 export const getShifts = async (initialDate, endDate) => {
-  const result = alasql('SELECT * FROM shifts WHERE startDate >= ? AND startDate <= ?', [initialDate, endDate]);
-  return result;
+  try {
+    const result = alasql('SELECT * FROM shifts WHERE startDate >= ? AND startDate <= ?', [initialDate, endDate]);
+    return result;
+  } catch (error) {
+    console.error('Error getting shifts:', error);
+    throw error;
+  }
 };
 
 // Función para seleccionar un turno por ID
 export const selectShiftByID = async (id) => {
-  const result = alasql('SELECT * FROM shifts WHERE id = ?', [id]);
-  return result.length ? result[0] : null;
+  try {
+    const result = alasql('SELECT * FROM shifts WHERE id = ?', [id]);
+    return result.length ? result[0] : null;
+  } catch (error) {
+    console.error('Error selecting shift by ID:', error);
+    throw error;
+  }
 };
 
 // Función para actualizar un turno
 export const updateShift = async (id, startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift) => {
-  alasql('UPDATE shifts SET startDate = ?, endDate = ?, initialKm = ?, finalKm = ?, totalKm = ?, modeKM = ?, gasoline = ?, totalShift = ?, modeTotalShift = ? WHERE id = ?', [startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift, id]);
-  await saveDatabaseToPreferences();
+  try {
+    const result = alasql('UPDATE shifts SET startDate = ?, endDate = ?, initialKm = ?, finalKm = ?, totalKm = ?, modeKM = ?, gasoline = ?, totalShift = ?, modeTotalShift = ? WHERE id = ?', 
+                          [startDate, endDate, initialKm, finalKm, totalKm, modeKM, gasoline, totalShift, modeTotalShift, id]);
+    if (result === 0) {
+      throw new Error('No shift found with the given ID');
+    }
+    await saveDatabaseToPreferences();
+  } catch (error) {
+    console.error('Error updating shift:', error);
+    throw error;
+  }
 };
 
 // Función para eliminar un turno
 export const deleteShift = async (id) => {
-  alasql('DELETE FROM shifts WHERE id = ?', [id]);
-  await saveDatabaseToPreferences();
+  try {
+    const result = alasql('DELETE FROM shifts WHERE id = ?', [id]);
+    if (result === 0) {
+      throw new Error('No shift found with the given ID');
+    }
+    await saveDatabaseToPreferences();
+  } catch (error) {
+    console.error('Error deleting shift:', error);
+    throw error;
+  }
 };
 
 // Función para eliminar la tabla
 export const deleteShiftTable = async () => {
-  alasql('DROP TABLE IF EXISTS shifts');
-  await saveDatabaseToPreferences();
-  console.log('La tabla shifts ha sido eliminada');
+  try {
+    alasql('DROP TABLE IF EXISTS shifts');
+    await saveDatabaseToPreferences();
+    console.log('La tabla shifts ha sido eliminada');
+  } catch (error) {
+    console.error('Error deleting shift table:', error);
+    throw error;
+  }
 };

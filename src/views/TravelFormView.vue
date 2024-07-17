@@ -51,6 +51,7 @@
 											id="datetime_start"
 											v-model="datetimeStart"
 											mode="ios"
+											@ionChange="handleDateChange"
 										></IonDatetime>
 									</IonModal>
 								</IonItem>
@@ -282,14 +283,22 @@
 	};
 
 	if (moment(travelId.value, moment.ISO_8601, true).isValid()) {
-		console.log('create');
 		modeForm.value = 'create';
 	} else {
-		console.log('edit');
 		modeForm.value = 'edit';
 	}
 
+	watch(datetimeStart, (newValue) => {
+		console.log('datetimeStart actualizado:', newValue);
+	});
+
+	const handleDateChange = (event) => {
+		datetimeStart.value = event.detail.value;
+		console.log('Fecha cambiada:', datetimeStart.value);
+	};
+
 	const loadTravel = async () => {
+		console.log('onMount');
 		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
@@ -303,6 +312,7 @@
 				service.value = travel.service;
 				pay.value = travel.payMethod;
 				datetimeStart.value = travel.startDate;
+				console.log('Fecha cargada:', datetimeStart.value); // Para depuración
 			}
 		}
 	};
@@ -319,6 +329,7 @@
 
 		try {
 			if (modeForm.value === 'edit') {
+				console.log('fecha para guaradar', datetimeStart.value);
 				await updateTravel(
 					parseInt(travelId.value),
 					parseFloat(amountForm.value),
@@ -330,6 +341,7 @@
 					'' // endDate no está especificado en los datos proporcionados
 				);
 			} else {
+				console.log(datetimeStart.value);
 				await addTravel(
 					parseFloat(amountForm.value),
 					locationStart.value,
