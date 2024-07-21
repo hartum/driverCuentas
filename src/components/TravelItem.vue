@@ -3,11 +3,17 @@
 		<IonItem class="item-travel" button="true" @click="editTravel">
 			<IonLabel>
 				<IonIcon
+					:icon="calendarClearOutline"
+					class="icon-calendar"
+					size="large"
+				></IonIcon>
+				<IonIcon
 					:icon="payIcons[travel.payMethod]"
-					size="small"
+					size="default"
 					class="icon-travel"
 				></IonIcon>
 				<span>{{ formatDate(travel.startDate) }}</span>
+
 				<span class="money income">
 					<b>{{ travel.amount }}{{ currency }} </b>
 				</span>
@@ -37,6 +43,7 @@
 		phonePortraitOutline,
 		cashOutline,
 		cardOutline,
+		calendarClearOutline,
 	} from 'ionicons/icons';
 
 	const props = defineProps({
@@ -93,6 +100,14 @@
 		color: #4b4a4a;
 		width: 1.5em;
 		height: 1.5em;
+		float: right;
+		margin-left: 5px;
+		margin-top: 3px;
+	}
+	.icon-calendar {
+		vertical-align: sub;
+		color: #949494;
+		margin-right: 5px;
 	}
 
 	.income {
