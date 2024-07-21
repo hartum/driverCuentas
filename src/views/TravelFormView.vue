@@ -39,18 +39,30 @@
 							<IonList lines="none">
 								<IonItem>
 									<ion-label>Fecha</ion-label>
+									<DatePicker
+										:dateStart="dateStart"
+										@date-selected="console.log('la fecha', $event)"
+									/>
+									<TimePicker
+										:modelValue="timeStart"
+										@timeSelected="console.log('la hora', $event)"
+									/>
+								</IonItem>
+								<IonItem>
+									<ion-label>Fecha</ion-label>
 									<IonDatetimeButton
 										datetime="datetime_start"
 										mode="ios"
 									></IonDatetimeButton>
 									<IonModal :keep-contents-mounted="true">
 										<IonDatetime
+											ref="datetimeRef"
+											id="datetime_start"
 											locale="es-ES"
+											mode="ios"
 											:first-day-of-week="firstDayOfWeek"
 											:show-default-buttons="true"
-											id="datetime_start"
-											v-model="datetimeStart"
-											mode="ios"
+											:value="datetimeStart"
 											@ionChange="handleDateChange"
 										></IonDatetime>
 									</IonModal>
@@ -248,6 +260,8 @@
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
+	import TimePicker from '../components/TimePicker.vue';
+	import DatePicker from '../components/DatePicker.vue';
 	import {
 		addTravel,
 		selectTravelByID,
@@ -255,9 +269,11 @@
 	} from '@/services/travelService'; // Importar el servicio
 
 	const settingsStore = useSettingsStore();
-	const amountForm = ref(0);
+	const amountForm = ref(4);
 	const currency = ref('€');
 	const datetimeStart = ref(moment().format('YYYY-MM-DDTHH:mm'));
+	const timeStart = ref(moment().format('HH:mm'));
+	const dateStart = ref(moment().format('YYYY-MM-DD'));
 	const firstDayOfWeek = ref(1);
 	const locationStart = ref({});
 	const locationEnd = ref({});
@@ -288,10 +304,6 @@
 		modeForm.value = 'edit';
 	}
 
-	watch(datetimeStart, (newValue) => {
-		console.log('datetimeStart actualizado:', newValue);
-	});
-
 	const handleDateChange = (event) => {
 		datetimeStart.value = event.detail.value;
 		console.log('Fecha cambiada:', datetimeStart.value);
@@ -299,6 +311,7 @@
 
 	const loadTravel = async () => {
 		console.log('onMount');
+		//datetimeStart.value = '2024-07-20T14:00:00';
 		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
@@ -312,6 +325,8 @@
 				service.value = travel.service;
 				pay.value = travel.payMethod;
 				datetimeStart.value = travel.startDate;
+				dateStart.value = moment(travel.startDate).format('YYYY-MM-DD');
+				timeStart.value = moment(travel.startDate).format('HH:mm');
 				console.log('Fecha cargada:', datetimeStart.value); // Para depuración
 			}
 		}
@@ -326,10 +341,11 @@
 			showToast.value = true;
 			return;
 		}
+		console.log('fecha para guardar', datetimeStart.value);
 
 		try {
 			if (modeForm.value === 'edit') {
-				console.log('fecha para guaradar', datetimeStart.value);
+				console.log('Edito');
 				await updateTravel(
 					parseInt(travelId.value),
 					parseFloat(amountForm.value),
@@ -341,7 +357,7 @@
 					'' // endDate no está especificado en los datos proporcionados
 				);
 			} else {
-				console.log(datetimeStart.value);
+				console.log('Creo');
 				await addTravel(
 					parseFloat(amountForm.value),
 					locationStart.value,
