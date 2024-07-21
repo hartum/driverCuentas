@@ -81,16 +81,31 @@
 						<ion-item slot="header" color="light">
 							<ion-label><b>Pago con</b></ion-label>
 						</ion-item>
-						<div class="ion-padding" slot="content">
+						<div class="ion-padding payMode-container" slot="content">
 							<ion-segment v-model="pay">
 								<ion-segment-button value="app">
 									<ion-label>App</ion-label>
+									<ion-icon
+										:icon="payIcons['app']"
+										class="icons"
+										size="large"
+									></ion-icon>
 								</ion-segment-button>
 								<ion-segment-button value="cash">
 									<ion-label>Efectivo</ion-label>
+									<ion-icon
+										:icon="payIcons['cash']"
+										class="icons"
+										size="large"
+									></ion-icon>
 								</ion-segment-button>
 								<ion-segment-button value="card">
 									<ion-label>Tarjeta</ion-label>
+									<ion-icon
+										:icon="payIcons['card']"
+										class="icons"
+										size="large"
+									></ion-icon>
 								</ion-segment-button>
 							</ion-segment>
 						</div>
@@ -399,6 +414,11 @@
 		border-radius: 8px;
 		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
 	}
+	.payMode-container {
+		.icons {
+			margin-top: 0.5em;
+		}
+	}
 	.form-container {
 		color: #535353;
 		.title-icon {
@@ -428,7 +448,26 @@
 		.selected-address {
 			color: #666;
 			margin-right: 5px;
+			background-color: transparent;
+			text-align: left;
+			width: 100%;
 		}
+	}
+	.input-wrapper {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex: 1;
+		flex: 1;
+		-ms-flex-direction: inherit;
+		flex-direction: inherit;
+		-ms-flex-align: inherit;
+		align-items: baseline;
+		-ms-flex-item-align: stretch;
+		align-self: stretch;
+		text-overflow: ellipsis;
+		overflow: inherit;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
 	}
 	.map-container {
 		background-color: aqua;
