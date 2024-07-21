@@ -64,15 +64,13 @@
 	} from '@ionic/vue';
 
 	const props = defineProps({
-		modelValue: {
+		value: {
 			type: String,
 			default: '00:00',
 		},
 	});
 	const displayTime = ref();
-
-	const emit = defineEmits(['update:modelValue', 'timeSelected']);
-
+	const emit = defineEmits(['time-selected']);
 	const showPicker = ref(false);
 	const selectedHours = ref('00');
 	const selectedMinutes = ref('00');
@@ -87,8 +85,9 @@
 	};
 
 	const setTimeValue = () => {
+		console.log('1.cambia la hora');
 		const newTime = `${selectedHours.value}:${selectedMinutes.value}`;
-		emit('timeSelected', newTime);
+		emit('time-selected', newTime);
 		setShowPicker(false);
 	};
 
@@ -102,7 +101,7 @@
 	};
 
 	watch(
-		() => props.modelValue,
+		() => props.value,
 		(newTime) => {
 			if (newTime) {
 				const [hours, minutes] = newTime.split(':');

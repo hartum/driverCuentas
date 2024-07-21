@@ -9,10 +9,12 @@
 			class="ion-padding"
 		>
 			<div class="modal-content" @click.self="closeModal">
+				<!--
 				<IonDatetime
 					@ionChange="onDateChange"
 					presentation="date"
 					:value="selectedISODate"
+					@click="fab"
 				>
 					<div slot="buttons" class="calendar-footer">
 						<IonButton expand="block" @click="selectDate">
@@ -20,6 +22,18 @@
 						</IonButton>
 					</div>
 				</IonDatetime>
+			-->
+				<vue-date-picker
+					v-model="selectedISODate"
+					inline
+					auto-apply
+					:enable-time-picker="false"
+				></vue-date-picker>
+				<IonItem>
+					<IonButton expand="block" @click="selectDate">
+						Seleccionar
+					</IonButton>
+				</IonItem>
 			</div>
 		</IonModal>
 	</div>
@@ -27,21 +41,19 @@
 
 <script setup>
 	import { ref, watch } from 'vue';
-	import { IonModal, IonDatetime, IonButton } from '@ionic/vue';
+	import { IonModal, IonDatetime, IonButton, IonItem } from '@ionic/vue';
 	import moment from 'moment';
 
 	const props = defineProps({
-		dateStart: {
+		value: {
 			type: String,
 			required: true,
 		},
 	});
 
-	const emit = defineEmits(['dateSelected']);
-
+	const emit = defineEmits(['date-selected']);
 	const displayDate = ref('');
 	const selectedISODate = ref('');
-
 	const isModalOpen = ref(false);
 
 	const openModal = () => {
@@ -56,13 +68,13 @@
 		const newValue = event.detail.value;
 		displayDate.value = moment(newValue).format('DD MMM YYYY');
 		selectedISODate.value = newValue;
-		console.log(newValue);
+		console.log('------------>', newValue);
 	};
 
 	const selectDate = () => {
 		closeModal();
-		console.log('Selected date:', selectedISODate.value);
-		emit('dateSelected', moment(selectedISODate.value).format('YYYY-MM-DD'));
+		console.log('1.cambia la fecha');
+		emit('date-selected', moment(selectedISODate.value).format('YYYY-MM-DD'));
 	};
 
 	const formatDateToISOString = (date) => {
@@ -70,9 +82,8 @@
 	};
 
 	watch(
-		() => props.dateStart,
+		() => props.value,
 		(newDate) => {
-			console.log('newDate', newDate);
 			if (newDate) {
 				displayDate.value = moment(newDate).format('DD MMM YYYY');
 				selectedISODate.value = formatDateToISOString(newDate);
@@ -87,6 +98,7 @@
 
 <style scoped lang="scss">
 	.date-container {
+		width: auto;
 		cursor: pointer;
 		background-color: #f0f0f0;
 		border-radius: 5px;

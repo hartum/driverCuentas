@@ -39,34 +39,12 @@
 							<IonList lines="none">
 								<IonItem>
 									<ion-label>Fecha</ion-label>
-									<DatePicker
-										:dateStart="dateStart"
-										@date-selected="console.log('la fecha', $event)"
-									/>
-									<TimePicker
-										:modelValue="timeStart"
-										@timeSelected="console.log('la hora', $event)"
+									<DateTimePicker
+										:value="datetimeStart"
+										@dateTimeChange="handleDateChange"
 									/>
 								</IonItem>
-								<IonItem>
-									<ion-label>Fecha</ion-label>
-									<IonDatetimeButton
-										datetime="datetime_start"
-										mode="ios"
-									></IonDatetimeButton>
-									<IonModal :keep-contents-mounted="true">
-										<IonDatetime
-											ref="datetimeRef"
-											id="datetime_start"
-											locale="es-ES"
-											mode="ios"
-											:first-day-of-week="firstDayOfWeek"
-											:show-default-buttons="true"
-											:value="datetimeStart"
-											@ionChange="handleDateChange"
-										></IonDatetime>
-									</IonModal>
-								</IonItem>
+
 								<IonItem>
 									<ion-label>Origen</ion-label>
 									<p class="selected-address">
@@ -235,9 +213,6 @@
 		IonInput,
 		IonRadioGroup,
 		IonRadio,
-		IonDatetimeButton,
-		IonDatetime,
-		IonModal,
 		IonButton,
 		IonGrid,
 		IonRow,
@@ -260,8 +235,7 @@
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
-	import TimePicker from '../components/TimePicker.vue';
-	import DatePicker from '../components/DatePicker.vue';
+	import DateTimePicker from '../components/DateTimePicker.vue';
 	import {
 		addTravel,
 		selectTravelByID,
@@ -305,8 +279,9 @@
 	}
 
 	const handleDateChange = (event) => {
-		datetimeStart.value = event.detail.value;
-		console.log('Fecha cambiada:', datetimeStart.value);
+		console.log('------------>', event);
+		datetimeStart.value = event;
+		//console.log('Fecha cambiada:', datetimeStart.value);
 	};
 
 	const loadTravel = async () => {

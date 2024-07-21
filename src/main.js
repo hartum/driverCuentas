@@ -3,6 +3,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router';
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 import { IonicVue } from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
@@ -39,6 +42,8 @@ const app = createApp(App)
   .use(IonicVue)
   .use(createPinia())
   .use(router);
+
+app.component('VueDatePicker', VueDatePicker);
 
 router.isReady().then(() => {
   app.mount('#app');
