@@ -21,28 +21,19 @@
 				</IonCardHeader>
 				<div class="shift-footer ion-padding">
 					<div>
-						<div
-							v-show="
-								(form.totalKm > 0 && form.modeKM == 'fix') ||
-								(form.finalKm - form.initialKm > 0 &&
-									form.modeKM == 'calculatedKm')
-							"
-						>
-							<IonIcon :icon="timerOutline"></IonIcon>
-
-							<b v-if="form.modeKM == 'fix'">{{ form.totalKm }}</b>
-							<b v-else>{{ form.finalKm - form.initialKm }}</b>
-							Km
+						<div v-if="shouldShowKmInfo">
+							<IonIcon :icon="timerOutline" />
+							<b>{{ kmValue }}</b> Km
 						</div>
-						<div v-show="form.gasoline > 0">
-							<IonIcon :icon="waterOutline"></IonIcon>
+						<div v-if="form.gasoline > 0">
+							<IonIcon :icon="waterOutline" />
 							<b>{{ form.gasoline }}</b> {{ currency }}
 						</div>
 					</div>
 					<div class="shift-footer-right">
 						<div>SubTotal</div>
-						<div v-if="form.modeTotalShift == 'fixTotal'" class="shift-total">
-							{{ form.totalShift + ' ' + currency }}
+						<div v-if="form.modeTotalShift === 'fixTotal'" class="shift-total">
+							{{ form.totalShift }} {{ currency }}
 						</div>
 						<div v-else><i>*calculado</i> {{ currency }}</div>
 					</div>
@@ -60,46 +51,18 @@
 					<div slot="content" class="ion-padding">
 						<IonList lines="none">
 							<IonItem>
-								<IonLabel>Inicio turno</IonLabel>
-								<IonDatetimeButton
-									datetime="startPicker"
-									mode="ios"
-								></IonDatetimeButton>
-								<IonModal :keep-contents-mounted="true">
-									<IonDatetime
-										locale="es-ES"
-										:first-day-of-week="firstDayOfWeek"
-										:show-default-buttons="true"
-										id="startPicker"
-										v-model="form.startDate"
-										mode="ios"
-										display-format="YYYY-MM-DD HH:mm:ss"
-										picker-format="YYYY-MM-DD HH:mm:ss"
-										:hour-cycles="['h23']"
-										@ionChange="checkDateValidity"
-									></IonDatetime>
-								</IonModal>
+								<IonLabel>Inicio</IonLabel>
+								<DateTimePicker
+									:value="form.startDate"
+									@dateTimeChange="handleStartDateChange"
+								/>
 							</IonItem>
 							<IonItem>
-								<IonLabel>Fin turno</IonLabel>
-								<IonDatetimeButton
-									datetime="endPicker"
-									mode="ios"
-								></IonDatetimeButton>
-								<IonModal :keep-contents-mounted="true">
-									<IonDatetime
-										locale="es-ES"
-										:first-day-of-week="firstDayOfWeek"
-										:show-default-buttons="true"
-										id="endPicker"
-										v-model="form.endDate"
-										mode="ios"
-										display-format="YYYY-MM-DD HH:mm:ss"
-										picker-format="YYYY-MM-DD HH:mm:ss"
-										:hour-cycles="['h23']"
-										@ionChange="checkDateValidity"
-									></IonDatetime>
-								</IonModal>
+								<IonLabel>Fin</IonLabel>
+								<DateTimePicker
+									:value="form.endDate"
+									@dateTimeChange="handleEndDateChange"
+								/>
 							</IonItem>
 						</IonList>
 					</div>
@@ -141,7 +104,7 @@
 								</IonSegmentButton>
 							</IonSegment>
 						</IonItem>
-						<IonItem v-show="form.modeKM == 'calculatedKm'" lines="none">
+						<IonItem v-if="form.modeKM === 'calculatedKm'" lines="none">
 							<IonInput
 								class="money-input"
 								label="Inicio turno"
@@ -157,7 +120,7 @@
 								<span slot="end">Km</span>
 							</IonInput>
 						</IonItem>
-						<IonItem v-show="form.modeKM == 'calculatedKm'">
+						<IonItem v-if="form.modeKM === 'calculatedKm'">
 							<IonInput
 								class="money-input"
 								label="Fin turno"
@@ -173,16 +136,14 @@
 								<span slot="end">Km</span>
 							</IonInput>
 						</IonItem>
-						<IonItem v-show="form.modeKM == 'calculatedKm'" lines="none">
+						<IonItem v-if="form.modeKM === 'calculatedKm'" lines="none">
 							<div>En este turno</div>
 							<span slot="end">
-								<span class="km-diff">
-									{{ form.finalKm - form.initialKm }}
-								</span>
+								<span class="km-diff">{{ form.finalKm - form.initialKm }}</span>
 								Km
 							</span>
 						</IonItem>
-						<IonItem v-show="form.modeKM == 'fix'" lines="none">
+						<IonItem v-if="form.modeKM === 'fix'" lines="none">
 							<IonInput
 								label="En este turno"
 								label-placement="fixed"
@@ -214,21 +175,19 @@
 							</IonSegment>
 						</IonItem>
 						<IonItem
-							v-show="form.modeTotalShift == 'calculatedTotal'"
+							v-if="form.modeTotalShift === 'calculatedTotal'"
 							lines="none"
 						>
 							<p>
 								El <b>Total</b> se calcula automáticamente sumando los viajes
-								dentro del turno y restando los gastos.
-								<br />
-								<br />
+								dentro del turno y restando los gastos. <br /><br />
 								<i
 									><b>*La gasolina</b> se toma como un gasto y se resta al
 									total.</i
 								>
 							</p>
 						</IonItem>
-						<IonItem v-show="form.modeTotalShift == 'fixTotal'" lines="none">
+						<IonItem v-if="form.modeTotalShift === 'fixTotal'" lines="none">
 							<IonInput
 								label="Total"
 								label-placement="fixed"
@@ -297,6 +256,7 @@
 </template>
 
 <script setup>
+	import moment from 'moment';
 	import {
 		IonPage,
 		IonHeader,
@@ -307,9 +267,6 @@
 		IonCardHeader,
 		IonCardTitle,
 		IonIcon,
-		IonDatetimeButton,
-		IonDatetime,
-		IonModal,
 		IonAccordionGroup,
 		IonAccordion,
 		IonItem,
@@ -331,15 +288,15 @@
 		waterOutline,
 		warningOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted } from 'vue';
+	import { ref, onMounted, computed } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import moment from 'moment';
 	import {
 		addShift,
 		updateShift,
 		selectShiftByID,
 	} from '../services/shiftService';
+	import DateTimePicker from '@/components/DateTimePicker.vue';
 
 	const settingsStore = useSettingsStore();
 	const currency = ref('€');
@@ -362,21 +319,29 @@
 	const showToast = ref(false);
 	const showKmToast = ref(false);
 	const shiftId = ref(route.params.shiftId);
-	//const modeForm = ref(shiftId.value ? 'edit' : 'create');
-	const modeForm = ref(null);
-	if (moment(shiftId.value, moment.ISO_8601, true).isValid()) {
-		console.log('create');
-		modeForm.value = 'create';
-	} else {
-		console.log('edit');
-		modeForm.value = 'edit';
-	}
+	const modeForm = ref(
+		moment(shiftId.value, moment.ISO_8601, true).isValid() ? 'create' : 'edit'
+	);
 
+	const shouldShowKmInfo = computed(() => {
+		return (
+			(form.value.totalKm > 0 && form.value.modeKM === 'fix') ||
+			(form.value.finalKm - form.value.initialKm > 0 &&
+				form.value.modeKM === 'calculatedKm')
+		);
+	});
+
+	const kmValue = computed(() => {
+		return form.value.modeKM === 'fix'
+			? form.value.totalKm
+			: form.value.finalKm - form.value.initialKm;
+	});
+	// Cargar el turno
 	const loadShift = async () => {
 		// Establecer el valor del primer día de la semana por defecto
+		// ======= MOVER ESTO A DATEPICKER =======
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
-		// Si estamos en modo de edición, cargar los datos del turno
 		if (modeForm.value === 'edit') {
 			const shift = await selectShiftByID(parseInt(shiftId.value));
 			if (shift) {
@@ -387,12 +352,9 @@
 
 	onMounted(loadShift);
 
-	const formatTime = (date) => {
-		return moment(date).format('HH:mm');
-	};
+	const formatTime = (date) => moment(date).format('HH:mm');
 
 	const handleSave = async () => {
-		// Validar que los km finales no sean menores que los km iniciales si el modo es calculado
 		const initialKm = Number(form.value.initialKm);
 		const finalKm = Number(form.value.finalKm);
 
@@ -436,6 +398,16 @@
 		router.push('/tabs/tab1/' + now);
 	};
 
+	const handleStartDateChange = (event) => {
+		form.value.startDate = event;
+		checkDateValidity();
+	};
+
+	const handleEndDateChange = (event) => {
+		form.value.endDate = event;
+		checkDateValidity();
+	};
+
 	const checkDateValidity = () => {
 		const start = moment(form.value.startDate);
 		const end = moment(form.value.endDate);
@@ -461,7 +433,7 @@
 			background-color: #f8f8ff;
 			text-align: center;
 			.shift-title {
-				font-weight: 300 !important ;
+				font-weight: 300 !important;
 				.shift-header-icon {
 					vertical-align: bottom;
 					margin: 0 9px 0 -15px;

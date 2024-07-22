@@ -7,8 +7,8 @@
 
 <script setup>
 	import { ref, defineEmits, defineProps, watch } from 'vue';
-	import DatePicker from './DatePicker.vue';
-	import TimePicker from './TimePicker.vue';
+	import DatePicker from '@/components/DatePicker.vue';
+	import TimePicker from '@/components/TimePicker.vue';
 	import moment from 'moment';
 
 	const props = defineProps({

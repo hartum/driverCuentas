@@ -25,22 +25,11 @@
 			<IonList lines="none" :inset="true">
 				<IonItem>
 					<IonLabel>Fecha:</IonLabel>
-					<IonDatetimeButton
-						datetime="datetime_start"
-						mode="ios"
-					></IonDatetimeButton>
-					<IonModal :keep-contents-mounted="true">
-						<IonDatetime
-							locale="es-ES"
-							:first-day-of-week="firstDayOfWeek"
-							:show-default-buttons="true"
-							id="datetime_start"
-							v-model="form.noteDate"
-							mode="ios"
-						></IonDatetime>
-					</IonModal>
+					<DateTimePicker
+						:value="form.noteDate"
+						@dateTimeChange="handleNoteDateChange"
+					/>
 				</IonItem>
-
 				<IonItem>
 					<IonTextarea
 						label="Concepto:"
@@ -124,9 +113,6 @@
 		IonSegment,
 		IonSegmentButton,
 		IonIcon,
-		IonModal,
-		IonDatetimeButton,
-		IonDatetime,
 		IonFooter,
 		IonButton,
 		IonGrid,
@@ -139,6 +125,7 @@
 	import { useSettingsStore } from '../store/settingsStore';
 	import { ref, onMounted } from 'vue';
 	import { addNote, getNoteById, updateNote } from '@/services/noteService';
+	import DateTimePicker from '@/components/DateTimePicker.vue';
 
 	const settingsStore = useSettingsStore();
 	const firstDayOfWeek = ref(1);
@@ -163,6 +150,11 @@
 
 	const showToast = ref(false);
 	const toastMessage = ref('');
+
+	const handleNoteDateChange = (event) => {
+		form.value.noteDate = event;
+	};
+
 	const loadNote = async () => {
 		// Establecer el valor del primer día de la semana por defecto
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;

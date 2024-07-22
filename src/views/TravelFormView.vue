@@ -260,6 +260,7 @@
 	const settingsStore = useSettingsStore();
 	const amountForm = ref(4);
 	const currency = ref('€');
+	const pay = ref('app');
 	const datetimeStart = ref(moment().format('YYYY-MM-DDTHH:mm'));
 	const timeStart = ref(moment().format('HH:mm'));
 	const dateStart = ref(moment().format('YYYY-MM-DD'));
@@ -271,16 +272,11 @@
 	const mapMode = ref('origin');
 	const mapDetails = ref(settingsStore.mapDetails);
 	const showToast = ref(false);
-
-	const pay = ref('app');
 	const router = useRouter();
 	const route = useRoute();
 	const travelId = ref(route.params.travelId);
-
-	//const modeForm = ref(travelId.value ? 'edit' : 'create');
 	const modeForm = ref(null);
 	const servicesList = settingsStore.servicesList;
-
 	const payIcons = {
 		app: phonePortraitOutline,
 		cash: cashOutline,
@@ -294,15 +290,13 @@
 	}
 
 	const handleDateChange = (event) => {
-		console.log('------------>', event);
 		datetimeStart.value = event;
-		//console.log('Fecha cambiada:', datetimeStart.value);
 	};
 
+	// Cargar el viaje
 	const loadTravel = async () => {
-		console.log('onMount');
-		//datetimeStart.value = '2024-07-20T14:00:00';
 		// Establecer el valor del primer día de la semana por defecto
+		// ======= MOVER ESTO A DATEPICKER =======
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 		// Si estamos en modo de edición, cargar los datos del viaje

@@ -9,20 +9,6 @@
 			class="ion-padding"
 		>
 			<div class="modal-content" @click.self="closeModal">
-				<!--
-				<IonDatetime
-					@ionChange="onDateChange"
-					presentation="date"
-					:value="selectedISODate"
-					@click="fab"
-				>
-					<div slot="buttons" class="calendar-footer">
-						<IonButton expand="block" @click="selectDate">
-							Seleccionar
-						</IonButton>
-					</div>
-				</IonDatetime>
-			-->
 				<vue-date-picker
 					v-model="selectedISODate"
 					inline
@@ -41,7 +27,7 @@
 
 <script setup>
 	import { ref, watch } from 'vue';
-	import { IonModal, IonDatetime, IonButton, IonItem } from '@ionic/vue';
+	import { IonModal, IonButton, IonItem } from '@ionic/vue';
 	import moment from 'moment';
 
 	const props = defineProps({
@@ -62,13 +48,6 @@
 
 	const closeModal = () => {
 		isModalOpen.value = false;
-	};
-
-	const onDateChange = (event) => {
-		const newValue = event.detail.value;
-		displayDate.value = moment(newValue).format('DD MMM YYYY');
-		selectedISODate.value = newValue;
-		console.log('------------>', newValue);
 	};
 
 	const selectDate = () => {
