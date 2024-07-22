@@ -97,7 +97,7 @@
 	};
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 	ion-item::part(native) {
 		background: transparent;
 	}

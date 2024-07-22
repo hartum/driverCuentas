@@ -131,8 +131,7 @@
 		height: 45px;
 		background-color: #fff;
 		border-radius: 0.6em;
-		box-shadow: 0 1px 0 #bdbdbd, 0 2px 0 #fff, 0 3px 0 #bdbdbd, 0 4px 0 #fff,
-			0 5px 0 #bdbdbd, 0 0 0 1px #bdbdbd;
+		border: 1px solid #adadad;
 		overflow: hidden;
 	}
 
@@ -183,8 +182,7 @@
 		text-align: center;
 		background-color: #fff;
 		border-radius: 0.2em;
-		box-shadow: 0 1px 0 #bdbdbd, 0 2px 0 #fff, 0 3px 0 #bdbdbd, 0 4px 0 #fff,
-			0 5px 0 #bdbdbd, 0 0 0 1px #bdbdbd;
+		border: 1px solid #adadad;
 		overflow: hidden;
 	}
 </style>
