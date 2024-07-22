@@ -23,7 +23,7 @@
 				</IonItemSliding>
 			</IonCardTitle>
 		</IonCardHeader>
-		<IonCardContent><slot></slot> </IonCardContent>
+		<IonCardContent><slot></slot></IonCardContent>
 		<div class="shift-footer ion-padding">
 			<div>
 				<div v-if="shift.modeKM == 'fix'">
@@ -97,7 +97,7 @@
 	};
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 	ion-item::part(native) {
 		background: transparent;
 	}
@@ -107,10 +107,13 @@
 	.shift-card {
 		border: 1px solid #ccc;
 		margin: 20px 0;
+		box-shadow: 0 1px 0 #767676, 0 5px 0 #fff, 0 6px 0 #767676, 0 11px 0 #fff,
+			0 12px 0 #767676, 0 0 0 1px #767676;
 		.shift-header {
 			border-bottom: 1px #ccc solid;
 			background-color: #f8f8ff;
 			text-align: center;
+			padding-left: 0;
 			.shift-title {
 				.shift-tittle-info {
 					font-size: 28px;
@@ -119,12 +122,12 @@
 				}
 				.shift-header-icon {
 					vertical-align: bottom;
-					margin: 0 9px;
+					margin: 0 9px 0 0;
 				}
 			}
 		}
 		.card-content-ios {
-			padding-bottom: 0px;
+			padding: 0px;
 		}
 		.shift-footer {
 			border-top: 1px #ccc solid;

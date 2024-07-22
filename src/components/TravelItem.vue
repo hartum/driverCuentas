@@ -46,8 +46,6 @@
 		phonePortraitOutline,
 		cashOutline,
 		cardOutline,
-		calendarClearOutline,
-		carSport,
 	} from 'ionicons/icons';
 
 	const props = defineProps({
@@ -112,28 +110,12 @@
 	}
 
 	.icon-travel {
-		/*
-		vertical-align: middle;
-		
-		
-		float: right;
-		margin-left: 5px;
-		margin-top: 3px;
-		*/
 		width: 2em;
 		height: 2em;
 		color: #949494;
 		float: right;
-		/*position: absolute;*/
 		right: 20px;
 		transform: translateY(25%) translateX(25%);
-	}
-	.icon-calendar {
-		/*
-		vertical-align: middle;
-		margin-right: 5px;
-		margin-top: -3px;
-		*/
 	}
 
 	.income {
