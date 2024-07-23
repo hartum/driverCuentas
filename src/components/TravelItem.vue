@@ -97,6 +97,11 @@
 	ion-item::part(native) {
 		background: rgba(255, 255, 255, 0.8);
 	}
+	.shift-card {
+		ion-item::part(native) {
+			background: transparent;
+		}
+	}
 	.item-travel {
 		color: #535353;
 		line-height: 1.2em;
