@@ -1,37 +1,39 @@
 <template>
 	<div class="time-navigator">
 		<IonSegment v-model="timeNavigator" @ionChange="handleSegmentChange">
-			<IonSegmentButton value="day">
-				<IonLabel>Día</IonLabel>
-			</IonSegmentButton>
-			<IonSegmentButton value="week">
-				<IonLabel>Semana</IonLabel>
-			</IonSegmentButton>
-			<IonSegmentButton value="month">
-				<IonLabel>Mes</IonLabel>
-			</IonSegmentButton>
-			<IonSegmentButton value="year">
-				<IonLabel>Año</IonLabel>
+			<IonSegmentButton
+				v-for="option in timeOptions"
+				:key="option.value"
+				:value="option.value"
+			>
+				<IonLabel>{{ option.label }}</IonLabel>
 			</IonSegmentButton>
 		</IonSegment>
+
 		<IonIcon
 			size="large"
 			color="primary"
 			:icon="arrowBackCircle"
 			@click="navigateDate('prev')"
-		></IonIcon>
-		<span class="fechaVista"> {{ fechaVista }} </span>
+		/>
+
+		<div class="calendar">
+			<em>{{ calendarData.em }}</em>
+			<strong>{{ calendarData.strong }}</strong>
+			<span>{{ calendarData.span }}</span>
+		</div>
+
 		<IonIcon
 			size="large"
 			color="primary"
 			:icon="arrowForwardCircle"
 			@click="navigateDate('next')"
-		></IonIcon>
+		/>
 	</div>
 </template>
 
 <script setup>
-	import { ref, onMounted } from 'vue';
+	import { ref, computed, onMounted } from 'vue';
 	import { IonSegment, IonSegmentButton, IonLabel, IonIcon } from '@ionic/vue';
 	import { arrowBackCircle, arrowForwardCircle } from 'ionicons/icons';
 	import moment from 'moment';
@@ -50,73 +52,68 @@
 	const emit = defineEmits(['date-changed']);
 
 	const timeNavigator = ref(props.initialNavigator);
-	const fechaVista = ref('');
 	const fechaUnica = ref(props.initialDate);
 
-	const updateFechaVista = () => {
-		let currentWeek, month, year;
-		switch (timeNavigator.value) {
-			case 'day':
-				fechaVista.value = moment(fechaUnica.value).format('DD MMM YYYY');
-				break;
-			case 'week':
-				currentWeek = Math.ceil(moment(fechaUnica.value).date() / 7);
-				month = moment(fechaUnica.value).format('MMM');
-				year = moment(fechaUnica.value).format('YYYY');
-				fechaVista.value = `${currentWeek}ª semana - ${month} ${year}`;
-				break;
-			case 'month':
-				fechaVista.value = moment(fechaUnica.value).format('MMM YYYY');
-				break;
-			case 'year':
-				fechaVista.value = moment(fechaUnica.value).format('YYYY');
-				break;
-		}
-	};
+	const timeOptions = [
+		{ value: 'day', label: 'Día' },
+		{ value: 'week', label: 'Semana' },
+		{ value: 'month', label: 'Mes' },
+		{ value: 'year', label: 'Año' },
+	];
+
+	const calendarData = computed(() => {
+		const date = moment(fechaUnica.value);
+		const formatters = {
+			day: () => ({
+				em: date.format('dddd'),
+				strong: date.format('MMM'),
+				span: date.format('DD'),
+			}),
+			week: () => ({
+				em: 'Semana',
+				strong: date.format('MMM'),
+				span: `${Math.ceil(date.date() / 7)}ª semana`,
+			}),
+			month: () => ({
+				em: '',
+				strong: date.format('YYYY'),
+				span: date.format('MMM'),
+			}),
+			year: () => ({
+				em: '',
+				strong: 'Año',
+				span: date.format('YYYY'),
+			}),
+		};
+		return formatters[timeNavigator.value]();
+	});
 
 	const navigateDate = (direction) => {
 		const amount = direction === 'next' ? 1 : -1;
-		let duration;
-		switch (timeNavigator.value) {
-			case 'day':
-				duration = moment.duration(amount, 'days');
-				break;
-			case 'week':
-				duration = moment.duration(amount, 'weeks');
-				break;
-			case 'month':
-				duration = moment.duration(amount, 'months');
-				break;
-			case 'year':
-				duration = moment.duration(amount, 'years');
-				break;
-		}
-		const newDate = moment(fechaUnica.value).add(duration);
+		const newDate = moment(fechaUnica.value).add(amount, timeNavigator.value);
 		fechaUnica.value = newDate.format('YYYY-MM-DD');
-		updateFechaVista();
-		emit('date-changed', {
-			newDate: fechaUnica.value,
-			type: timeNavigator.value,
-		});
+		emitDateChanged();
 	};
 
 	const handleSegmentChange = () => {
-		updateFechaVista();
+		emitDateChanged();
+	};
+
+	const emitDateChanged = () => {
+		console.log('emito la fecha: ', fechaUnica.value);
 		emit('date-changed', {
 			newDate: fechaUnica.value,
 			type: timeNavigator.value,
 		});
 	};
 
-	onMounted(() => {
-		updateFechaVista();
-	});
+	onMounted(emitDateChanged);
 </script>
 
 <style lang="scss" scoped>
 	.time-navigator {
 		position: relative;
-		padding: 10px 0;
+		padding: 0;
 		text-align: center;
 		* {
 			vertical-align: middle;
@@ -125,10 +122,66 @@
 			color: #fff;
 			padding: 0 5px;
 		}
+		.icon-large {
+			width: 1.5em;
+			height: 1.5em;
+			font-size: 2em;
+			margin: 0 0.5em;
+		}
 	}
 	ion-segment {
 		color: #000;
 		--background: rgba(255, 255, 255, 0.5);
 		margin-bottom: 15px;
+	}
+
+	//------ Calendar -------
+	div.calendar {
+		font-size: 0.7em; /* change icon size */
+		display: inline-block;
+		position: relative;
+		margin: auto;
+		width: 80px;
+		height: 80px;
+		background-color: #fff;
+		border-radius: 0.6em;
+		border: 1px solid #d63d00;
+		overflow: hidden;
+	}
+
+	div.calendar * {
+		display: block;
+		width: 100%;
+		font-size: 2em;
+		font-weight: bold;
+		font-style: normal;
+		text-align: center;
+	}
+
+	div.calendar strong {
+		font-size: 1.5em;
+		position: absolute;
+		top: 0;
+		text-transform: uppercase;
+		padding: 0.2em 0;
+		color: #fff;
+		background-color: #d63d00;
+		border-bottom: 1px dashed #fff;
+		box-shadow: 0 2px 0 #d63d00;
+	}
+
+	div.calendar em {
+		font-size: 1em;
+		position: absolute;
+		bottom: 0.3em;
+		color: #2f2f2f;
+	}
+
+	div.calendar span {
+		width: 100%;
+		font-size: 2.8em;
+		letter-spacing: -0.05em;
+		padding-top: 1em;
+		color: #2f2f2f;
 	}
 </style>

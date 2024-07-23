@@ -13,6 +13,7 @@
 					<strong>{{ month(travel.startDate) }}</strong>
 					<span>{{ day(travel.startDate) }}</span>
 				</div>
+
 				<div class="time">
 					{{ hour(travel.startDate) }}
 				</div>

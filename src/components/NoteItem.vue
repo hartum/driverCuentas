@@ -2,8 +2,18 @@
 	<IonItemSliding>
 		<IonItem class="item-note" button="true" @click="editNote">
 			<IonLabel>
-				<IonIcon :icon="reader" size="small" class="icon-note"></IonIcon>
-				<span>{{ formatDate(note.noteDate) }}</span>
+				<IonIcon :icon="readerOutline" size="small" class="icon-note"></IonIcon>
+
+				<div class="calendar">
+					<em></em>
+					<strong>{{ month(note.noteDate) }}</strong>
+					<span>{{ day(note.noteDate) }}</span>
+				</div>
+
+				<div class="time">
+					{{ hour(note.noteDate) }}
+				</div>
+
 				<span
 					class="money"
 					:class="{
@@ -35,7 +45,7 @@
 		IonItemOption,
 		IonIcon,
 	} from '@ionic/vue';
-	import { trash, reader } from 'ionicons/icons';
+	import { trash, readerOutline } from 'ionicons/icons';
 
 	const props = defineProps({
 		note: {
@@ -61,9 +71,19 @@
 	const formatDate = (date) => {
 		return moment(date).format('DD MMM - HH:mm');
 	};
+
+	const day = (date) => {
+		return moment(date).format('DD');
+	};
+	const hour = (date) => {
+		return moment(date).format('HH:mm');
+	};
+	const month = (date) => {
+		return moment(date).format('MMM');
+	};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	ion-item::part(native) {
 		background: rgba(255, 255, 255, 0.8);
 	}
@@ -74,17 +94,19 @@
 	}
 
 	.money {
-		font-size: 1.4em;
+		font-size: 2.4em;
 		vertical-align: text-bottom;
 		float: right;
 		color: #666;
 	}
 
 	.icon-note {
-		vertical-align: middle;
-		color: #4b4a4a;
-		width: 1.5em;
-		height: 1.5em;
+		width: 2em;
+		height: 2em;
+		color: #949494;
+		float: right;
+		right: 20px;
+		transform: translateY(15%) translateX(25%);
 	}
 
 	.income {
@@ -93,5 +115,69 @@
 
 	.expense {
 		color: #bc0404;
+	}
+	/*------- CALENDAR -------*/
+	div.calendar {
+		float: left;
+		font-size: 0.4em; /* change icon size */
+		display: block;
+		position: relative;
+		width: 44px;
+		height: 45px;
+		background-color: #fff;
+		border-radius: 0.6em;
+		border: 1px solid #adadad;
+		overflow: hidden;
+	}
+
+	div.calendar * {
+		display: block;
+		width: 100%;
+		font-size: 2em;
+		font-weight: bold;
+		font-style: normal;
+		text-align: center;
+	}
+
+	div.calendar strong {
+		font-size: 1.5em;
+		position: absolute;
+		top: 0;
+		text-transform: uppercase;
+		padding: 0.2em 0;
+		color: #fff;
+		background-color: #696868;
+		border-bottom: 1px dashed #fff;
+		box-shadow: 0 2px 0 #696868;
+	}
+
+	div.calendar em {
+		position: absolute;
+		bottom: 0.3em;
+		color: #2f2f2f;
+	}
+
+	div.calendar span {
+		width: 100%;
+		font-size: 2.8em;
+		letter-spacing: -0.05em;
+		padding-top: 1.1em;
+		color: #2f2f2f;
+	}
+	div.time {
+		float: left;
+		font-size: 1.5em; /* change icon size */
+		font-weight: bold;
+		display: block;
+		position: relative;
+		padding-top: 0.35em;
+		margin-left: 0.35em;
+		width: 80px;
+		height: 45px;
+		text-align: center;
+		background-color: #fff;
+		border-radius: 0.2em;
+		border: 1px solid #adadad;
+		overflow: hidden;
 	}
 </style>
