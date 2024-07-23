@@ -16,7 +16,7 @@
 					:enable-time-picker="false"
 				></vue-date-picker>
 				<IonItem>
-					<IonButton expand="block" @click="selectDate">
+					<IonButton expand="block" @click="selectDate" mode="ios" size="large">
 						Seleccionar
 					</IonButton>
 				</IonItem>
