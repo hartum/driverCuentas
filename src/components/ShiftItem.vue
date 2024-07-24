@@ -44,14 +44,17 @@
 				<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
 					{{ shift.totalShift }} {{ currency }}
 				</div>
-				<div v-else><b>*Esperando viajes</b></div>
+				<div v-else class="shift-total">
+					{{ subtotalBeforeGasoline }} {{ currency }} - {{ shift.gasoline }}
+					{{ currency }} = {{ calculatedTotal }} {{ currency }}
+				</div>
 			</div>
 		</div>
 	</IonCard>
 </template>
 
 <script setup>
-	import { defineProps, defineEmits } from 'vue';
+	import { defineProps, defineEmits, computed } from 'vue';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -95,6 +98,34 @@
 	const formatTime = (date) => {
 		return moment(date).format('HH:mm');
 	};
+
+	const subtotalBeforeGasoline = computed(() => {
+		let total = 0;
+		if (props.shift.children) {
+			props.shift.children.forEach((item) => {
+				if (item.type === 'travel') {
+					total += item.amount;
+				} else if (item.type === 'note') {
+					if (item.noteType === 'income') {
+						total += item.amount;
+					} else if (item.noteType === 'expense') {
+						total -= item.amount;
+					}
+				}
+			});
+		}
+		return total.toFixed(2);
+	});
+
+	const calculatedTotal = computed(() => {
+		if (props.shift.modeTotalShift === 'fixTotal') {
+			return props.shift.totalShift;
+		}
+
+		return (
+			parseFloat(subtotalBeforeGasoline.value) - props.shift.gasoline
+		).toFixed(2);
+	});
 </script>
 
 <style scoped lang="scss">
