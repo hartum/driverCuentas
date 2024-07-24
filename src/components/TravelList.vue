@@ -16,11 +16,15 @@
 			</div>
 			<IonContent class="container-items">
 				<!--TRAVEL/NOTES/SHIFTS LIST -->
-				<ItemList :initialDate="initialDate" :endDate="endDate" />
+				<ItemList
+					:initialDate="initialDate"
+					:endDate="endDate"
+					@update:totalAmount="updateTotalAmount"
+				/>
 			</IonContent>
 		</IonContent>
 		<div class="total-container">
-			Total: <span class="total">300.00 €</span>
+			Total: <span class="total">{{ totalAmount }} {{ currency }}</span>
 			<IonFab slot="fixed" horizontal="right" vertical="top" class="add-travel">
 				<IonFabButton mode="ios">
 					<IonIcon :icon="add"></IonIcon>
@@ -68,7 +72,7 @@
 	import { ref, onMounted } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import TimeNavigator from '@/components/TimeNavigator.vue'; // Import the new component
+	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import ItemList from '@/components/ItemList.vue';
 
 	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
@@ -78,6 +82,7 @@
 	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
 	const router = useRouter();
 	const settingsStore = useSettingsStore();
+	const totalAmount = ref('0.00');
 
 	// Establecer el valor del primer día de la semana por defecto
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
@@ -124,6 +129,10 @@
 				break;
 		}
 		console.log(`Updated date range: ${initialDate.value} to ${endDate.value}`);
+	};
+
+	const updateTotalAmount = (newTotal) => {
+		totalAmount.value = newTotal;
 	};
 
 	onMounted(async () => {

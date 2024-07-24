@@ -34,19 +34,23 @@
 					<b>{{ shift.finalKm - shift.initialKm }}</b> km
 					<IonIcon :icon="timerOutline"></IonIcon>
 				</div>
-				<div>
-					<b>{{ shift.gasoline }}</b> {{ currency }}
-					<IonIcon :icon="waterOutline"></IonIcon>
-				</div>
 			</div>
 			<div class="shift-footer-right">
-				<div>SubTotal</div>
 				<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
 					{{ shift.totalShift }} {{ currency }}
 				</div>
-				<div v-else class="shift-total">
-					{{ subtotalBeforeGasoline }} {{ currency }} - {{ shift.gasoline }}
-					{{ currency }} = {{ calculatedTotal }} {{ currency }}
+				<div v-else>
+					<div class="subtotal">
+						{{ subtotalBeforeGasoline }}{{ currency }} -
+						<span class="expense">{{ shift.gasoline }}{{ currency }}</span
+						><IonIcon :icon="water"></IonIcon>
+					</div>
+					<div
+						class="shift-total"
+						:class="calculatedTotal < 0 ? 'expense' : 'income'"
+					>
+						{{ calculatedTotal }} {{ currency }}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -67,12 +71,7 @@
 		IonCardHeader,
 		IonCardTitle,
 	} from '@ionic/vue';
-	import {
-		trash,
-		timeOutline,
-		timerOutline,
-		waterOutline,
-	} from 'ionicons/icons';
+	import { trash, timeOutline, timerOutline, water } from 'ionicons/icons';
 
 	const props = defineProps({
 		shift: {
@@ -135,6 +134,14 @@
 	ion-card {
 		--background: rgba(255, 255, 255, 0.8);
 	}
+	.income {
+		color: #087702;
+	}
+
+	.expense {
+		color: #bc0404;
+	}
+
 	.shift-card {
 		border: 1px solid #ccc;
 		margin: 20px 0;
@@ -164,8 +171,14 @@
 			display: flex;
 			text-align: right;
 			.shift-footer-right {
+				.subtotal {
+					font-size: 1.2em;
+					font-weight: bold;
+					border-bottom: 1px #454444 dotted;
+				}
 				.shift-total {
-					font-size: 1.7em;
+					font-size: 2.4em;
+					font-weight: bold;
 				}
 				&:first-child {
 					flex-grow: 4;

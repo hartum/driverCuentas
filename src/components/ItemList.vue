@@ -49,7 +49,14 @@
 </template>
 
 <script setup>
-	import { ref, onMounted, defineProps, watch, computed } from 'vue';
+	import {
+		ref,
+		onMounted,
+		defineProps,
+		watch,
+		computed,
+		defineEmits,
+	} from 'vue';
 	import moment from 'moment';
 	import {
 		IonCard,
@@ -82,6 +89,8 @@
 			default: () => moment().endOf('month').format('YYYY-MM-DD HH:mm'),
 		},
 	});
+
+	const emit = defineEmits(['update:totalAmount']);
 
 	const router = useRouter();
 	const settingsStore = useSettingsStore();
@@ -169,6 +178,40 @@
 		return result;
 	});
 
+	const totalAmount = computed(() => {
+		let total = 0;
+		organizedItems.value.forEach((item) => {
+			if (item.type === 'travel') {
+				total += item.amount;
+			} else if (item.type === 'shift') {
+				if (item.modeTotalShift === 'fixTotal') {
+					total += parseFloat(item.totalShift);
+				} else {
+					let shiftTotal = 0;
+					item.children.forEach((child) => {
+						if (child.type === 'travel') {
+							shiftTotal += child.amount;
+						} else if (child.type === 'note') {
+							if (child.noteType === 'income') {
+								shiftTotal += child.amount;
+							} else if (child.noteType === 'expense') {
+								shiftTotal -= child.amount;
+							}
+						}
+					});
+					total += shiftTotal - parseFloat(item.gasoline);
+				}
+			} else if (item.type === 'note') {
+				if (item.noteType === 'income') {
+					total += item.amount;
+				} else if (item.noteType === 'expense') {
+					total -= item.amount;
+				}
+			}
+		});
+		return total.toFixed(2);
+	});
+
 	const navigateTo = (path) => {
 		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
 		router.push(path + now);
@@ -240,5 +283,11 @@
 
 	watch(() => [props.initialDate, props.endDate], loadItems);
 
-	onMounted(loadItems);
+	watch(totalAmount, (newTotal) => {
+		emit('update:totalAmount', newTotal);
+	});
+
+	onMounted(() => {
+		loadItems();
+	});
 </script>
