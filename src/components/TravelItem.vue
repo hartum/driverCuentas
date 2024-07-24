@@ -10,12 +10,10 @@
 
 				<div class="calendar">
 					<em></em>
-					<strong>{{ month(travel.startDate) }}</strong>
-					<span>{{ day(travel.startDate) }}</span>
-				</div>
-
-				<div class="time">
-					{{ hour(travel.startDate) }}
+					<strong>
+						{{ day(travel.startDate) }} {{ month(travel.startDate) }}
+					</strong>
+					<span>{{ hour(travel.startDate) }}</span>
 				</div>
 
 				<span class="money income">
@@ -118,7 +116,7 @@
 	.icon-travel {
 		width: 2em;
 		height: 2em;
-		color: #949494;
+		color: #727272;
 		float: right;
 		right: 20px;
 		transform: translateY(25%) translateX(25%);
@@ -127,14 +125,14 @@
 	.income {
 		color: #087702;
 	}
-
+	//------ Calendar -------
 	div.calendar {
 		float: left;
-		font-size: 0.4em; /* change icon size */
+		font-size: 0.45em; /* change icon size */
 		display: block;
 		position: relative;
-		width: 44px;
-		height: 45px;
+		width: 70px;
+		height: 50px;
 		background-color: #fff;
 		border-radius: 0.6em;
 		border: 1px solid #adadad;
@@ -174,21 +172,5 @@
 		letter-spacing: -0.05em;
 		padding-top: 1.1em;
 		color: #2f2f2f;
-	}
-	div.time {
-		float: left;
-		font-size: 1.5em; /* change icon size */
-		font-weight: bold;
-		display: block;
-		position: relative;
-		padding-top: 0.35em;
-		margin-left: 0.35em;
-		width: 80px;
-		height: 45px;
-		text-align: center;
-		background-color: #fff;
-		border-radius: 0.2em;
-		border: 1px solid #adadad;
-		overflow: hidden;
 	}
 </style>

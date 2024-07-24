@@ -6,12 +6,8 @@
 
 				<div class="calendar">
 					<em></em>
-					<strong>{{ month(note.noteDate) }}</strong>
-					<span>{{ day(note.noteDate) }}</span>
-				</div>
-
-				<div class="time">
-					{{ hour(note.noteDate) }}
+					<strong>{{ day(note.noteDate) }} {{ month(note.noteDate) }}</strong>
+					<span>{{ hour(note.noteDate) }}</span>
 				</div>
 
 				<span
@@ -93,6 +89,12 @@
 		border-bottom: 1px dashed #ccc;
 	}
 
+	.shift-card {
+		ion-item::part(native) {
+			background: transparent;
+		}
+	}
+
 	.money {
 		font-size: 2.4em;
 		vertical-align: text-bottom;
@@ -119,11 +121,11 @@
 	/*------- CALENDAR -------*/
 	div.calendar {
 		float: left;
-		font-size: 0.4em; /* change icon size */
+		font-size: 0.45em; /* change icon size */
 		display: block;
 		position: relative;
-		width: 44px;
-		height: 45px;
+		width: 70px;
+		height: 50px;
 		background-color: #fff;
 		border-radius: 0.6em;
 		border: 1px solid #adadad;
@@ -163,21 +165,5 @@
 		letter-spacing: -0.05em;
 		padding-top: 1.1em;
 		color: #2f2f2f;
-	}
-	div.time {
-		float: left;
-		font-size: 1.5em; /* change icon size */
-		font-weight: bold;
-		display: block;
-		position: relative;
-		padding-top: 0.35em;
-		margin-left: 0.35em;
-		width: 80px;
-		height: 45px;
-		text-align: center;
-		background-color: #fff;
-		border-radius: 0.2em;
-		border: 1px solid #adadad;
-		overflow: hidden;
 	}
 </style>
