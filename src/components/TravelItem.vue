@@ -1,23 +1,25 @@
 <template>
 	<IonItemSliding>
-		<IonItem class="item-travel" button="true" @click="editTravel">
+		<IonItem class="item-travel" lines="none" button="true" @click="editTravel">
 			<IonLabel>
-				<IonIcon
-					:icon="payIcons[travel.payMethod]"
-					size="default"
-					class="icon-travel"
-				></IonIcon>
-
-				<div class="calendar">
-					<em></em>
-					<strong>
-						{{ day(travel.startDate) }} {{ month(travel.startDate) }}
-					</strong>
-					<span>{{ hour(travel.startDate) }}</span>
-				</div>
-
-				<span class="money income">
-					<b>{{ travel.amount }}{{ currency }} </b>
+				<span class="hour-date-container">
+					{{ hour(travel.noteDate) }}
+					<div class="date-container">
+						{{ day(travel.noteDate) }} {{ month(travel.noteDate) }}
+					</div>
+				</span>
+				<span class="money">
+					{{ formattedAmount }}{{ currency }}
+					<div class="pay-method-container">
+						<span v-if="travel.payMethod == 'cash'"> Efectivo </span>
+						<span v-else-if="travel.payMethod == 'card'"> Tarjeta </span>
+						<span v-else-if="travel.payMethod == 'app'"> Aplicación </span>
+						<IonIcon
+							:icon="payIcons[travel.payMethod]"
+							size="default"
+							class="icon-travel"
+						></IonIcon>
+					</div>
 				</span>
 			</IonLabel>
 		</IonItem>
@@ -30,7 +32,7 @@
 </template>
 
 <script setup>
-	import { defineProps, defineEmits } from 'vue';
+	import { defineProps, defineEmits, computed } from 'vue';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -89,11 +91,14 @@
 	const month = (date) => {
 		return moment(date).format('MMM');
 	};
+	const formattedAmount = computed(() => {
+		return props.travel.amount.toFixed(2);
+	});
 </script>
 
 <style scoped lang="scss">
 	ion-item::part(native) {
-		background: rgba(255, 255, 255, 0.8);
+		background: rgba(255, 255, 255, 0.9);
 	}
 	.shift-card {
 		ion-item::part(native) {
@@ -105,72 +110,32 @@
 		line-height: 1.2em;
 		border-bottom: 1px dashed #ccc;
 	}
-
+	.hour-date-container {
+		font-size: 2em;
+		float: left;
+		color: #8f8f8f;
+		.date-container {
+			font-size: 0.5em;
+		}
+	}
 	.money {
-		font-size: 2.4em;
+		font-size: 2em;
 		vertical-align: text-bottom;
+		text-align: right;
 		float: right;
 		color: #666;
-	}
-
-	.icon-travel {
-		width: 2em;
-		height: 2em;
-		color: #727272;
-		float: right;
-		right: 20px;
-		transform: translateY(25%) translateX(25%);
+		.pay-method-container {
+			font-size: 0.5em;
+			color: #8f8f8f;
+			.icon-travel {
+				width: 1em;
+				height: 1em;
+				vertical-align: middle;
+			}
+		}
 	}
 
 	.income {
 		color: #087702;
-	}
-	//------ Calendar -------
-	div.calendar {
-		float: left;
-		font-size: 0.45em; /* change icon size */
-		display: block;
-		position: relative;
-		width: 70px;
-		height: 50px;
-		background-color: #fff;
-		border-radius: 0.6em;
-		border: 1px solid #adadad;
-		overflow: hidden;
-	}
-
-	div.calendar * {
-		display: block;
-		width: 100%;
-		font-size: 2em;
-		font-weight: bold;
-		font-style: normal;
-		text-align: center;
-	}
-
-	div.calendar strong {
-		font-size: 1.5em;
-		position: absolute;
-		top: 0;
-		text-transform: uppercase;
-		padding: 0.2em 0;
-		color: #fff;
-		background-color: #696868;
-		border-bottom: 1px dashed #fff;
-		box-shadow: 0 2px 0 #696868;
-	}
-
-	div.calendar em {
-		position: absolute;
-		bottom: 0.3em;
-		color: #2f2f2f;
-	}
-
-	div.calendar span {
-		width: 100%;
-		font-size: 2.8em;
-		letter-spacing: -0.05em;
-		padding-top: 1.1em;
-		color: #2f2f2f;
 	}
 </style>

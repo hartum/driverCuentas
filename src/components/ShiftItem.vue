@@ -4,16 +4,15 @@
 			<IonCardTitle class="shift-title">
 				<IonItemSliding>
 					<IonItem button="true" lines="none" @click="editShift">
-						<IonIcon
-							:icon="timeOutline"
-							color="primary"
-							class="shift-header-icon"
-							size="large"
-						/>
-						<span class="shift-tittle-info"
-							>{{ formatTime(shift.startDate) }}h -
-							{{ formatTime(shift.endDate) }}h</span
-						>
+						<div class="shift-tittle-info">
+							{{ formatTime(shift.startDate) }}
+							<IonIcon
+								:icon="timeOutline"
+								class="shift-header-icon"
+								size="large"
+							/>
+							{{ formatTime(shift.endDate) }}
+						</div>
 					</IonItem>
 					<IonItemOptions side="end">
 						<IonItemOption color="danger" @click="confirmRemoveShift($event)">
@@ -23,35 +22,45 @@
 				</IonItemSliding>
 			</IonCardTitle>
 		</IonCardHeader>
+
 		<IonCardContent><slot></slot></IonCardContent>
-		<div class="shift-footer ion-padding">
-			<div>
-				<div v-if="shift.modeKM == 'fix'">
-					<b>{{ shift.totalKm }}</b> km
-					<IonIcon :icon="timerOutline"></IonIcon>
-				</div>
-				<div v-else>
-					<b>{{ shift.finalKm - shift.initialKm }}</b> km
-					<IonIcon :icon="timerOutline"></IonIcon>
-				</div>
-			</div>
-			<div class="shift-footer-right">
+		<div class="shift-footer">
+			<div class="subtotal-container">
 				<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
-					{{ shift.totalShift }} {{ currency }}
+					<div class="right">{{ shift.totalShift }} {{ currency }}</div>
 				</div>
 				<div v-else>
 					<div class="subtotal">
-						{{ subtotalBeforeGasoline }}{{ currency }} -
-						<span class="expense">{{ shift.gasoline }}{{ currency }}</span
-						><IonIcon :icon="water"></IonIcon>
+						<span class="subtotal-title">Subtotal</span>
+						<div class="right">{{ subtotalBeforeGasoline }}{{ currency }}</div>
+					</div>
+					<div class="subtotal" v-if="shift.gasoline > 0">
+						<span class="subtotal-title"> Gasolina </span>
+						<div class="right">-{{ shift.gasoline }}{{ currency }}</div>
 					</div>
 					<div
 						class="shift-total"
-						:class="calculatedTotal < 0 ? 'expense' : 'income'"
+						:class="calculatedTotal < 0 ? 'expense' : ''"
 					>
-						{{ calculatedTotal }} {{ currency }}
+						<div class="right">{{ calculatedTotal }}{{ currency }}</div>
 					</div>
 				</div>
+			</div>
+			<div
+				v-if="shift.modeKM == 'fix' && shift.totalKm > 0"
+				class="ion-padding km-container"
+			>
+				Kilometros
+				<div class="right">{{ shift.totalKm }} km</div>
+
+				<IonIcon :icon="timerOutline"></IonIcon>
+			</div>
+			<div
+				v-else-if="shift.finalKm - shift.initialKm > 0"
+				class="ion-padding km-container"
+			>
+				Kilometros <IonIcon :icon="timerOutline" class="icon"></IonIcon>
+				<div class="right">{{ shift.finalKm - shift.initialKm }} Km</div>
 			</div>
 		</div>
 	</IonCard>
@@ -132,14 +141,7 @@
 		background: transparent;
 	}
 	ion-card {
-		--background: rgba(255, 255, 255, 0.8);
-	}
-	.income {
-		color: #087702;
-	}
-
-	.expense {
-		color: #bc0404;
+		--background: rgba(255, 255, 255, 0.9);
 	}
 
 	.shift-card {
@@ -147,45 +149,73 @@
 		margin: 20px 0;
 		.shift-header {
 			border-bottom: 1px #ccc solid;
-			background-color: #f8f8ff;
+			/*background-color: #d8d8d8;*/
 			text-align: center;
 			padding-left: 0;
 			padding-right: 0;
 			.shift-title {
 				.shift-tittle-info {
-					font-size: 28px;
+					font-size: 2.3em;
 					font-weight: 300 !important;
-					color: var(--ion-color-primary);
+					text-align: center;
+					width: 100%;
+					color: #666;
 				}
 				.shift-header-icon {
-					vertical-align: bottom;
-					margin: 0 9px 0 0;
+					vertical-align: middle;
+					width: 1.5em;
+					height: 1.5em;
+					margin: -5px 0 0 0;
 				}
+			}
+		}
+		.km-container {
+			border-top: 1px #ccc solid;
+			font-size: 1.3em;
+			border-bottom: 1px #d8d8d8 solid;
+			color: #8f8f8f;
+			.icon {
+				vertical-align: bottom;
+			}
+			.right {
+				float: right;
+				text-align: right;
+				padding-right: 2em;
 			}
 		}
 		.card-content-ios {
 			padding: 0px;
 		}
 		.shift-footer {
-			border-top: 1px #ccc solid;
-			display: flex;
-			text-align: right;
-			.shift-footer-right {
+			background-color: rgba(255, 255, 255, 0.9);
+			.subtotal-container {
+				border-top: 1px #666 dashed;
+				font-size: 2.4em;
+				color: #8f8f8f;
+
 				.subtotal {
-					font-size: 1.2em;
-					font-weight: bold;
-					border-bottom: 1px #454444 dotted;
+					padding: 0em 0.5em 0.2em 0.5em;
+					.subtotal-title {
+						font-size: 0.6em;
+						font-weight: 300;
+						.icon {
+							vertical-align: middle;
+						}
+					}
+				}
+
+				.right {
+					float: right;
+					text-align: right;
+					padding-right: 1em;
 				}
 				.shift-total {
-					font-size: 2.4em;
-					font-weight: bold;
-				}
-				&:first-child {
-					flex-grow: 4;
-				}
-				&:last-child {
-					flex-grow: 1;
-					padding-right: 20px;
+					border-top: 1px solid #ccc;
+					padding-top: 0.3em;
+					padding-bottom: 1.5em;
+					padding-right: 0.5em;
+					color: #333;
+					/*background-color: #d8d8d8;*/
 				}
 			}
 		}

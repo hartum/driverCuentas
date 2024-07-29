@@ -1,24 +1,26 @@
 <template>
 	<IonItemSliding>
-		<IonItem class="item-note" button="true" @click="editNote">
+		<IonItem class="item-note" button="true" lines="none" @click="editNote">
 			<IonLabel>
-				<IonIcon :icon="readerOutline" size="small" class="icon-note"></IonIcon>
-
-				<div class="calendar">
-					<em></em>
-					<strong>{{ day(note.noteDate) }} {{ month(note.noteDate) }}</strong>
-					<span>{{ hour(note.noteDate) }}</span>
-				</div>
-
-				<span
-					class="money"
-					:class="{
-						income: note.noteType == 'income',
-						expense: note.noteType == 'expense',
-					}"
-					v-if="note.amount > 0"
-				>
-					<b>{{ note.amount }}{{ currency }} </b>
+				<span class="hour-date-container">
+					{{ hour(note.noteDate) }}
+					<div class="date-container">
+						{{ day(note.noteDate) }} {{ month(note.noteDate) }}
+					</div>
+				</span>
+				<span class="money" v-if="note.amount > 0">
+					<span v-if="note.noteType == 'expense'">-</span>
+					{{ formattedAmount }}{{ currency }}
+					<div class="type-note-container">
+						<span v-if="note.noteType == 'income'"> Ingreso </span>
+						<span v-else-if="note.noteType == 'expense'"> Gasto </span>
+						<span v-else-if="note.noteType == 'other'"> Nota </span>
+						<IonIcon
+							:icon="readerOutline"
+							size="small"
+							class="icon-note"
+						></IonIcon>
+					</div>
 				</span>
 			</IonLabel>
 		</IonItem>
@@ -31,7 +33,7 @@
 </template>
 
 <script setup>
-	import { defineProps, defineEmits } from 'vue';
+	import { defineProps, defineEmits, computed } from 'vue';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -77,11 +79,15 @@
 	const month = (date) => {
 		return moment(date).format('MMM');
 	};
+
+	const formattedAmount = computed(() => {
+		return props.note.amount.toFixed(2);
+	});
 </script>
 
 <style scoped lang="scss">
 	ion-item::part(native) {
-		background: rgba(255, 255, 255, 0.8);
+		background: rgba(255, 255, 255, 0.9);
 	}
 	.item-note {
 		color: #535353;
@@ -93,22 +99,32 @@
 		ion-item::part(native) {
 			background: transparent;
 		}
+		.item-note {
+			border-bottom: none;
+		}
 	}
-
+	.hour-date-container {
+		font-size: 2em;
+		float: left;
+		color: #8f8f8f;
+		.date-container {
+			font-size: 0.5em;
+		}
+	}
 	.money {
-		font-size: 2.4em;
+		font-size: 2em;
 		vertical-align: text-bottom;
+		text-align: right;
 		float: right;
-		color: #666;
-	}
-
-	.icon-note {
-		width: 2em;
-		height: 2em;
-		color: #949494;
-		float: right;
-		right: 20px;
-		transform: translateY(15%) translateX(25%);
+		.type-note-container {
+			font-size: 0.5em;
+			color: #8f8f8f;
+			.icon-note {
+				width: 1em;
+				height: 1em;
+				vertical-align: middle;
+			}
+		}
 	}
 
 	.income {
@@ -117,53 +133,5 @@
 
 	.expense {
 		color: #bc0404;
-	}
-	/*------- CALENDAR -------*/
-	div.calendar {
-		float: left;
-		font-size: 0.45em; /* change icon size */
-		display: block;
-		position: relative;
-		width: 70px;
-		height: 50px;
-		background-color: #fff;
-		border-radius: 0.6em;
-		border: 1px solid #adadad;
-		overflow: hidden;
-	}
-
-	div.calendar * {
-		display: block;
-		width: 100%;
-		font-size: 2em;
-		font-weight: bold;
-		font-style: normal;
-		text-align: center;
-	}
-
-	div.calendar strong {
-		font-size: 1.5em;
-		position: absolute;
-		top: 0;
-		text-transform: uppercase;
-		padding: 0.2em 0;
-		color: #fff;
-		background-color: #696868;
-		border-bottom: 1px dashed #fff;
-		box-shadow: 0 2px 0 #696868;
-	}
-
-	div.calendar em {
-		position: absolute;
-		bottom: 0.3em;
-		color: #2f2f2f;
-	}
-
-	div.calendar span {
-		width: 100%;
-		font-size: 2.8em;
-		letter-spacing: -0.05em;
-		padding-top: 1.1em;
-		color: #2f2f2f;
 	}
 </style>

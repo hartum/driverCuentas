@@ -182,7 +182,7 @@
 				isNaN(parseFloat(form.value.amount)))
 		) {
 			toastMessage.value =
-				'El importe debe ser mayor que 0 para ingresos o gastos';
+				'El importe debe ser mayor que 0 para ingresos ó gastos';
 			showToast.value = true;
 			return;
 		}

@@ -258,7 +258,7 @@
 	} from '@/services/travelService'; // Importar el servicio
 
 	const settingsStore = useSettingsStore();
-	const amountForm = ref(4);
+	const amountForm = ref('');
 	const currency = ref('€');
 	const pay = ref('app');
 	const datetimeStart = ref(moment().format('YYYY-MM-DDTHH:mm'));
@@ -321,7 +321,10 @@
 	// Guardar el viaje
 	const handleSave = async () => {
 		// Validar que la cantidad sea mayor que cero
-		if (parseFloat(amountForm.value) <= 0) {
+		if (
+			parseFloat(amountForm.value) <= 0 ||
+			isNaN(parseFloat(amountForm.value))
+		) {
 			showToast.value = true;
 			return;
 		}
