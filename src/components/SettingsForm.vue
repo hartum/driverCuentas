@@ -286,6 +286,13 @@
 </script>
 
 <style scoped lang="scss">
+	ion-content::part(background) {
+		background: url('/bg_notes_form.jpg') center center / cover no-repeat;
+		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
+	}
+	.list-ios {
+		background: rgba(255, 255, 255, 0.9);
+	}
 	ion-toast {
 		--background: #ffdd00;
 		--color: #000000;

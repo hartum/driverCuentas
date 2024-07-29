@@ -22,7 +22,7 @@
 					<IonIcon :icon="reader"></IonIcon>
 				</IonSegmentButton>
 			</IonSegment>
-			<IonList lines="none" :inset="true">
+			<IonList lines="none" :inset="true" mode="ios">
 				<IonItem>
 					<IonLabel>Fecha:</IonLabel>
 					<DateTimePicker
