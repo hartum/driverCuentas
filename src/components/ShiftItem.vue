@@ -80,7 +80,7 @@
 		IonCardHeader,
 		IonCardTitle,
 	} from '@ionic/vue';
-	import { trash, timeOutline, timerOutline, water } from 'ionicons/icons';
+	import { trash, timeOutline, timerOutline } from 'ionicons/icons';
 
 	const props = defineProps({
 		shift: {

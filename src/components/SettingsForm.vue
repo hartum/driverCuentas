@@ -11,11 +11,9 @@
 					<ion-list-header>
 						<ion-label>El mapa comienza aquí</ion-label>
 					</ion-list-header>
-					<ion-nav-link router-direction="forward" :component="component">
-						<ion-item href="#" @click.prevent>
-							<ion-label>{{ mapInitialLocation }}</ion-label>
-						</ion-item>
-					</ion-nav-link>
+					<ion-item button="true" @click="navigateTo('/map/')">
+						<ion-label>{{ mapInitialLocation }}</ion-label>
+					</ion-item>
 				</ion-list>
 			</div>
 			<div>
@@ -120,6 +118,7 @@
 </template>
 
 <script setup>
+	import moment from 'moment';
 	import {
 		IonPage,
 		IonHeader,
@@ -143,14 +142,15 @@
 		IonActionSheet,
 		IonInput,
 		IonButton,
-		IonNavLink,
+		//IonNavLink,
 	} from '@ionic/vue';
 	import { trash, addCircle } from 'ionicons/icons';
-	import { ref, markRaw } from 'vue';
-	import SettingsMap from './SettingsMap.vue';
+	import { ref } from 'vue';
+	import { useRouter } from 'vue-router';
+	//import SettingsMap from './SettingsMap.vue';
 
 	// Crear una referencia para el componente raíz
-	const component = ref(markRaw(SettingsMap));
+	//const component = ref(markRaw(SettingsMap));
 
 	let selectedCurrency = ref('EUR'); // Moneda por defecto es Euro
 	let selectedDay = ref('lunes'); // Día por defecto es lunes
@@ -187,6 +187,7 @@
 	const actionSheetOpen = ref(false);
 	const actionSheetHeader = ref('');
 	const serviceToRemove = ref(null);
+	const router = useRouter();
 	let slidingItem = ref(null);
 
 	const addService = () => {
@@ -230,6 +231,11 @@
 
 	const handleReorder = (event) => {
 		services.value = event.detail.complete(services.value);
+	};
+
+	const navigateTo = (path) => {
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push(path + now);
 	};
 
 	const actionSheetButtons = [

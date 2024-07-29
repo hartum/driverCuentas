@@ -1,67 +1,73 @@
 <template>
 	<IonPage>
-		<IonHeader>
-			<ion-toolbar>
-				<ion-buttons slot="secondary">
-					<ion-button fill="outline" @click="handleCancel">
-						<ion-icon slot="start" :icon="closeCircleOutline"></ion-icon>
-						Cancelar
-					</ion-button>
-				</ion-buttons>
-				<ion-buttons slot="primary">
-					<ion-button fill="solid" @click="handleConfirm">
-						Aceptar
-						<ion-icon slot="end" :icon="checkmarkCircle"></ion-icon>
-					</ion-button>
-				</ion-buttons>
-				<ion-title>Dirección Inicio</ion-title>
-			</ion-toolbar>
-			<ion-nav-link router-direction="forward" id="modal-nav"></ion-nav-link>
-		</IonHeader>
 		<IonContent class="travel-container" color="light">
-			<MapViewer @mapUpdated="handleMapUpdated" />
+			<MapViewer @mapUpdated="handleMapUpdated" :initialData="mapDetails" />
 		</IonContent>
+		<IonFooter>
+			<IonToolbar>
+				<ion-grid>
+					<ion-row>
+						<ion-col>
+							<ionButton
+								fill="outline"
+								expand="block"
+								shape="round"
+								mode="ios"
+								@click="handleCancelMap"
+							>
+								Cancelar
+							</ionButton>
+						</ion-col>
+						<ion-col>
+							<ionButton
+								expand="block"
+								shape="round"
+								mode="ios"
+								@click="handleSaveMap"
+							>
+								Elige Ubicación
+							</ionButton>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+			</IonToolbar>
+		</IonFooter>
 	</IonPage>
 </template>
 
 <script setup>
+	import moment from 'moment';
 	import {
 		IonPage,
-		IonHeader,
 		IonToolbar,
-		IonTitle,
 		IonContent,
-		IonButtons,
 		IonButton,
-		IonIcon,
-		IonNavLink,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonFooter,
 	} from '@ionic/vue';
-	import { closeCircleOutline, checkmarkCircle } from 'ionicons/icons';
 	import MapViewer from '../components/MapViewer.vue';
 	import { ref } from 'vue';
+	import { useRouter } from 'vue-router';
+	import { useSettingsStore } from '../store/settingsStore';
 
-	const latitude = ref(null);
-	const longitude = ref(null);
-	const address = ref(null);
-	const zoom = ref(null);
+	const settingsStore = useSettingsStore();
+	const mapDetails = ref(settingsStore.mapDetails);
+	const router = useRouter();
 
-	// Function to pop to root
-	const navLink = document.getElementById('modal-nav');
-	const handleCancel = async () => {
-		navLink.popToRoot();
+	const handleCancelMap = async () => {
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push('/tabs/tab3/' + now);
 	};
-	const handleConfirm = async () => {
-		console.log('Save info and back');
-		navLink.popToRoot();
+	const handleSaveMap = async () => {
+		settingsStore.setMapDetails(mapDetails.value);
+		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+		router.push('/tabs/tab3/' + now);
 	};
 	// Handler for the mapUpdated event
-	const handleMapUpdated = (details) => {
-		const { latitude: lat, longitude: lon, address: addr, zoom: zm } = details;
-		latitude.value = lat;
-		longitude.value = lon;
-		address.value = addr;
-		zoom.value = zm;
-		console.log('Map updated:', details);
+	const handleMapUpdated = (mapEventDetails) => {
+		mapDetails.value = mapEventDetails;
 	};
 </script>
 

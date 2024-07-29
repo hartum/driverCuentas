@@ -24,7 +24,7 @@ const routes = [
         component: () => import('@/views/Tab2Page.vue')
       },
       {
-        path: 'tab3',
+        path: 'tab3/:refresh?',
         component: () => import('@/views/SettingsView.vue')
       }
     ]
@@ -52,6 +52,10 @@ const routes = [
   {
     path: '/test',
     component: () => import('@/views/TestPageView.vue')
+  },
+  {
+    path: '/map/:refresh?',
+    component: () => import('@/components/SettingsMap.vue')
   }
   
 ]
