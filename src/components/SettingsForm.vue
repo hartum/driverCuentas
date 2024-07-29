@@ -21,7 +21,7 @@
 					<ion-list-header>
 						<ion-label>Primer día de la semana</ion-label>
 					</ion-list-header>
-					<ion-radio-group v-model="selectedDay">
+					<ion-radio-group v-model="selectedDay" @ionChange="updateStartDay">
 						<ion-item>
 							<IonRadio
 								justify="start"
@@ -56,6 +56,7 @@
 							v-model="selectedCurrency"
 							ok-text="OK"
 							cancel-text="Cancelar"
+							@ionChange="updateCurrency"
 						>
 							<ion-select-option
 								v-for="currency in currencies"
@@ -114,10 +115,23 @@
 			:is-open="actionSheetOpen"
 			@didDismiss="handleActionSheetDismiss"
 		></ion-action-sheet>
+		<ion-toast
+			:is-open="showToast"
+			message="Por favor, escribe un nombre para el nuevo servicio"
+			:duration="1500"
+			:icon="warningOutline"
+			@didDismiss="showToast = false"
+			position="bottom"
+			swipe-gesture="vertical"
+		></ion-toast>
 	</IonPage>
 </template>
 
 <script setup>
+	import { ref, onMounted, computed } from 'vue';
+	import { useRouter } from 'vue-router';
+	import { useSettingsStore } from '@/store/settingsStore';
+	import { storeToRefs } from 'pinia';
 	import moment from 'moment';
 	import {
 		IonPage,
@@ -142,21 +156,27 @@
 		IonActionSheet,
 		IonInput,
 		IonButton,
-		//IonNavLink,
+		IonToast,
 	} from '@ionic/vue';
-	import { trash, addCircle } from 'ionicons/icons';
-	import { ref } from 'vue';
-	import { useRouter } from 'vue-router';
-	//import SettingsMap from './SettingsMap.vue';
+	import { trash, addCircle, warningOutline } from 'ionicons/icons';
 
-	// Crear una referencia para el componente raíz
-	//const component = ref(markRaw(SettingsMap));
+	const router = useRouter();
+	const settingsStore = useSettingsStore();
+	const { startDayOfWeek, selectedCurrency, servicesList, mapDetails } =
+		storeToRefs(settingsStore);
 
-	let selectedCurrency = ref('EUR'); // Moneda por defecto es Euro
-	let selectedDay = ref('lunes'); // Día por defecto es lunes
-	let mapInitialLocation = ref(
-		'Avenida ramon y cajal 13, Fuengirola, Málaga. Algo un poco mas largo'
-	); // Ubicación inicial del mapa
+	const selectedDay = ref(startDayOfWeek.value);
+	const services = ref(servicesList.value);
+	const newService = ref('');
+	const actionSheetOpen = ref(false);
+	const actionSheetHeader = ref('');
+	const serviceToRemove = ref(null);
+	let slidingItem = ref(null);
+	const showToast = ref(false);
+
+	const mapInitialLocation = computed(() => {
+		return mapDetails.value.address;
+	});
 
 	const currencies = ref([
 		{ name: 'Euro (€)', code: 'EUR' },
@@ -182,18 +202,25 @@
 		{ name: 'Sol peruano (PEN)', code: 'PEN' },
 	]);
 
-	const services = ref(['Privado', 'Uber', 'Bolt', 'Lyft', 'Taxi']);
-	const newService = ref('');
-	const actionSheetOpen = ref(false);
-	const actionSheetHeader = ref('');
-	const serviceToRemove = ref(null);
-	const router = useRouter();
-	let slidingItem = ref(null);
+	onMounted(() => {
+		settingsStore.loadSettings();
+	});
+
+	const updateStartDay = () => {
+		settingsStore.setStartDayOfWeek(selectedDay.value);
+	};
+
+	const updateCurrency = () => {
+		settingsStore.setSelectedCurrency(selectedCurrency.value);
+	};
 
 	const addService = () => {
 		if (newService.value.trim()) {
 			services.value.push(newService.value.trim());
+			settingsStore.setServicesList(services.value);
 			newService.value = '';
+		} else {
+			showToast.value = true;
 		}
 	};
 
@@ -207,6 +234,7 @@
 	const removeService = () => {
 		if (serviceToRemove.value !== null && services.value.length > 1) {
 			services.value.splice(serviceToRemove.value, 1);
+			settingsStore.setServicesList(services.value);
 			serviceToRemove.value = null;
 		}
 		closeSlidingItem();
@@ -231,6 +259,7 @@
 
 	const handleReorder = (event) => {
 		services.value = event.detail.complete(services.value);
+		settingsStore.setServicesList(services.value);
 	};
 
 	const navigateTo = (path) => {
@@ -256,4 +285,9 @@
 	];
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+	ion-toast {
+		--background: #ffdd00;
+		--color: #000000;
+	}
+</style>
