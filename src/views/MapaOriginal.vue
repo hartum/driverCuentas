@@ -1,16 +1,16 @@
 <template>
 	<ion-page>
-		<ion-header>
+		<IonHeader mode="ios">
 			<ion-toolbar>
 				<ion-title>Tab 1</ion-title>
 			</ion-toolbar>
-		</ion-header>
+		</IonHeader>
 		<ion-content :fullscreen="true">
-			<ion-header collapse="condense">
+			<IonHeader collapse="condense" mode="ios">
 				<ion-toolbar>
 					<ion-title size="large">Tab 1</ion-title>
 				</ion-toolbar>
-			</ion-header>
+			</IonHeader>
 
 			<div ref="mapContainer" class="map">
 				<div :class="{ marker: !isMoving, 'marker-active': isMoving }">

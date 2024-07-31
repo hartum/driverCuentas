@@ -1,16 +1,16 @@
 <template>
 	<ion-page>
-		<ion-header>
+		<IonHeader mode="ios">
 			<ion-toolbar>
 				<ion-title>Tab 1</ion-title>
 			</ion-toolbar>
-		</ion-header>
+		</IonHeader>
 		<ion-content>
-			<ion-header>
+			<IonHeader mode="ios">
 				<ion-toolbar>
 					<ion-title size="large">Tab 1</ion-title>
 				</ion-toolbar>
-			</ion-header>
+			</IonHeader>
 			<MapViewer />
 		</ion-content>
 	</ion-page>

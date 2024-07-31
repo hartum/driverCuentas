@@ -1,6 +1,6 @@
 <template>
 	<IonPage class="container">
-		<IonHeader>
+		<IonHeader mode="ios">
 			<IonToolbar>
 				<IonTitle>Tu Inicio</IonTitle>
 			</IonToolbar>

@@ -1,6 +1,6 @@
 <template>
 	<ionPage class="container ion-padding">
-		<IonHeader>
+		<IonHeader mode="ios">
 			<h1>DriverCuentas</h1>
 			<h2>La app para controlar tus viajes</h2>
 		</IonHeader>

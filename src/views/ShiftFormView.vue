@@ -1,6 +1,6 @@
 <template>
 	<IonPage>
-		<IonHeader>
+		<IonHeader mode="ios">
 			<IonToolbar>
 				<IonTitle>{{
 					modeForm === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
@@ -11,34 +11,49 @@
 			<IonCard class="shift-card">
 				<IonCardHeader class="shift-header">
 					<IonCardTitle class="shift-title">
-						<IonIcon
-							:icon="timeOutline"
-							class="shift-header-icon"
-							size="large"
-						/>
-						{{ formatTime(form.startDate) }} - {{ formatTime(form.endDate) }}
+						<div class="shift-tittle-info">
+							{{ formatTime(form.startDate) }}
+							<IonIcon
+								:icon="timeOutline"
+								class="shift-header-icon"
+								size="large"
+							/>
+							{{ formatTime(form.endDate) }}
+						</div>
 					</IonCardTitle>
 				</IonCardHeader>
-				<div class="shift-footer ion-padding">
-					<div>
-						<div v-if="shouldShowKmInfo">
-							<IonIcon :icon="timerOutline" />
-							<b>{{ kmValue }}</b> Km
-						</div>
-						<div v-if="form.gasoline > 0">
-							<IonIcon :icon="waterOutline" />
-							<b>{{ form.gasoline }}</b> {{ currency }}
-						</div>
-					</div>
-					<div class="shift-footer-right">
-						<div>SubTotal</div>
+				<div v-if="shouldShowKmInfo" class="ion-padding km-container">
+					Kilometros
+					<div class="right">{{ kmValue }} km</div>
+					<IonIcon :icon="timerOutline"></IonIcon>
+				</div>
+
+				<div class="shift-footer">
+					<div class="subtotal-container">
+						<p class="fake-item">Viajes en el turno...</p>
 						<div v-if="form.modeTotalShift === 'fixTotal'" class="shift-total">
-							{{ form.totalShift }} {{ currency }}
+							<div class="right">{{ form.totalShift }} {{ currency }}</div>
 						</div>
-						<div v-else><i>*calculado</i> {{ currency }}</div>
+						<div v-else>
+							<div class="subtotal">
+								<span class="subtotal-title">Subtotal</span>
+								<div class="right">{{ calculatedSubtotal }}{{ currency }}</div>
+							</div>
+							<div class="subtotal" v-if="form.gasoline > 0">
+								<span class="subtotal-title"> Gasolina </span>
+								<div class="right">-{{ form.gasoline }}{{ currency }}</div>
+							</div>
+							<div
+								class="shift-total"
+								:class="calculatedTotal < 0 ? 'expense' : ''"
+							>
+								<div class="right">{{ calculatedTotal }}{{ currency }}</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</IonCard>
+
 			<IonAccordionGroup
 				value="shiftTime"
 				expand="inset"
@@ -282,12 +297,7 @@
 		IonButton,
 		IonToast,
 	} from '@ionic/vue';
-	import {
-		timeOutline,
-		timerOutline,
-		waterOutline,
-		warningOutline,
-	} from 'ionicons/icons';
+	import { timeOutline, timerOutline, warningOutline } from 'ionicons/icons';
 	import { ref, onMounted, computed } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
@@ -322,6 +332,21 @@
 	const modeForm = ref(
 		moment(shiftId.value, moment.ISO_8601, true).isValid() ? 'create' : 'edit'
 	);
+
+	const calculatedSubtotal = computed(() => {
+		// En un formulario de creación/edición, no tenemos los viajes reales,
+		// así que podríamos mostrar un valor de marcador de posición o 0
+		return '0.00';
+	});
+
+	const calculatedTotal = computed(() => {
+		if (form.value.modeTotalShift === 'fixTotal') {
+			return parseFloat(form.value.totalShift).toFixed(2);
+		}
+		return (parseFloat(calculatedSubtotal.value) - form.value.gasoline).toFixed(
+			2
+		);
+	});
 
 	const shouldShowKmInfo = computed(() => {
 		return (
@@ -428,33 +453,88 @@
 	}
 	.shift-card {
 		border: 1px solid #ccc;
+		/*margin: 20px 0;*/
 		.shift-header {
 			border-bottom: 1px #ccc solid;
-			background-color: #f8f8ff;
+			background-color: rgba(255, 255, 255, 0.8);
 			text-align: center;
+			padding-left: 0;
+			padding-right: 0;
 			.shift-title {
-				font-weight: 300 !important;
+				.shift-tittle-info {
+					font-size: 1.3em;
+					font-weight: 300 !important;
+					text-align: center;
+					width: 100%;
+					color: #666;
+				}
 				.shift-header-icon {
-					vertical-align: bottom;
-					margin: 0 9px 0 -15px;
+					vertical-align: middle;
+					width: 1.5em;
+					height: 1.5em;
+					margin: -5px 0 0 0;
 				}
 			}
 		}
-		.shift-footer {
-			display: flex;
-			text-align: left;
-			font-size: 1.5em;
-			.shift-footer-right {
+
+		.km-container {
+			background: #eaeaea;
+			font-size: 1.3em;
+			border-bottom: 1px #d8d8d8 solid;
+			color: #8f8f8f;
+			.icon {
+				vertical-align: bottom;
+			}
+			.right {
+				float: right;
 				text-align: right;
+				padding-right: 1.7em;
+			}
+		}
+		.shift-footer {
+			background-color: rgba(255, 255, 255, 0.8);
+
+			.subtotal-container {
+				padding-top: 0.2em;
+				padding-bottom: 0.2em;
+				border-top: 1px #666 dashed;
+				font-size: 2.4em;
+				color: #8f8f8f;
+				background: #eaeaea;
+				margin-bottom: -7px;
+
+				.fake-item {
+					font-size: 0.5em;
+					background: transparent;
+					border-bottom: 1px #666 dashed;
+					text-align: center;
+					padding-bottom: 1em;
+				}
+
+				.subtotal {
+					padding: 0em 0.4em 0.2em 0.5em;
+
+					.subtotal-title {
+						font-size: 0.6em;
+						font-weight: 300;
+						.icon {
+							vertical-align: middle;
+						}
+					}
+				}
+
+				.right {
+					float: right;
+					text-align: right;
+					padding-right: 1em;
+				}
 				.shift-total {
-					font-size: 1.2em;
-				}
-				:first-child {
-					flex-grow: 4;
-				}
-				&:last-child {
-					flex-grow: 1;
-					padding-right: 20px;
+					border-top: 1px solid #ccc;
+					padding-top: 0.3em;
+					padding-bottom: 1.5em;
+					padding-right: 0.4em;
+					color: #333;
+					background-color: #fff;
 				}
 			}
 		}

@@ -90,7 +90,8 @@
 
 	.shift-card {
 		ion-item::part(native) {
-			background: transparent;
+			/*background: transparent;*/
+			background: #eaeaea;
 		}
 		.item-note {
 			border-bottom: none;

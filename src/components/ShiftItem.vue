@@ -22,7 +22,22 @@
 				</IonItemSliding>
 			</IonCardTitle>
 		</IonCardHeader>
+		<div
+			v-if="shift.modeKM == 'fix' && shift.totalKm > 0"
+			class="ion-padding km-container"
+		>
+			Kilometros
+			<div class="right">{{ shift.totalKm }} km</div>
 
+			<IonIcon :icon="timerOutline"></IonIcon>
+		</div>
+		<div
+			v-else-if="shift.finalKm - shift.initialKm > 0"
+			class="ion-padding km-container"
+		>
+			Kilometros <IonIcon :icon="timerOutline" class="icon"></IonIcon>
+			<div class="right">{{ shift.finalKm - shift.initialKm }} Km</div>
+		</div>
 		<IonCardContent><slot></slot></IonCardContent>
 		<div class="shift-footer">
 			<div class="subtotal-container">
@@ -45,22 +60,6 @@
 						<div class="right">{{ calculatedTotal }}{{ currency }}</div>
 					</div>
 				</div>
-			</div>
-			<div
-				v-if="shift.modeKM == 'fix' && shift.totalKm > 0"
-				class="ion-padding km-container"
-			>
-				Kilometros
-				<div class="right">{{ shift.totalKm }} km</div>
-
-				<IonIcon :icon="timerOutline"></IonIcon>
-			</div>
-			<div
-				v-else-if="shift.finalKm - shift.initialKm > 0"
-				class="ion-padding km-container"
-			>
-				Kilometros <IonIcon :icon="timerOutline" class="icon"></IonIcon>
-				<div class="right">{{ shift.finalKm - shift.initialKm }} Km</div>
 			</div>
 		</div>
 	</IonCard>
@@ -170,7 +169,7 @@
 			}
 		}
 		.km-container {
-			border-top: 1px #ccc solid;
+			background: #eaeaea;
 			font-size: 1.3em;
 			border-bottom: 1px #d8d8d8 solid;
 			color: #8f8f8f;
@@ -180,7 +179,7 @@
 			.right {
 				float: right;
 				text-align: right;
-				padding-right: 2em;
+				padding-right: 1.7em;
 			}
 		}
 		.card-content-ios {
@@ -189,12 +188,17 @@
 		.shift-footer {
 			background-color: rgba(255, 255, 255, 0.8);
 			.subtotal-container {
+				padding-top: 0.2em;
+				padding-bottom: 0.2em;
 				border-top: 1px #666 dashed;
 				font-size: 2.4em;
 				color: #8f8f8f;
+				background: #eaeaea;
+				margin-bottom: -7px;
 
 				.subtotal {
-					padding: 0em 0.5em 0.2em 0.5em;
+					padding: 0em 0.4em 0.2em 0.5em;
+
 					.subtotal-title {
 						font-size: 0.6em;
 						font-weight: 300;
@@ -213,9 +217,9 @@
 					border-top: 1px solid #ccc;
 					padding-top: 0.3em;
 					padding-bottom: 1.5em;
-					padding-right: 0.5em;
+					padding-right: 0.4em;
 					color: #333;
-					/*background-color: #d8d8d8;*/
+					background-color: #fff;
 				}
 			}
 		}

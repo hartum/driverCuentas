@@ -1,6 +1,6 @@
 <template>
 	<ion-page>
-		<IonHeader v-show="!isMapVisible">
+		<IonHeader v-show="!isMapVisible" mode="ios">
 			<IonToolbar>
 				<IonTitle>
 					{{ modeForm === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
@@ -92,7 +92,7 @@
 						</ion-item>
 						<div class="ion-padding payMode-container" slot="content">
 							<ion-segment v-model="pay">
-								<ion-segment-button value="app">
+								<ion-segment-button value="app" mode="ios">
 									<ion-label>App</ion-label>
 									<ion-icon
 										:icon="payIcons['app']"

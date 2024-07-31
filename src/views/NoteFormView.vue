@@ -1,6 +1,6 @@
 <template>
 	<IonPage>
-		<IonHeader>
+		<IonHeader mode="ios">
 			<IonToolbar>
 				<IonTitle>{{
 					modeForm === 'edit' ? 'Editar Nota' : 'Nueva Nota'
@@ -11,15 +11,15 @@
 			<IonSegment v-model="form.noteType" mode="ios">
 				<IonSegmentButton value="income" mode="ios">
 					<IonLabel>Ingreso</IonLabel>
-					<IonIcon :icon="thumbsUp"></IonIcon>
+					<IonIcon :icon="thumbsUp" class="icons"></IonIcon>
 				</IonSegmentButton>
 				<IonSegmentButton value="expense" mode="ios">
 					<IonLabel>Gasto</IonLabel>
-					<IonIcon :icon="thumbsDown"></IonIcon>
+					<IonIcon :icon="thumbsDown" class="icons"></IonIcon>
 				</IonSegmentButton>
 				<IonSegmentButton value="other" mode="ios">
 					<IonLabel>Otro</IonLabel>
-					<IonIcon :icon="reader"></IonIcon>
+					<IonIcon :icon="reader" class="icons"></IonIcon>
 				</IonSegmentButton>
 			</IonSegment>
 			<IonList lines="none" :inset="true" mode="ios">
@@ -231,5 +231,10 @@
 	}
 	ion-toast {
 		--background: #ffdd00;
+	}
+	.form-container {
+		.icons {
+			margin-top: 0.5em;
+		}
 	}
 </style>

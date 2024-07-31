@@ -1,6 +1,6 @@
 <template>
 	<IonPage class="container">
-		<IonHeader>
+		<IonHeader mode="ios">
 			<IonToolbar>
 				<IonTitle>Día de la semana</IonTitle>
 			</IonToolbar>
