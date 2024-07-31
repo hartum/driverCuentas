@@ -1,6 +1,9 @@
 <template>
 	<IonItemSliding>
 		<IonItem class="item-travel" lines="none" button="true" @click="editTravel">
+			<span slot="start">
+				<ion-icon class="title-icon" :icon="payIcons[travel.payMethod]" />
+			</span>
 			<IonLabel>
 				<span class="hour-date-container">
 					{{ hour(travel.noteDate) }}
@@ -8,19 +11,7 @@
 						{{ day(travel.noteDate) }} {{ month(travel.noteDate) }}
 					</div>
 				</span>
-				<span class="money">
-					{{ formattedAmount }}{{ currency }}
-					<div class="pay-method-container">
-						<span v-if="travel.payMethod == 'cash'"> Efectivo </span>
-						<span v-else-if="travel.payMethod == 'card'"> Tarjeta </span>
-						<span v-else-if="travel.payMethod == 'app'"> Aplicación </span>
-						<IonIcon
-							:icon="payIcons[travel.payMethod]"
-							size="default"
-							class="icon-travel"
-						></IonIcon>
-					</div>
-				</span>
+				<span class="money"> {{ formattedAmount }}{{ currency }} </span>
 			</IonLabel>
 		</IonItem>
 		<IonItemOptions side="end">
@@ -75,15 +66,8 @@
 	const confirmRemoveTravel = (event) => {
 		emit('delete-travel', { id: props.travel.id, event, itemType: 'viaje' });
 	};
-
-	const formatDate = (date) => {
-		return moment(date).format('DD MMM - HH:mm');
-	};
 	const day = (date) => {
 		return moment(date).format('DD');
-	};
-	const weekday = (date) => {
-		return moment(date).format('dddd');
 	};
 	const hour = (date) => {
 		return moment(date).format('HH:mm');
@@ -109,30 +93,25 @@
 		color: #535353;
 		line-height: 1.2em;
 		border-bottom: 1px dashed #ccc;
+		.title-icon {
+			font-size: 2.5em;
+			color: #8f8f8f;
+		}
 	}
 	.hour-date-container {
-		font-size: 2em;
+		font-size: 1.5em;
 		float: left;
 		color: #8f8f8f;
 		.date-container {
 			font-size: 0.5em;
+			color: #616161;
 		}
 	}
 	.money {
 		font-size: 2em;
-		vertical-align: text-bottom;
 		text-align: right;
 		float: right;
 		color: #666;
-		.pay-method-container {
-			font-size: 0.5em;
-			color: #8f8f8f;
-			.icon-travel {
-				width: 1em;
-				height: 1em;
-				vertical-align: middle;
-			}
-		}
 	}
 
 	.income {

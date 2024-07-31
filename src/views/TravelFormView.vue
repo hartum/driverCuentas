@@ -12,25 +12,43 @@
 			:class="{ 'ion-padding': !isMapVisible }"
 		>
 			<div v-show="!isMapVisible">
-				<IonItem lines="none" class="travel-item">
+				<IonItem lines="none" class="preview-item">
 					<span slot="start">
 						<ion-icon class="title-icon" :icon="payIcons[pay]" />
 					</span>
-					<IonInput
-						class="money-input"
-						type="number"
-						placeholder="000.00"
-						v-model="amountForm"
-						inputmode="decimal"
-						max="999"
-						maxlength="6"
-						min="0"
-					>
-						<span slot="end">{{ currency }}</span>
-					</IonInput>
+					<IonLabel>
+						<span class="hour-date-container">
+							{{ hour(datetimeStart) }}
+							<div class="date-container">
+								{{ day(datetimeStart) }} {{ month(datetimeStart) }}
+							</div>
+						</span>
+						<span class="money"> {{ formattedAmount }}{{ currency }} </span>
+					</IonLabel>
 				</IonItem>
+				<ion-accordion-group value="amount" class="accordion-group">
+					<ion-accordion value="amount">
+						<ion-item slot="header" color="light">
+							<ion-label><b>Importe</b></ion-label>
+						</ion-item>
+						<div slot="content" class="ion-padding">
+							<IonItem lines="none" class="travel-item">
+								<IonInput
+									class="money-input"
+									type="number"
+									placeholder="000.00"
+									v-model="amountForm"
+									inputmode="decimal"
+									max="999"
+									maxlength="6"
+									min="0"
+								>
+									<span slot="end">{{ currency }}</span>
+								</IonInput>
+							</IonItem>
+						</div>
+					</ion-accordion>
 
-				<ion-accordion-group value="travel" class="accordion-group">
 					<ion-accordion value="travel">
 						<ion-item slot="header" color="light">
 							<ion-label><b>Detalles del Viaje</b></ion-label>
@@ -45,33 +63,24 @@
 									/>
 								</IonItem>
 
-								<IonItem>
-									<ion-label>Origen</ion-label>
+								<IonItem @click="openMap('origin')" class="origin-input">
+									<span slot="start">
+										<ion-icon :icon="pinOutline" size="large"></ion-icon>
+									</span>
 									<p class="selected-address">
 										{{ locationStart.address || 'Elige dirección' }}
 									</p>
-									<ion-button
-										slot="end"
-										size="default"
-										color="secondary"
-										@click="openMap('origin')"
-									>
-										<img src="/marker_map_basic.svg" width="16px" />
-									</ion-button>
 								</IonItem>
-								<IonItem>
-									<ion-label>Destino</ion-label>
+								<IonItem
+									@click="openMap('destination')"
+									class="destination-input"
+								>
+									<span slot="start">
+										<ion-icon :icon="flagOutline" size="large"></ion-icon>
+									</span>
 									<p class="selected-address">
-										{{ locationEnd.address || 'Elige dirección' }}
+										{{ locationEnd.address || 'Elige destino' }}
 									</p>
-									<ion-button
-										slot="end"
-										size="default"
-										color="tertiary"
-										@click="openMap('destination')"
-									>
-										<img src="/marker_map_basic.svg" width="16px" />
-									</ion-button>
 								</IonItem>
 							</IonList>
 						</div>
@@ -124,6 +133,7 @@
 										:value="serviceOption"
 										justify="start"
 										label-placement="end"
+										mode="ios"
 									>
 										{{ serviceOption }}
 									</IonRadio>
@@ -142,7 +152,7 @@
 			</div>
 			<ion-toast
 				:is-open="showToast"
-				message="Por favor, ingresa una cantidad mayor a 0"
+				message="Por favor, ingresa un importe mayor a 0.00€"
 				:duration="1500"
 				:icon="warningOutline"
 				@didDismiss="showToast = false"
@@ -245,8 +255,10 @@
 		cashOutline,
 		phonePortraitOutline,
 		warningOutline,
+		pinOutline,
+		flagOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted, watch } from 'vue';
+	import { ref, onMounted, watch, computed } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
@@ -267,7 +279,6 @@
 	const firstDayOfWeek = ref(1);
 	const locationStart = ref({});
 	const locationEnd = ref({});
-	const service = ref('');
 	const isMapVisible = ref(false);
 	const mapMode = ref('origin');
 	const mapDetails = ref(settingsStore.mapDetails);
@@ -277,6 +288,7 @@
 	const travelId = ref(route.params.travelId);
 	const modeForm = ref(null);
 	const servicesList = settingsStore.servicesList;
+	const service = ref(servicesList[0] || '');
 	const payIcons = {
 		app: phonePortraitOutline,
 		cash: cashOutline,
@@ -399,6 +411,23 @@
 			locationEnd.value = { ...newDetails };
 		}
 	});
+
+	const day = (date) => {
+		return moment(date).format('DD');
+	};
+
+	const hour = (date) => {
+		return moment(date).format('HH:mm');
+	};
+
+	const month = (date) => {
+		return moment(date).format('MMM');
+	};
+
+	const formattedAmount = computed(() => {
+		const amount = parseFloat(amountForm.value);
+		return isNaN(amount) ? '0.00' : amount.toFixed(2);
+	});
 </script>
 
 <style lang="scss" scoped>
@@ -421,7 +450,7 @@
 		.title-icon {
 			vertical-align: middle;
 			font-size: 3em;
-			color: #535353;
+			color: #8f8f8f;
 		}
 		.accordion-group {
 			border: 1px solid var(--ion-color-light-shade);
@@ -431,6 +460,20 @@
 
 			.header-no-margin {
 				margin-top: 0;
+			}
+			.origin-input {
+				border: 1px solid var(--ion-color-light-shade);
+				border-radius: 8px 8px 0 0;
+				background-color: #fff;
+			}
+			.destination-input {
+				border: 1px solid var(--ion-color-light-shade);
+				border-radius: 0 0 8px 8px;
+				background-color: #fff;
+				margin-top: -1px;
+			}
+			ion-input.custom {
+				text-align: right;
 			}
 		}
 		.money-input {
@@ -473,5 +516,35 @@
 	}
 	ion-toast {
 		--background: #ffdd00;
+	}
+	/*---------------------------*/
+	.preview-item {
+		margin-top: 20px;
+		border: 1px solid #ccc;
+		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+	}
+
+	.item-travel {
+		color: #535353;
+		line-height: 1.2em;
+		border-bottom: 1px dashed #ccc;
+	}
+
+	.hour-date-container {
+		font-size: 1.5em;
+		float: left;
+		color: #8f8f8f;
+		.date-container {
+			font-size: 0.5em;
+			color: #616161;
+		}
+	}
+
+	.money {
+		font-size: 2em;
+		vertical-align: text-bottom;
+		text-align: right;
+		float: right;
+		color: #666;
 	}
 </style>

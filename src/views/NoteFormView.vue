@@ -8,16 +8,16 @@
 			</IonToolbar>
 		</IonHeader>
 		<IonContent class="ion-padding form-container">
-			<IonSegment v-model="form.noteType">
-				<IonSegmentButton value="income">
+			<IonSegment v-model="form.noteType" mode="ios">
+				<IonSegmentButton value="income" mode="ios">
 					<IonLabel>Ingreso</IonLabel>
 					<IonIcon :icon="thumbsUp"></IonIcon>
 				</IonSegmentButton>
-				<IonSegmentButton value="expense">
+				<IonSegmentButton value="expense" mode="ios">
 					<IonLabel>Gasto</IonLabel>
 					<IonIcon :icon="thumbsDown"></IonIcon>
 				</IonSegmentButton>
-				<IonSegmentButton value="other">
+				<IonSegmentButton value="other" mode="ios">
 					<IonLabel>Otro</IonLabel>
 					<IonIcon :icon="reader"></IonIcon>
 				</IonSegmentButton>

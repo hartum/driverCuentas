@@ -149,7 +149,7 @@
 		margin: 20px 0;
 		.shift-header {
 			border-bottom: 1px #ccc solid;
-			/*background-color: #d8d8d8;*/
+			background-color: rgba(255, 255, 255, 0.8);
 			text-align: center;
 			padding-left: 0;
 			padding-right: 0;
@@ -187,7 +187,7 @@
 			padding: 0px;
 		}
 		.shift-footer {
-			background-color: rgba(255, 255, 255, 0.9);
+			background-color: rgba(255, 255, 255, 0.8);
 			.subtotal-container {
 				border-top: 1px #666 dashed;
 				font-size: 2.4em;

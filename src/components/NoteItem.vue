@@ -1,6 +1,9 @@
 <template>
 	<IonItemSliding>
 		<IonItem class="item-note" button="true" lines="none" @click="editNote">
+			<span slot="start">
+				<ion-icon class="title-icon" :icon="readerOutline" />
+			</span>
 			<IonLabel>
 				<span class="hour-date-container">
 					{{ hour(note.noteDate) }}
@@ -11,16 +14,6 @@
 				<span class="money" v-if="note.amount > 0">
 					<span v-if="note.noteType == 'expense'">-</span>
 					{{ formattedAmount }}{{ currency }}
-					<div class="type-note-container">
-						<span v-if="note.noteType == 'income'"> Ingreso </span>
-						<span v-else-if="note.noteType == 'expense'"> Gasto </span>
-						<span v-else-if="note.noteType == 'other'"> Nota </span>
-						<IonIcon
-							:icon="readerOutline"
-							size="small"
-							class="icon-note"
-						></IonIcon>
-					</div>
 				</span>
 			</IonLabel>
 		</IonItem>
@@ -66,10 +59,6 @@
 		emit('delete-note', { id: props.note.id, event, itemType: 'nota' });
 	};
 
-	const formatDate = (date) => {
-		return moment(date).format('DD MMM - HH:mm');
-	};
-
 	const day = (date) => {
 		return moment(date).format('DD');
 	};
@@ -93,6 +82,10 @@
 		color: #535353;
 		line-height: 1.2em;
 		border-bottom: 1px dashed #ccc;
+		.title-icon {
+			font-size: 2.5em;
+			color: #8f8f8f;
+		}
 	}
 
 	.shift-card {
@@ -104,27 +97,18 @@
 		}
 	}
 	.hour-date-container {
-		font-size: 2em;
+		font-size: 1.5em;
 		float: left;
 		color: #8f8f8f;
 		.date-container {
 			font-size: 0.5em;
+			color: #616161;
 		}
 	}
 	.money {
 		font-size: 2em;
-		vertical-align: text-bottom;
 		text-align: right;
 		float: right;
-		.type-note-container {
-			font-size: 0.5em;
-			color: #8f8f8f;
-			.icon-note {
-				width: 1em;
-				height: 1em;
-				vertical-align: middle;
-			}
-		}
 	}
 
 	.income {
