@@ -26,7 +26,7 @@
 						<span class="money"> {{ formattedAmount }}{{ currency }} </span>
 					</IonLabel>
 				</IonItem>
-				<ion-accordion-group value="amount" class="accordion-group">
+				<ion-accordion-group :value="openAccordion" class="accordion-group">
 					<ion-accordion value="amount">
 						<ion-item slot="header" color="light">
 							<ion-label><b>Importe</b></ion-label>
@@ -81,6 +81,12 @@
 									<p class="selected-address">
 										{{ locationEnd.address || 'Elige destino' }}
 									</p>
+								</IonItem>
+								<IonItem v-if="distance !== null && distance > 0">
+									<IonLabel
+										>Distancia en línea recta:
+										{{ distance.toFixed(2) }} km</IonLabel
+									>
 								</IonItem>
 							</IonList>
 						</div>
@@ -270,6 +276,7 @@
 	} from '@/services/travelService'; // Importar el servicio
 
 	const settingsStore = useSettingsStore();
+	const openAccordion = ref('amount');
 	const amountForm = ref('');
 	const currency = ref('€');
 	const pay = ref('app');
@@ -316,16 +323,29 @@
 			const travel = await selectTravelByID(parseInt(travelId.value));
 			if (travel) {
 				amountForm.value = travel.amount;
-				locationStart.value = travel.origin;
-				locationEnd.value = travel.destination;
 				service.value = travel.service;
 				pay.value = travel.payMethod;
 				datetimeStart.value = travel.startDate;
 				dateStart.value = moment(travel.startDate).format('YYYY-MM-DD');
 				timeStart.value = moment(travel.startDate).format('HH:mm');
-				console.log('Fecha cargada:', datetimeStart.value); // Para depuración
+
+				// Asignar las direcciones solo si existen en el viaje
+				if (travel.origin && travel.origin.address) {
+					locationStart.value = travel.origin;
+				}
+				if (travel.destination && travel.destination.address) {
+					locationEnd.value = travel.destination;
+				}
 			}
 		}
+		// Si no hay dirección de origen o destino, usar el valor del store
+		if (!locationStart.value.address) {
+			locationStart.value = { ...settingsStore.mapDetails };
+		}
+		/*
+		if (!locationEnd.value.address) {
+			locationEnd.value = { ...settingsStore.mapDetails };
+		}*/
 	};
 
 	onMounted(loadTravel);
@@ -384,6 +404,7 @@
 	const openMap = (mode) => {
 		mapMode.value = mode;
 		isMapVisible.value = true;
+		openAccordion.value = 'travel';
 	};
 
 	const handleMapUpdated = (mapEventDetails) => {
@@ -402,6 +423,8 @@
 		} else {
 			locationEnd.value = { ...mapDetails.value };
 		}
+		settingsStore.setMapDetails(mapDetails.value);
+		openAccordion.value = 'travel';
 	};
 
 	watch(mapDetails, (newDetails) => {
@@ -427,6 +450,46 @@
 	const formattedAmount = computed(() => {
 		const amount = parseFloat(amountForm.value);
 		return isNaN(amount) ? '0.00' : amount.toFixed(2);
+	});
+
+	// Calcula distancia en kilómetros en linea recta
+	function calculateDistance(lat1, lon1, lat2, lon2) {
+		const R = 6371; // Radio de la Tierra en kilómetros
+		const dLat = toRadians(lat2 - lat1);
+		const dLon = toRadians(lon2 - lon1);
+
+		const a =
+			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(toRadians(lat1)) *
+				Math.cos(toRadians(lat2)) *
+				Math.sin(dLon / 2) *
+				Math.sin(dLon / 2);
+
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		const distance = R * c; // Distancia en kilómetros
+
+		return distance;
+	}
+
+	function toRadians(degrees) {
+		return degrees * (Math.PI / 180);
+	}
+
+	const distance = computed(() => {
+		if (
+			locationStart.value.latitude &&
+			locationStart.value.longitude &&
+			locationEnd.value.latitude &&
+			locationEnd.value.longitude
+		) {
+			return calculateDistance(
+				locationStart.value.latitude,
+				locationStart.value.longitude,
+				locationEnd.value.latitude,
+				locationEnd.value.longitude
+			);
+		}
+		return null;
 	});
 </script>
 
