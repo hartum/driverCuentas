@@ -12,7 +12,7 @@
 
 		<IonIcon
 			size="large"
-			color="primary"
+			color="light"
 			:icon="arrowBackCircle"
 			@click="navigateDate('prev')"
 		/>
@@ -25,7 +25,7 @@
 
 		<IonIcon
 			size="large"
-			color="primary"
+			color="light"
 			:icon="arrowForwardCircle"
 			@click="navigateDate('next')"
 		/>
