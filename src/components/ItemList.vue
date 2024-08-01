@@ -4,7 +4,7 @@
 			<IonCard>
 				<IonCardHeader>
 					<IonCardTitle>Crea un viaje o turno</IonCardTitle>
-					<IonCardSubtitle>Sin elementos para esta fecha</IonCardSubtitle>
+					<IonCardSubtitle>Nada que mostrar en esta fecha</IonCardSubtitle>
 				</IonCardHeader>
 				<IonCardContent>
 					<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
@@ -38,7 +38,7 @@
 				</component>
 			</template>
 		</div>
-		<IonButton @click="borraDB">Borra la BBDD</IonButton>
+		<!--<IonButton @click="borraDB">Borra la BBDD</IonButton>-->
 	</div>
 	<IonActionSheet
 		:header="actionSheetHeader"
