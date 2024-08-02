@@ -1,13 +1,13 @@
 <template>
-	<IonPage class="container">
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>Tu Inicio</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent>
+	<ion-page class="container">
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>Tu Inicio</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content>
 			<!-- CARD -->
-			<IonCard class="shift-card">
+			<ion-card class="shift-card">
 				<ion-card-header class="shift-header">
 					<ion-card-title class="shift-title">
 						<ion-icon
@@ -22,12 +22,12 @@
 					El mapa iniciará donde tú le marques,
 					<b>nunca accederemos a tu GPS</b>
 				</div>
-			</IonCard>
+			</ion-card>
 
 			<MapViewer @mapUpdated="handleMapUpdated" />
-		</IonContent>
-		<IonFooter class="ion-padding">
-			<IonButton
+		</ion-content>
+		<ion-footer class="ion-padding">
+			<ion-button
 				expand="block"
 				fill="outline"
 				mode="ios"
@@ -35,9 +35,9 @@
 				color="light"
 			>
 				Siguiente
-			</IonButton>
-		</IonFooter>
-	</IonPage>
+			</ion-button>
+		</ion-footer>
+	</ion-page>
 </template>
 
 <script setup>

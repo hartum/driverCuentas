@@ -1,7 +1,7 @@
 <template>
-	<ionPage>
-		<IonNav :root="compSettings" id="modal-nav" />
-	</ionPage>
+	<ion-page>
+		<ion-nav :root="compSettings" id="modal-nav" />
+	</ion-page>
 </template>
 
 <script setup>

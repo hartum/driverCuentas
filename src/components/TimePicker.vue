@@ -12,7 +12,7 @@
 			</div>
 		</div>
 
-		<IonModal
+		<ion-modal
 			class="picker-modal"
 			:is-open="showPicker"
 			@ionModalDidDismiss="setShowPicker(false)"
@@ -46,10 +46,10 @@
 				</ion-picker>
 
 				<div class="actions">
-					<IonButton expand="block" @click="setTimeValue">Ok</IonButton>
+					<ion-button expand="block" @click="setTimeValue">Ok</ion-button>
 				</div>
 			</div>
-		</IonModal>
+		</ion-modal>
 	</section>
 </template>
 

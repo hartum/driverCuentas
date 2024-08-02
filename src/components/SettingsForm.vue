@@ -1,11 +1,11 @@
 <template>
-	<IonPage>
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>Configuración</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent class="ion-padding">
+	<ion-page>
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>Configuración</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content class="ion-padding">
 			<div>
 				<ion-list>
 					<ion-list-header>
@@ -23,24 +23,24 @@
 					</ion-list-header>
 					<ion-radio-group v-model="selectedDay" @ionChange="updateStartDay">
 						<ion-item>
-							<IonRadio
+							<ion-radio
 								justify="start"
 								value="lunes"
 								label-placement="end"
 								mode="ios"
 							>
 								Lunes
-							</IonRadio>
+							</ion-radio>
 						</ion-item>
 						<ion-item>
-							<IonRadio
+							<ion-radio
 								justify="start"
 								value="domingo"
 								label-placement="end"
 								mode="ios"
 							>
 								Domingo
-							</IonRadio>
+							</ion-radio>
 						</ion-item>
 					</ion-radio-group>
 				</ion-list>
@@ -75,7 +75,7 @@
 						<ion-label>Servicios</ion-label>
 					</ion-list-header>
 					<ion-reorder-group :disabled="false" @ionItemReorder="handleReorder">
-						<IonItemSliding
+						<ion-item-sliding
 							v-for="(service, index) in services"
 							:key="index"
 							ref="slidingItems"
@@ -84,15 +84,15 @@
 								<ion-label>{{ service }}</ion-label>
 								<ion-reorder slot="end"></ion-reorder>
 							</ion-item>
-							<IonItemOptions side="end">
+							<ion-item-options side="end">
 								<ion-item-option
 									color="danger"
 									@click="confirmRemoveService(index, $event)"
 								>
 									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
 								</ion-item-option>
-							</IonItemOptions>
-						</IonItemSliding>
+							</ion-item-options>
+						</ion-item-sliding>
 					</ion-reorder-group>
 					<ion-item>
 						<ion-input
@@ -108,7 +108,7 @@
 					</ion-item>
 				</ion-list>
 			</div>
-		</IonContent>
+		</ion-content>
 		<ion-action-sheet
 			:header="actionSheetHeader"
 			:buttons="actionSheetButtons"
@@ -124,7 +124,7 @@
 			position="bottom"
 			swipe-gesture="vertical"
 		></ion-toast>
-	</IonPage>
+	</ion-page>
 </template>
 
 <script setup>

@@ -1,10 +1,10 @@
 <template>
 	<ion-page>
-		<IonHeader mode="ios">
+		<ion-header mode="ios">
 			<ion-toolbar>
 				<ion-title>Estadisticas</ion-title>
 			</ion-toolbar>
-		</IonHeader>
+		</ion-header>
 		<ion-content class="ion-padding">
 			<h1>En construcción</h1>
 			<ion-icon size="large" :icon="barChartSharp" class="icon"></ion-icon>

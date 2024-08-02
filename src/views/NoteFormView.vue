@@ -1,46 +1,46 @@
 <template>
-	<IonPage>
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>{{
+	<ion-page>
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>{{
 					modeForm === 'edit' ? 'Editar Nota' : 'Nueva Nota'
-				}}</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent class="ion-padding form-container">
-			<IonSegment v-model="form.noteType" mode="ios">
-				<IonSegmentButton value="income" mode="ios">
-					<IonLabel>Ingreso</IonLabel>
-					<IonIcon :icon="thumbsUp" class="icons"></IonIcon>
-				</IonSegmentButton>
-				<IonSegmentButton value="expense" mode="ios">
-					<IonLabel>Gasto</IonLabel>
-					<IonIcon :icon="thumbsDown" class="icons"></IonIcon>
-				</IonSegmentButton>
-				<IonSegmentButton value="other" mode="ios">
-					<IonLabel>Otro</IonLabel>
-					<IonIcon :icon="reader" class="icons"></IonIcon>
-				</IonSegmentButton>
-			</IonSegment>
-			<IonList lines="none" :inset="true" mode="ios">
-				<IonItem>
-					<IonLabel>Fecha:</IonLabel>
+				}}</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content class="ion-padding form-container">
+			<ion-segment v-model="form.noteType" mode="ios">
+				<ion-segment-button value="income" mode="ios">
+					<ion-label>Ingreso</ion-label>
+					<ion-icon :icon="thumbsUp" class="icons"></ion-icon>
+				</ion-segment-button>
+				<ion-segment-button value="expense" mode="ios">
+					<ion-label>Gasto</ion-label>
+					<ion-icon :icon="thumbsDown" class="icons"></ion-icon>
+				</ion-segment-button>
+				<ion-segment-button value="other" mode="ios">
+					<ion-label>Otro</ion-label>
+					<ion-icon :icon="reader" class="icons"></ion-icon>
+				</ion-segment-button>
+			</ion-segment>
+			<ion-list lines="none" :inset="true" mode="ios">
+				<ion-item>
+					<ion-label>Fecha:</ion-label>
 					<DateTimePicker
 						:value="form.noteDate"
 						@dateTimeChange="handleNoteDateChange"
 					/>
-				</IonItem>
-				<IonItem>
-					<IonTextarea
+				</ion-item>
+				<ion-item>
+					<ion-textarea
 						label="Concepto:"
 						label-placement="fixed"
 						rows="5"
 						placeholder="Descripción de la nota, Ejem: ITV"
 						v-model="form.description"
-					></IonTextarea>
-				</IonItem>
-				<IonItem v-show="form.noteType != 'other'">
-					<IonInput
+					></ion-textarea>
+				</ion-item>
+				<ion-item v-show="form.noteType != 'other'">
+					<ion-input
 						label="Importe:"
 						label-placement="fixed"
 						type="number"
@@ -53,9 +53,9 @@
 						:disabled="form.noteType == 'other'"
 					>
 						<span slot="end">€</span>
-					</IonInput>
-				</IonItem>
-			</IonList>
+					</ion-input>
+				</ion-item>
+			</ion-list>
 			<ion-toast
 				:is-open="showToast"
 				:message="toastMessage"
@@ -65,12 +65,12 @@
 				position="bottom"
 				swipe-gesture="vertical"
 			></ion-toast>
-		</IonContent>
-		<IonFooter id="form-footer">
-			<IonGrid>
-				<IonRow>
-					<IonCol>
-						<IonButton
+		</ion-content>
+		<ion-footer id="form-footer">
+			<ion-grid>
+				<ion-row>
+					<ion-col>
+						<ion-button
 							fill="outline"
 							expand="block"
 							shape="round"
@@ -78,22 +78,22 @@
 							@click="handleCancel"
 						>
 							Cancelar
-						</IonButton>
-					</IonCol>
-					<IonCol>
-						<IonButton
+						</ion-button>
+					</ion-col>
+					<ion-col>
+						<ion-button
 							expand="block"
 							shape="round"
 							mode="ios"
 							@click="handleSave"
 						>
 							Guardar
-						</IonButton>
-					</IonCol>
-				</IonRow>
-			</IonGrid>
-		</IonFooter>
-	</IonPage>
+						</ion-button>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-footer>
+	</ion-page>
 </template>
 
 <script setup>

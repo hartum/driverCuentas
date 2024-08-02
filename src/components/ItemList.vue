@@ -1,23 +1,23 @@
 <template>
 	<div class="travel-list">
 		<div v-if="organizedItems.length === 0">
-			<IonCard>
-				<IonCardHeader>
-					<IonCardTitle>Crea un viaje o turno</IonCardTitle>
-					<IonCardSubtitle>Nada que mostrar en esta fecha</IonCardSubtitle>
-				</IonCardHeader>
-				<IonCardContent>
+			<ion-card>
+				<ion-card-header>
+					<ion-card-title>Crea un viaje o turno</ion-card-title>
+					<ion-card-subtitle>Nada que mostrar en esta fecha</ion-card-subtitle>
+				</ion-card-header>
+				<ion-card-content>
 					<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
-					<IonButton @click="navigateTo('/travelform/')">
-						<IonIcon slot="start" :icon="carSport"></IonIcon>
+					<ion-button @click="navigateTo('/travelform/')">
+						<ion-icon slot="start" :icon="carSport"></ion-icon>
 						Nuevo viaje
-					</IonButton>
-					<IonButton @click="navigateTo('/shift/')">
-						<IonIcon slot="start" :icon="time"></IonIcon>
+					</ion-button>
+					<ion-button @click="navigateTo('/shift/')">
+						<ion-icon slot="start" :icon="time"></ion-icon>
 						Nuevo turno
-					</IonButton>
-				</IonCardContent>
-			</IonCard>
+					</ion-button>
+				</ion-card-content>
+			</ion-card>
 		</div>
 		<div v-else class="ion-padding">
 			<template v-for="item in organizedItems" :key="item.id">
@@ -38,14 +38,14 @@
 				</component>
 			</template>
 		</div>
-		<!--<IonButton @click="borraDB">Borra la BBDD</IonButton>-->
+		<!--<ion-button @click="borraDB">Borra la BBDD</ion-button>-->
 	</div>
-	<IonActionSheet
+	<ion-action-sheet
 		:header="actionSheetHeader"
 		:buttons="actionSheetButtons"
 		:is-open="actionSheetOpen"
 		@didDismiss="handleActionSheetDismiss"
-	></IonActionSheet>
+	></ion-action-sheet>
 </template>
 
 <script setup>

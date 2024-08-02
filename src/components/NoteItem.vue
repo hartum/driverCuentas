@@ -1,10 +1,10 @@
 <template>
-	<IonItemSliding>
-		<IonItem class="item-note" button="true" lines="none" @click="editNote">
+	<ion-item-sliding>
+		<ion-item class="item-note" button="true" lines="none" @click="editNote">
 			<span slot="start">
 				<ion-icon class="title-icon" :icon="readerOutline" />
 			</span>
-			<IonLabel>
+			<ion-label>
 				<span class="hour-date-container">
 					{{ hour(note.noteDate) }}
 					<div class="date-container">
@@ -15,14 +15,14 @@
 					<span v-if="note.noteType == 'expense'">-</span>
 					{{ formattedAmount }}{{ currency }}
 				</span>
-			</IonLabel>
-		</IonItem>
-		<IonItemOptions side="end">
-			<IonItemOption color="danger" @click="confirmRemoveNote($event)">
-				<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-			</IonItemOption>
-		</IonItemOptions>
-	</IonItemSliding>
+			</ion-label>
+		</ion-item>
+		<ion-item-options side="end">
+			<ion-item-option color="danger" @click="confirmRemoveNote($event)">
+				<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+			</ion-item-option>
+		</ion-item-options>
+	</ion-item-sliding>
 </template>
 
 <script setup>

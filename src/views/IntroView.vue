@@ -1,17 +1,17 @@
 <template>
-	<ionPage class="container ion-padding">
-		<IonHeader mode="ios">
+	<ion-page class="container ion-padding">
+		<ion-header mode="ios">
 			<h1>DriverCuentas</h1>
 			<h2>La app para controlar tus viajes</h2>
-		</IonHeader>
+		</ion-header>
 
 		<ion-nav-link router-direction="forward" :component="component">
 			<p>"Porque si no lo puedes medir, no lo puedes mejorar"</p>
-			<IonButton expand="block" fill="outline" mode="ios" color="light">
+			<ion-button expand="block" fill="outline" mode="ios" color="light">
 				Empezar
-			</IonButton>
+			</ion-button>
 		</ion-nav-link>
-	</ionPage>
+	</ion-page>
 </template>
 <script setup>
 	import { IonPage, IonHeader, IonButton, IonNavLink } from '@ionic/vue';

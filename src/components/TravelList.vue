@@ -1,11 +1,11 @@
 <template>
-	<IonPage>
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle> Lista de viajes </IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent class="travels-view-container">
+	<ion-page>
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title> Lista de viajes </ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content class="travels-view-container">
 			<!--TIME RANGE NAVIGATOR -->
 			<div class="travel-filters ion-padding">
 				<TimeNavigator
@@ -14,35 +14,40 @@
 					@date-changed="handleDateChanged"
 				/>
 			</div>
-			<IonContent class="container-items">
+			<ion-content class="container-items">
 				<!--TRAVEL/NOTES/SHIFTS LIST -->
 				<ItemList
 					:initialDate="initialDate"
 					:endDate="endDate"
 					@update:totalAmount="updateTotalAmount"
 				/>
-			</IonContent>
-		</IonContent>
+			</ion-content>
+		</ion-content>
 		<div class="total-container">
 			Total: <span class="total">{{ totalAmount }} {{ currency }}</span>
-			<IonFab slot="fixed" horizontal="right" vertical="top" class="add-travel">
-				<IonFabButton mode="ios">
-					<IonIcon :icon="add"></IonIcon>
-				</IonFabButton>
-				<IonFabList side="top">
-					<IonFabButton color="primary" @click="navigateTo('/noteform/')">
-						<IonIcon :icon="reader" />
-					</IonFabButton>
-					<IonFabButton color="primary" @click="navigateTo('/shift/')">
-						<IonIcon :icon="time" />
-					</IonFabButton>
-					<IonFabButton color="primary" @click="navigateTo('/travelform/')">
-						<IonIcon :icon="carSport" />
-					</IonFabButton>
-				</IonFabList>
-			</IonFab>
+			<ion-fab
+				slot="fixed"
+				horizontal="right"
+				vertical="top"
+				class="add-travel"
+			>
+				<ion-fab-button mode="ios">
+					<ion-icon :icon="add"></ion-icon>
+				</ion-fab-button>
+				<ion-fab-list side="top">
+					<ion-fab-button color="primary" @click="navigateTo('/noteform/')">
+						<ion-icon :icon="reader" />
+					</ion-fab-button>
+					<ion-fab-button color="primary" @click="navigateTo('/shift/')">
+						<ion-icon :icon="time" />
+					</ion-fab-button>
+					<ion-fab-button color="primary" @click="navigateTo('/travelform/')">
+						<ion-icon :icon="carSport" />
+					</ion-fab-button>
+				</ion-fab-list>
+			</ion-fab>
 		</div>
-	</IonPage>
+	</ion-page>
 </template>
 
 <script setup>

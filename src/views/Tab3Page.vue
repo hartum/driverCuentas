@@ -1,16 +1,16 @@
 <template>
 	<ion-page>
-		<IonHeader mode="ios">
+		<ion-header mode="ios">
 			<ion-toolbar>
 				<ion-title>Tab 3</ion-title>
 			</ion-toolbar>
-		</IonHeader>
+		</ion-header>
 		<ion-content :fullscreen="true">
-			<IonHeader collapse="condense" mode="ios">
+			<ion-header collapse="condense" mode="ios">
 				<ion-toolbar>
 					<ion-title size="large">Tab 3</ion-title>
 				</ion-toolbar>
-			</IonHeader>
+			</ion-header>
 		</ion-content>
 	</ion-page>
 </template>

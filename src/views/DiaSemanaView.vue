@@ -1,11 +1,11 @@
 <template>
-	<IonPage class="container">
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>Día de la semana</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent>
+	<ion-page class="container">
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>Día de la semana</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content>
 			<!-- CARD -->
 			<ion-card class="shift-card">
 				<!--  CARD HEADER -->
@@ -23,34 +23,34 @@
 				<div class="shift-footer ion-padding">
 					<ion-radio-group v-model="selectedDay">
 						<ion-item lines="none">
-							<IonRadio
+							<ion-radio
 								justify="start"
 								value="lunes"
 								label-placement="end"
 								mode="ios"
 							>
 								Lunes
-							</IonRadio>
+							</ion-radio>
 						</ion-item>
 						<ion-item lines="none">
-							<IonRadio
+							<ion-radio
 								justify="start"
 								value="domingo"
 								label-placement="end"
 								mode="ios"
 							>
 								Domingo
-							</IonRadio>
+							</ion-radio>
 						</ion-item>
 					</ion-radio-group>
 
 					<small>* Podrás cambiarlo mas adelante en configuración</small>
 				</div>
 			</ion-card>
-		</IonContent>
-		<IonFooter class="ion-padding">
+		</ion-content>
+		<ion-footer class="ion-padding">
 			<ion-nav-link router-direction="forward" :component="component">
-				<IonButton
+				<ion-button
 					expand="block"
 					fill="outline"
 					mode="ios"
@@ -58,10 +58,10 @@
 					@click="saveStartDayOfWeek"
 				>
 					Siguiente
-				</IonButton>
+				</ion-button>
 			</ion-nav-link>
-		</IonFooter>
-	</IonPage>
+		</ion-footer>
+	</ion-page>
 </template>
 <script setup>
 	import {

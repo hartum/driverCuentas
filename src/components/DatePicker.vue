@@ -3,7 +3,7 @@
 		<div @click="openModal" class="date-container">
 			{{ displayDate }}
 		</div>
-		<IonModal
+		<ion-modal
 			:is-open="isModalOpen"
 			@ionModalDidDismiss="closeModal"
 			class="ion-padding"
@@ -15,13 +15,18 @@
 					auto-apply
 					:enable-time-picker="false"
 				></vue-date-picker>
-				<IonItem>
-					<IonButton expand="block" @click="selectDate" mode="ios" size="large">
+				<ion-item>
+					<ion-button
+						expand="block"
+						@click="selectDate"
+						mode="ios"
+						size="large"
+					>
 						Seleccionar
-					</IonButton>
-				</IonItem>
+					</ion-button>
+				</ion-item>
 			</div>
-		</IonModal>
+		</ion-modal>
 	</div>
 </template>
 

@@ -1,27 +1,27 @@
 <template>
-	<IonCard class="shift-card" mode="ios">
-		<IonCardHeader class="shift-header">
-			<IonCardTitle class="shift-title">
-				<IonItemSliding>
-					<IonItem button="true" lines="none" @click="editShift">
+	<ion-card class="shift-card" mode="ios">
+		<ion-card-header class="shift-header">
+			<ion-card-title class="shift-title">
+				<ion-item-sliding>
+					<ion-item button="true" lines="none" @click="editShift">
 						<div class="shift-tittle-info">
 							{{ formatTime(shift.startDate) }}
-							<IonIcon
+							<ion-icon
 								:icon="timeOutline"
 								class="shift-header-icon"
 								size="large"
 							/>
 							{{ formatTime(shift.endDate) }}
 						</div>
-					</IonItem>
-					<IonItemOptions side="end">
-						<IonItemOption color="danger" @click="confirmRemoveShift($event)">
-							<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-						</IonItemOption>
-					</IonItemOptions>
-				</IonItemSliding>
-			</IonCardTitle>
-		</IonCardHeader>
+					</ion-item>
+					<ion-item-options side="end">
+						<ion-item-option color="danger" @click="confirmRemoveShift($event)">
+							<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+						</ion-item-option>
+					</ion-item-options>
+				</ion-item-sliding>
+			</ion-card-title>
+		</ion-card-header>
 		<div
 			v-if="shift.modeKM == 'fix' && shift.totalKm > 0"
 			class="ion-padding km-container"
@@ -29,16 +29,16 @@
 			Kilometros
 			<div class="right">{{ shift.totalKm }} km</div>
 
-			<IonIcon :icon="timerOutline"></IonIcon>
+			<ion-icon :icon="timerOutline"></ion-icon>
 		</div>
 		<div
 			v-else-if="shift.finalKm - shift.initialKm > 0"
 			class="ion-padding km-container"
 		>
-			Kilometros <IonIcon :icon="timerOutline" class="icon"></IonIcon>
+			Kilometros <ion-icon :icon="timerOutline" class="icon"></ion-icon>
 			<div class="right">{{ shift.finalKm - shift.initialKm }} Km</div>
 		</div>
-		<IonCardContent><slot></slot></IonCardContent>
+		<ion-card-content><slot></slot></ion-card-content>
 		<div class="shift-footer">
 			<div class="subtotal-container">
 				<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
@@ -62,7 +62,7 @@
 				</div>
 			</div>
 		</div>
-	</IonCard>
+	</ion-card>
 </template>
 
 <script setup>

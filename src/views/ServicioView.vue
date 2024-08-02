@@ -1,11 +1,11 @@
 <template>
-	<IonPage>
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>Servicios</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent>
+	<ion-page>
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>Servicios</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content>
 			<ion-icon :icon="listCircleOutline" class="icon"></ion-icon>
 			<div class="list-container">
 				<img src="/hand.svg" class="animated-hand" @click="fadeOutHand" />
@@ -14,7 +14,7 @@
 						<ion-label>¿Para quien vas a trabajar?*</ion-label>
 					</ion-list-header>
 					<ion-reorder-group :disabled="false" @ionItemReorder="handleReorder">
-						<IonItemSliding
+						<ion-item-sliding
 							v-for="(service, index) in services"
 							:key="index"
 							ref="slidingItems"
@@ -23,15 +23,15 @@
 								<ion-label>{{ service }}</ion-label>
 								<ion-reorder slot="end"></ion-reorder>
 							</ion-item>
-							<IonItemOptions side="end">
+							<ion-item-options side="end">
 								<ion-item-option
 									color="danger"
 									@click="confirmRemoveService(index, $event)"
 								>
 									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
 								</ion-item-option>
-							</IonItemOptions>
-						</IonItemSliding>
+							</ion-item-options>
+						</ion-item-sliding>
 					</ion-reorder-group>
 					<ion-item>
 						<ion-input
@@ -50,21 +50,21 @@
 					<small>*Borra, Añade, reordena. Podrás editarlo mas adelante</small>
 				</p>
 			</div>
-		</IonContent>
+		</ion-content>
 		<ion-action-sheet
 			:header="actionSheetHeader"
 			:buttons="actionSheetButtons"
 			:is-open="actionSheetOpen"
 			@didDismiss="handleActionSheetDismiss"
 		></ion-action-sheet>
-		<IonFooter class="ion-padding">
-			<IonNavLink router-direction="forward" :component="component">
-				<IonButton expand="block" fill="outline" mode="ios">
+		<ion-footer class="ion-padding">
+			<ion-nav-link router-direction="forward" :component="component">
+				<ion-button expand="block" fill="outline" mode="ios">
 					Siguiente
-				</IonButton>
-			</IonNavLink>
-		</IonFooter>
-	</IonPage>
+				</ion-button>
+			</ion-nav-link>
+		</ion-footer>
+	</ion-page>
 </template>
 
 <script setup>

@@ -1,16 +1,16 @@
 <template>
 	<div class="time-navigator">
-		<IonSegment v-model="timeNavigator" @ionChange="handleSegmentChange">
-			<IonSegmentButton
+		<ion-segment v-model="timeNavigator" @ionChange="handleSegmentChange">
+			<ion-segment-button
 				v-for="option in timeOptions"
 				:key="option.value"
 				:value="option.value"
 			>
-				<IonLabel>{{ option.label }}</IonLabel>
-			</IonSegmentButton>
-		</IonSegment>
+				<ion-label>{{ option.label }}</ion-label>
+			</ion-segment-button>
+		</ion-segment>
 
-		<IonIcon
+		<ion-icon
 			size="large"
 			color="light"
 			:icon="arrowBackCircle"
@@ -23,7 +23,7 @@
 			<span>{{ calendarData.span }}</span>
 		</div>
 
-		<IonIcon
+		<ion-icon
 			size="large"
 			color="light"
 			:icon="arrowForwardCircle"

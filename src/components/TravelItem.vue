@@ -1,10 +1,15 @@
 <template>
-	<IonItemSliding>
-		<IonItem class="item-travel" lines="none" button="true" @click="editTravel">
+	<ion-item-sliding>
+		<ion-item
+			class="item-travel"
+			lines="none"
+			button="true"
+			@click="editTravel"
+		>
 			<span slot="start">
 				<ion-icon class="title-icon" :icon="payIcons[travel.payMethod]" />
 			</span>
-			<IonLabel>
+			<ion-label>
 				<span class="hour-date-container">
 					{{ hour(travel.noteDate) }}
 					<div class="date-container">
@@ -12,14 +17,14 @@
 					</div>
 				</span>
 				<span class="money"> {{ formattedAmount }}{{ currency }} </span>
-			</IonLabel>
-		</IonItem>
-		<IonItemOptions side="end">
-			<IonItemOption color="danger" @click="confirmRemoveTravel($event)">
-				<IonIcon slot="icon-only" :icon="trash"></IonIcon>
-			</IonItemOption>
-		</IonItemOptions>
-	</IonItemSliding>
+			</ion-label>
+		</ion-item>
+		<ion-item-options side="end">
+			<ion-item-option color="danger" @click="confirmRemoveTravel($event)">
+				<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+			</ion-item-option>
+		</ion-item-options>
+	</ion-item-sliding>
 </template>
 
 <script setup>

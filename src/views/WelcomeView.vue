@@ -1,8 +1,8 @@
 <template>
-	<IonPage>
+	<ion-page>
 		<!-- Solo renderiza IonNav si compSettings tiene un valor -->
-		<IonNav v-if="compSettings" :root="compSettings" id="modal-nav" />
-	</IonPage>
+		<ion-nav v-if="compSettings" :root="compSettings" id="modal-nav" />
+	</ion-page>
 </template>
 
 <script setup>

@@ -1,22 +1,22 @@
 <template>
 	<ion-page>
-		<IonHeader v-show="!isMapVisible" mode="ios">
-			<IonToolbar>
-				<IonTitle>
+		<ion-header v-show="!isMapVisible" mode="ios">
+			<ion-toolbar>
+				<ion-title>
 					{{ modeForm === 'edit' ? 'Editar viaje' : 'Nuevo viaje' }}
-				</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent
+				</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content
 			class="form-container"
 			:class="{ 'ion-padding': !isMapVisible }"
 		>
 			<div v-show="!isMapVisible">
-				<IonItem lines="none" class="preview-item">
+				<ion-item lines="none" class="preview-item">
 					<span slot="start">
 						<ion-icon class="title-icon" :icon="payIcons[pay]" />
 					</span>
-					<IonLabel>
+					<ion-label>
 						<span class="hour-date-container">
 							{{ hour(datetimeStart) }}
 							<div class="date-container">
@@ -24,16 +24,16 @@
 							</div>
 						</span>
 						<span class="money"> {{ formattedAmount }}{{ currency }} </span>
-					</IonLabel>
-				</IonItem>
+					</ion-label>
+				</ion-item>
 				<ion-accordion-group :value="openAccordion" class="accordion-group">
 					<ion-accordion value="amount">
 						<ion-item slot="header" color="light">
 							<ion-label><b>Importe</b></ion-label>
 						</ion-item>
 						<div slot="content" class="ion-padding">
-							<IonItem lines="none" class="travel-item">
-								<IonInput
+							<ion-item lines="none" class="travel-item">
+								<ion-input
 									class="money-input"
 									type="number"
 									placeholder="000.00"
@@ -44,8 +44,8 @@
 									min="0"
 								>
 									<span slot="end">{{ currency }}</span>
-								</IonInput>
-							</IonItem>
+								</ion-input>
+							</ion-item>
 						</div>
 					</ion-accordion>
 
@@ -54,24 +54,24 @@
 							<ion-label><b>Detalles del Viaje</b></ion-label>
 						</ion-item>
 						<div slot="content" class="ion-padding">
-							<IonList lines="none">
-								<IonItem>
+							<ion-list lines="none">
+								<ion-item>
 									<ion-label>Fecha</ion-label>
 									<DateTimePicker
 										:value="datetimeStart"
 										@dateTimeChange="handleDateChange"
 									/>
-								</IonItem>
+								</ion-item>
 
-								<IonItem @click="openMap('origin')" class="origin-input">
+								<ion-item @click="openMap('origin')" class="origin-input">
 									<span slot="start">
 										<ion-icon :icon="pinOutline" size="large"></ion-icon>
 									</span>
 									<p class="selected-address">
 										{{ locationStart.address || 'Elige dirección' }}
 									</p>
-								</IonItem>
-								<IonItem
+								</ion-item>
+								<ion-item
 									@click="openMap('destination')"
 									class="destination-input"
 								>
@@ -81,14 +81,14 @@
 									<p class="selected-address">
 										{{ locationEnd.address || 'Elige destino' }}
 									</p>
-								</IonItem>
-								<IonItem v-if="distance !== null && distance > 0">
-									<IonLabel
+								</ion-item>
+								<ion-item v-if="distance !== null && distance > 0">
+									<ion-label
 										>Distancia en línea recta:
-										{{ distance.toFixed(2) }} km</IonLabel
+										{{ distance.toFixed(2) }} km</ion-label
 									>
-								</IonItem>
-							</IonList>
+								</ion-item>
+							</ion-list>
 						</div>
 					</ion-accordion>
 
@@ -131,9 +131,9 @@
 							<ion-label><b>Servicio para</b></ion-label>
 						</ion-item>
 						<div class="ion-padding" slot="content">
-							<IonItem lines="none">
-								<IonRadioGroup class="tipo-servicio" v-model="service">
-									<IonRadio
+							<ion-item lines="none">
+								<ion-radio-group class="tipo-servicio" v-model="service">
+									<ion-radio
 										v-for="(serviceOption, index) in servicesList"
 										:key="index"
 										:value="serviceOption"
@@ -142,9 +142,9 @@
 										mode="ios"
 									>
 										{{ serviceOption }}
-									</IonRadio>
-								</IonRadioGroup>
-							</IonItem>
+									</ion-radio>
+								</ion-radio-group>
+							</ion-item>
 						</div>
 					</ion-accordion>
 				</ion-accordion-group>
@@ -165,13 +165,13 @@
 				position="bottom"
 				swipe-gesture="vertical"
 			></ion-toast>
-		</IonContent>
-		<IonFooter v-if="!isMapVisible" id="form-footer">
-			<IonToolbar>
+		</ion-content>
+		<ion-footer v-if="!isMapVisible" id="form-footer">
+			<ion-toolbar>
 				<ion-grid>
 					<ion-row>
 						<ion-col>
-							<ionButton
+							<ion-button
 								fill="outline"
 								expand="block"
 								shape="round"
@@ -179,28 +179,28 @@
 								@click="handleCancel"
 							>
 								Cancelar
-							</ionButton>
+							</ion-button>
 						</ion-col>
 						<ion-col>
-							<ionButton
+							<ion-button
 								expand="block"
 								shape="round"
 								mode="ios"
 								@click="handleSave"
 							>
 								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo viaje' }}
-							</ionButton>
+							</ion-button>
 						</ion-col>
 					</ion-row>
 				</ion-grid>
-			</IonToolbar>
-		</IonFooter>
-		<IonFooter v-else>
-			<IonToolbar>
+			</ion-toolbar>
+		</ion-footer>
+		<ion-footer v-else>
+			<ion-toolbar>
 				<ion-grid>
 					<ion-row>
 						<ion-col>
-							<ionButton
+							<ion-button
 								fill="outline"
 								expand="block"
 								shape="round"
@@ -208,10 +208,10 @@
 								@click="handleCancelMap"
 							>
 								Cancelar
-							</ionButton>
+							</ion-button>
 						</ion-col>
 						<ion-col>
-							<ionButton
+							<ion-button
 								expand="block"
 								shape="round"
 								mode="ios"
@@ -220,12 +220,12 @@
 								{{
 									mapMode === 'origin' ? 'Asignar origen' : 'Asignar destino'
 								}}
-							</ionButton>
+							</ion-button>
 						</ion-col>
 					</ion-row>
 				</ion-grid>
-			</IonToolbar>
-		</IonFooter>
+			</ion-toolbar>
+		</ion-footer>
 	</ion-page>
 </template>
 

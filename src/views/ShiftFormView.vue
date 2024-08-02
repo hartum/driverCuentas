@@ -1,31 +1,31 @@
 <template>
-	<IonPage>
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>{{
+	<ion-page>
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>{{
 					modeForm === 'edit' ? 'Editar Turno' : 'Nuevo Turno'
-				}}</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent class="form-container">
-			<IonCard class="shift-card">
-				<IonCardHeader class="shift-header">
-					<IonCardTitle class="shift-title">
+				}}</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content class="form-container">
+			<ion-card class="shift-card">
+				<ion-card-header class="shift-header">
+					<ion-card-title class="shift-title">
 						<div class="shift-tittle-info">
 							{{ formatTime(form.startDate) }}
-							<IonIcon
+							<ion-icon
 								:icon="timeOutline"
 								class="shift-header-icon"
 								size="large"
 							/>
 							{{ formatTime(form.endDate) }}
 						</div>
-					</IonCardTitle>
-				</IonCardHeader>
+					</ion-card-title>
+				</ion-card-header>
 				<div v-if="shouldShowKmInfo" class="ion-padding km-container">
 					Kilometros
 					<div class="right">{{ kmValue }} km</div>
-					<IonIcon :icon="timerOutline"></IonIcon>
+					<ion-icon :icon="timerOutline"></ion-icon>
 				</div>
 
 				<div class="shift-footer">
@@ -52,43 +52,43 @@
 						</div>
 					</div>
 				</div>
-			</IonCard>
+			</ion-card>
 
-			<IonAccordionGroup
+			<ion-accordion-group
 				value="shiftTime"
 				expand="inset"
 				class="accordion-group"
 			>
-				<IonAccordion value="shiftTime">
-					<IonItem slot="header" color="light">
-						<IonLabel>Horario</IonLabel>
-					</IonItem>
+				<ion-accordion value="shiftTime">
+					<ion-item slot="header" color="light">
+						<ion-label>Horario</ion-label>
+					</ion-item>
 					<div slot="content" class="ion-padding">
-						<IonList lines="none">
-							<IonItem>
-								<IonLabel>Inicio</IonLabel>
+						<ion-list lines="none">
+							<ion-item>
+								<ion-label>Inicio</ion-label>
 								<DateTimePicker
 									:value="form.startDate"
 									@dateTimeChange="handleStartDateChange"
 								/>
-							</IonItem>
-							<IonItem>
-								<IonLabel>Fin</IonLabel>
+							</ion-item>
+							<ion-item>
+								<ion-label>Fin</ion-label>
 								<DateTimePicker
 									:value="form.endDate"
 									@dateTimeChange="handleEndDateChange"
 								/>
-							</IonItem>
-						</IonList>
+							</ion-item>
+						</ion-list>
 					</div>
-				</IonAccordion>
-				<IonAccordion value="gas">
-					<IonItem slot="header" color="light">
-						<IonLabel>Gasolina</IonLabel>
-					</IonItem>
+				</ion-accordion>
+				<ion-accordion value="gas">
+					<ion-item slot="header" color="light">
+						<ion-label>Gasolina</ion-label>
+					</ion-item>
 					<div slot="content" class="ion-padding">
-						<IonItem lines="none">
-							<IonInput
+						<ion-item lines="none">
+							<ion-input
 								label="Cantidad"
 								label-placement="fixed"
 								type="number"
@@ -100,27 +100,27 @@
 								min="0"
 							>
 								<span slot="end">{{ currency }}</span>
-							</IonInput>
-						</IonItem>
+							</ion-input>
+						</ion-item>
 					</div>
-				</IonAccordion>
-				<IonAccordion value="km">
-					<IonItem slot="header" color="light">
-						<IonLabel>Kilometraje</IonLabel>
-					</IonItem>
+				</ion-accordion>
+				<ion-accordion value="km">
+					<ion-item slot="header" color="light">
+						<ion-label>Kilometraje</ion-label>
+					</ion-item>
 					<div slot="content" class="ion-padding">
-						<IonItem lines="none">
-							<IonSegment v-model="form.modeKM">
-								<IonSegmentButton value="calculatedKm">
-									<IonLabel>Calculado</IonLabel>
-								</IonSegmentButton>
-								<IonSegmentButton value="fix">
-									<IonLabel>Fijo</IonLabel>
-								</IonSegmentButton>
-							</IonSegment>
-						</IonItem>
-						<IonItem v-if="form.modeKM === 'calculatedKm'" lines="none">
-							<IonInput
+						<ion-item lines="none">
+							<ion-segment v-model="form.modeKM">
+								<ion-segment-button value="calculatedKm">
+									<ion-label>Calculado</ion-label>
+								</ion-segment-button>
+								<ion-segment-button value="fix">
+									<ion-label>Fijo</ion-label>
+								</ion-segment-button>
+							</ion-segment>
+						</ion-item>
+						<ion-item v-if="form.modeKM === 'calculatedKm'" lines="none">
+							<ion-input
 								class="money-input"
 								label="Inicio turno"
 								label-placement="fixed"
@@ -133,10 +133,10 @@
 								min="0"
 							>
 								<span slot="end">Km</span>
-							</IonInput>
-						</IonItem>
-						<IonItem v-if="form.modeKM === 'calculatedKm'">
-							<IonInput
+							</ion-input>
+						</ion-item>
+						<ion-item v-if="form.modeKM === 'calculatedKm'">
+							<ion-input
 								class="money-input"
 								label="Fin turno"
 								label-placement="fixed"
@@ -149,17 +149,17 @@
 								min="0"
 							>
 								<span slot="end">Km</span>
-							</IonInput>
-						</IonItem>
-						<IonItem v-if="form.modeKM === 'calculatedKm'" lines="none">
+							</ion-input>
+						</ion-item>
+						<ion-item v-if="form.modeKM === 'calculatedKm'" lines="none">
 							<div>En este turno</div>
 							<span slot="end">
 								<span class="km-diff">{{ form.finalKm - form.initialKm }}</span>
 								Km
 							</span>
-						</IonItem>
-						<IonItem v-if="form.modeKM === 'fix'" lines="none">
-							<IonInput
+						</ion-item>
+						<ion-item v-if="form.modeKM === 'fix'" lines="none">
+							<ion-input
 								label="En este turno"
 								label-placement="fixed"
 								type="number"
@@ -170,26 +170,26 @@
 								maxlength="8"
 							>
 								<span slot="end">Km</span>
-							</IonInput>
-						</IonItem>
+							</ion-input>
+						</ion-item>
 					</div>
-				</IonAccordion>
-				<IonAccordion value="total">
-					<IonItem slot="header" color="light">
-						<IonLabel>Total</IonLabel>
-					</IonItem>
+				</ion-accordion>
+				<ion-accordion value="total">
+					<ion-item slot="header" color="light">
+						<ion-label>Total</ion-label>
+					</ion-item>
 					<div slot="content" class="ion-padding">
-						<IonItem lines="none">
-							<IonSegment v-model="form.modeTotalShift">
-								<IonSegmentButton value="calculatedTotal">
-									<IonLabel>Calculado</IonLabel>
-								</IonSegmentButton>
-								<IonSegmentButton value="fixTotal">
-									<IonLabel>Fijo</IonLabel>
-								</IonSegmentButton>
-							</IonSegment>
-						</IonItem>
-						<IonItem
+						<ion-item lines="none">
+							<ion-segment v-model="form.modeTotalShift">
+								<ion-segment-button value="calculatedTotal">
+									<ion-label>Calculado</ion-label>
+								</ion-segment-button>
+								<ion-segment-button value="fixTotal">
+									<ion-label>Fijo</ion-label>
+								</ion-segment-button>
+							</ion-segment>
+						</ion-item>
+						<ion-item
 							v-if="form.modeTotalShift === 'calculatedTotal'"
 							lines="none"
 						>
@@ -201,9 +201,9 @@
 									total.</i
 								>
 							</p>
-						</IonItem>
-						<IonItem v-if="form.modeTotalShift === 'fixTotal'" lines="none">
-							<IonInput
+						</ion-item>
+						<ion-item v-if="form.modeTotalShift === 'fixTotal'" lines="none">
+							<ion-input
 								label="Total"
 								label-placement="fixed"
 								type="number"
@@ -214,11 +214,11 @@
 								maxlength="8"
 							>
 								<span slot="end">{{ currency }}</span>
-							</IonInput>
-						</IonItem>
+							</ion-input>
+						</ion-item>
 					</div>
-				</IonAccordion>
-			</IonAccordionGroup>
+				</ion-accordion>
+			</ion-accordion-group>
 			<IonToast
 				:is-open="showToast"
 				message="La fecha y hora de fin de turno debe ser mayor que la fecha y hora de inicio"
@@ -237,13 +237,13 @@
 				position="bottom"
 				swipe-gesture="vertical"
 			></IonToast>
-		</IonContent>
-		<IonFooter id="form-footer">
-			<IonToolbar>
-				<IonGrid>
-					<IonRow>
-						<IonCol>
-							<IonButton
+		</ion-content>
+		<ion-footer id="form-footer">
+			<ion-toolbar>
+				<ion-grid>
+					<ion-row>
+						<ion-col>
+							<ion-button
 								fill="outline"
 								expand="block"
 								shape="round"
@@ -251,23 +251,23 @@
 								@click="handleCancel"
 							>
 								Cancelar
-							</IonButton>
-						</IonCol>
-						<IonCol>
-							<IonButton
+							</ion-button>
+						</ion-col>
+						<ion-col>
+							<ion-button
 								expand="block"
 								shape="round"
 								mode="ios"
 								@click="handleSave"
 							>
 								{{ modeForm === 'edit' ? 'Guardar Cambios' : 'Nuevo Turno' }}
-							</IonButton>
-						</IonCol>
-					</IonRow>
-				</IonGrid>
-			</IonToolbar>
-		</IonFooter>
-	</IonPage>
+							</ion-button>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+			</ion-toolbar>
+		</ion-footer>
+	</ion-page>
 </template>
 
 <script setup>

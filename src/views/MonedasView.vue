@@ -1,13 +1,13 @@
 <template>
-	<IonPage class="container">
-		<IonHeader mode="ios">
-			<IonToolbar>
-				<IonTitle>Moneda</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent>
+	<ion-page class="container">
+		<ion-header mode="ios">
+			<ion-toolbar>
+				<ion-title>Moneda</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content>
 			<!-- CARD -->
-			<IonCard class="shift-card">
+			<ion-card class="shift-card">
 				<!-- // CARD HEADER -->
 				<ion-card-header class="shift-header">
 					<ion-card-title class="shift-title">
@@ -36,11 +36,11 @@
 					</ion-select>
 					<small>* Podrás cambiarlo mas adelante en configuración</small>
 				</div>
-			</IonCard>
-		</IonContent>
-		<IonFooter class="ion-padding">
-			<IonNavLink router-direction="forward" :component="component">
-				<IonButton
+			</ion-card>
+		</ion-content>
+		<ion-footer class="ion-padding">
+			<ion-nav-link router-direction="forward" :component="component">
+				<ion-button
 					expand="block"
 					fill="outline"
 					mode="ios"
@@ -48,10 +48,10 @@
 					@click="saveCurrency"
 				>
 					Siguiente
-				</IonButton>
-			</IonNavLink>
-		</IonFooter>
-	</IonPage>
+				</ion-button>
+			</ion-nav-link>
+		</ion-footer>
+	</ion-page>
 </template>
 <script setup>
 	import {

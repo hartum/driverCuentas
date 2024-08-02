@@ -1,14 +1,14 @@
 <template>
-	<IonPage>
-		<IonContent class="travel-container" color="light">
+	<ion-page>
+		<ion-content class="travel-container" color="light">
 			<MapViewer @mapUpdated="handleMapUpdated" :initialData="mapDetails" />
-		</IonContent>
-		<IonFooter>
-			<IonToolbar>
+		</ion-content>
+		<ion-footer>
+			<ion-toolbar>
 				<ion-grid>
 					<ion-row>
 						<ion-col>
-							<ionButton
+							<ion-button
 								fill="outline"
 								expand="block"
 								shape="round"
@@ -16,23 +16,23 @@
 								@click="handleCancelMap"
 							>
 								Cancelar
-							</ionButton>
+							</ion-button>
 						</ion-col>
 						<ion-col>
-							<ionButton
+							<ion-button
 								expand="block"
 								shape="round"
 								mode="ios"
 								@click="handleSaveMap"
 							>
 								Elige Ubicación
-							</ionButton>
+							</ion-button>
 						</ion-col>
 					</ion-row>
 				</ion-grid>
-			</IonToolbar>
-		</IonFooter>
-	</IonPage>
+			</ion-toolbar>
+		</ion-footer>
+	</ion-page>
 </template>
 
 <script setup>
