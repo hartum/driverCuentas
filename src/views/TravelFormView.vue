@@ -12,7 +12,7 @@
 			:class="{ 'ion-padding': !isMapVisible }"
 		>
 			<div v-show="!isMapVisible">
-				<ion-item lines="none" class="preview-item">
+				<ion-item lines="none" class="preview-item" mode="ios">
 					<span slot="start">
 						<ion-icon class="title-icon" :icon="payIcons[pay]" />
 					</span>
@@ -28,11 +28,11 @@
 				</ion-item>
 				<ion-accordion-group :value="openAccordion" class="accordion-group">
 					<ion-accordion value="amount">
-						<ion-item slot="header" color="light">
+						<ion-item slot="header" color="light" mode="ios">
 							<ion-label><b>Importe</b></ion-label>
 						</ion-item>
 						<div slot="content" class="ion-padding">
-							<ion-item lines="none" class="travel-item">
+							<ion-item lines="none" class="travel-item" mode="ios">
 								<ion-input
 									class="money-input"
 									type="number"
@@ -50,12 +50,12 @@
 					</ion-accordion>
 
 					<ion-accordion value="travel">
-						<ion-item slot="header" color="light">
+						<ion-item slot="header" color="light" mode="ios">
 							<ion-label><b>Detalles del Viaje</b></ion-label>
 						</ion-item>
 						<div slot="content" class="ion-padding">
-							<ion-list lines="none">
-								<ion-item>
+							<ion-list lines="none" mode="ios">
+								<ion-item mode="ios">
 									<ion-label>Fecha</ion-label>
 									<DateTimePicker
 										:value="datetimeStart"
@@ -63,7 +63,11 @@
 									/>
 								</ion-item>
 
-								<ion-item @click="openMap('origin')" class="origin-input">
+								<ion-item
+									@click="openMap('origin')"
+									class="origin-input"
+									mode="ios"
+								>
 									<span slot="start">
 										<ion-icon :icon="pinOutline" size="large"></ion-icon>
 									</span>
@@ -74,6 +78,7 @@
 								<ion-item
 									@click="openMap('destination')"
 									class="destination-input"
+									mode="ios"
 								>
 									<span slot="start">
 										<ion-icon :icon="flagOutline" size="large"></ion-icon>
@@ -82,7 +87,7 @@
 										{{ locationEnd.address || 'Elige destino' }}
 									</p>
 								</ion-item>
-								<ion-item v-if="distance !== null && distance > 0">
+								<ion-item v-if="distance !== null && distance > 0" mode="ios">
 									<ion-label
 										>Distancia en línea recta:
 										{{ distance.toFixed(2) }} km</ion-label
@@ -93,11 +98,11 @@
 					</ion-accordion>
 
 					<ion-accordion value="payType">
-						<ion-item slot="header" color="light">
+						<ion-item slot="header" color="light" mode="ios">
 							<ion-label><b>Pago con</b></ion-label>
 						</ion-item>
 						<div class="ion-padding payMode-container" slot="content">
-							<ion-segment v-model="pay">
+							<ion-segment v-model="pay" mode="ios">
 								<ion-segment-button value="app" mode="ios">
 									<ion-label>App</ion-label>
 									<ion-icon
@@ -106,7 +111,7 @@
 										size="large"
 									></ion-icon>
 								</ion-segment-button>
-								<ion-segment-button value="cash">
+								<ion-segment-button value="cash" mode="ios">
 									<ion-label>Efectivo</ion-label>
 									<ion-icon
 										:icon="payIcons['cash']"
@@ -114,7 +119,7 @@
 										size="large"
 									></ion-icon>
 								</ion-segment-button>
-								<ion-segment-button value="card">
+								<ion-segment-button value="card" mode="ios">
 									<ion-label>Tarjeta</ion-label>
 									<ion-icon
 										:icon="payIcons['card']"
@@ -127,11 +132,11 @@
 					</ion-accordion>
 
 					<ion-accordion value="serviceFor">
-						<ion-item slot="header" color="light">
+						<ion-item slot="header" color="light" mode="ios">
 							<ion-label><b>Servicio para</b></ion-label>
 						</ion-item>
 						<div class="ion-padding" slot="content">
-							<ion-item lines="none">
+							<ion-item lines="none" mode="ios">
 								<ion-radio-group class="tipo-servicio" v-model="service">
 									<ion-radio
 										v-for="(serviceOption, index) in servicesList"

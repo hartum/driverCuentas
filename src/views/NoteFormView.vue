@@ -23,14 +23,14 @@
 				</ion-segment-button>
 			</ion-segment>
 			<ion-list lines="none" :inset="true" mode="ios">
-				<ion-item>
+				<ion-item mode="ios">
 					<ion-label>Fecha:</ion-label>
 					<DateTimePicker
 						:value="form.noteDate"
 						@dateTimeChange="handleNoteDateChange"
 					/>
 				</ion-item>
-				<ion-item>
+				<ion-item mode="ios">
 					<ion-textarea
 						label="Concepto:"
 						label-placement="fixed"
@@ -39,7 +39,7 @@
 						v-model="form.description"
 					></ion-textarea>
 				</ion-item>
-				<ion-item v-show="form.noteType != 'other'">
+				<ion-item v-show="form.noteType != 'other'" mode="ios">
 					<ion-input
 						label="Importe:"
 						label-placement="fixed"

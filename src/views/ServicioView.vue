@@ -9,8 +9,8 @@
 			<ion-icon :icon="listCircleOutline" class="icon"></ion-icon>
 			<div class="list-container">
 				<img src="/hand.svg" class="animated-hand" @click="fadeOutHand" />
-				<ion-list>
-					<ion-list-header>
+				<ion-list mode="ios">
+					<ion-list-header mode="ios">
 						<ion-label>¿Para quien vas a trabajar?*</ion-label>
 					</ion-list-header>
 					<ion-reorder-group :disabled="false" @ionItemReorder="handleReorder">
@@ -19,7 +19,7 @@
 							:key="index"
 							ref="slidingItems"
 						>
-							<ion-item>
+							<ion-item mode="ios">
 								<ion-label>{{ service }}</ion-label>
 								<ion-reorder slot="end"></ion-reorder>
 							</ion-item>
@@ -33,7 +33,7 @@
 							</ion-item-options>
 						</ion-item-sliding>
 					</ion-reorder-group>
-					<ion-item>
+					<ion-item mode="ios">
 						<ion-input
 							label="Nuevo Servicio"
 							label-placement="stacked"

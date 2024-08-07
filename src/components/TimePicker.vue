@@ -46,7 +46,9 @@
 				</ion-picker>
 
 				<div class="actions">
-					<ion-button expand="block" @click="setTimeValue">Ok</ion-button>
+					<ion-button expand="block" mode="ios" @click="setTimeValue"
+						>Ok</ion-button
+					>
 				</div>
 			</div>
 		</ion-modal>

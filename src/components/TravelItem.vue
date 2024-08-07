@@ -4,6 +4,7 @@
 			class="item-travel"
 			lines="none"
 			button="true"
+			mode="ios"
 			@click="editTravel"
 		>
 			<span slot="start">
@@ -11,9 +12,9 @@
 			</span>
 			<ion-label>
 				<span class="hour-date-container">
-					{{ hour(travel.noteDate) }}
+					{{ hour(travel.startDate) }}
 					<div class="date-container">
-						{{ day(travel.noteDate) }} {{ month(travel.noteDate) }}
+						{{ day(travel.startDate) }} {{ month(travel.startDate) }}
 					</div>
 				</span>
 				<span class="money"> {{ formattedAmount }}{{ currency }} </span>
@@ -55,7 +56,7 @@
 			required: true,
 		},
 	});
-
+	console.log('travel', props.travel);
 	const emit = defineEmits(['edit-travel', 'delete-travel']);
 
 	const payIcons = {

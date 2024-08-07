@@ -25,6 +25,7 @@
 						v-model="selectedCurrency"
 						ok-text="OK"
 						cancel-text="Cancelar"
+						mode="ios"
 					>
 						<ion-select-option
 							v-for="currency in currencies"

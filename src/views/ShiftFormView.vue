@@ -60,19 +60,19 @@
 				class="accordion-group"
 			>
 				<ion-accordion value="shiftTime">
-					<ion-item slot="header" color="light">
+					<ion-item slot="header" color="light" mode="ios">
 						<ion-label>Horario</ion-label>
 					</ion-item>
 					<div slot="content" class="ion-padding">
-						<ion-list lines="none">
-							<ion-item>
+						<ion-list lines="none" mode="ios">
+							<ion-item mode="ios">
 								<ion-label>Inicio</ion-label>
 								<DateTimePicker
 									:value="form.startDate"
 									@dateTimeChange="handleStartDateChange"
 								/>
 							</ion-item>
-							<ion-item>
+							<ion-item mode="ios">
 								<ion-label>Fin</ion-label>
 								<DateTimePicker
 									:value="form.endDate"
@@ -83,11 +83,11 @@
 					</div>
 				</ion-accordion>
 				<ion-accordion value="gas">
-					<ion-item slot="header" color="light">
+					<ion-item slot="header" color="light" mode="ios">
 						<ion-label>Gasolina</ion-label>
 					</ion-item>
 					<div slot="content" class="ion-padding">
-						<ion-item lines="none">
+						<ion-item lines="none" mode="ios">
 							<ion-input
 								label="Cantidad"
 								label-placement="fixed"
@@ -105,21 +105,25 @@
 					</div>
 				</ion-accordion>
 				<ion-accordion value="km">
-					<ion-item slot="header" color="light">
+					<ion-item slot="header" color="light" mode="ios">
 						<ion-label>Kilometraje</ion-label>
 					</ion-item>
 					<div slot="content" class="ion-padding">
-						<ion-item lines="none">
-							<ion-segment v-model="form.modeKM">
-								<ion-segment-button value="calculatedKm">
+						<ion-item lines="none" mode="ios">
+							<ion-segment v-model="form.modeKM" mode="ios">
+								<ion-segment-button value="calculatedKm" mode="ios">
 									<ion-label>Calculado</ion-label>
 								</ion-segment-button>
-								<ion-segment-button value="fix">
+								<ion-segment-button value="fix" mode="ios">
 									<ion-label>Fijo</ion-label>
 								</ion-segment-button>
 							</ion-segment>
 						</ion-item>
-						<ion-item v-if="form.modeKM === 'calculatedKm'" lines="none">
+						<ion-item
+							v-if="form.modeKM === 'calculatedKm'"
+							lines="none"
+							mode="ios"
+						>
 							<ion-input
 								class="money-input"
 								label="Inicio turno"
@@ -135,7 +139,7 @@
 								<span slot="end">Km</span>
 							</ion-input>
 						</ion-item>
-						<ion-item v-if="form.modeKM === 'calculatedKm'">
+						<ion-item v-if="form.modeKM === 'calculatedKm'" mode="ios">
 							<ion-input
 								class="money-input"
 								label="Fin turno"
@@ -151,14 +155,18 @@
 								<span slot="end">Km</span>
 							</ion-input>
 						</ion-item>
-						<ion-item v-if="form.modeKM === 'calculatedKm'" lines="none">
+						<ion-item
+							v-if="form.modeKM === 'calculatedKm'"
+							lines="none"
+							mode="ios"
+						>
 							<div>En este turno</div>
 							<span slot="end">
 								<span class="km-diff">{{ form.finalKm - form.initialKm }}</span>
 								Km
 							</span>
 						</ion-item>
-						<ion-item v-if="form.modeKM === 'fix'" lines="none">
+						<ion-item v-if="form.modeKM === 'fix'" lines="none" mode="ios">
 							<ion-input
 								label="En este turno"
 								label-placement="fixed"
@@ -175,16 +183,16 @@
 					</div>
 				</ion-accordion>
 				<ion-accordion value="total">
-					<ion-item slot="header" color="light">
+					<ion-item slot="header" color="light" mode="ios">
 						<ion-label>Total</ion-label>
 					</ion-item>
 					<div slot="content" class="ion-padding">
-						<ion-item lines="none">
-							<ion-segment v-model="form.modeTotalShift">
-								<ion-segment-button value="calculatedTotal">
+						<ion-item lines="none" mode="ios">
+							<ion-segment v-model="form.modeTotalShift" mode="ios">
+								<ion-segment-button value="calculatedTotal" mode="ios">
 									<ion-label>Calculado</ion-label>
 								</ion-segment-button>
-								<ion-segment-button value="fixTotal">
+								<ion-segment-button value="fixTotal" mode="ios">
 									<ion-label>Fijo</ion-label>
 								</ion-segment-button>
 							</ion-segment>
@@ -192,6 +200,7 @@
 						<ion-item
 							v-if="form.modeTotalShift === 'calculatedTotal'"
 							lines="none"
+							mode="ios"
 						>
 							<p>
 								El <b>Total</b> se calcula automáticamente sumando los viajes
@@ -202,7 +211,11 @@
 								>
 							</p>
 						</ion-item>
-						<ion-item v-if="form.modeTotalShift === 'fixTotal'" lines="none">
+						<ion-item
+							v-if="form.modeTotalShift === 'fixTotal'"
+							lines="none"
+							mode="ios"
+						>
 							<ion-input
 								label="Total"
 								label-placement="fixed"

@@ -24,7 +24,7 @@
 			</ion-content>
 		</ion-content>
 		<div class="total-container">
-			Total: <span class="total">{{ totalAmount }} {{ currency }}</span>
+			Total: <span class="total">{{ totalAmount }}{{ currency }}</span>
 			<ion-fab
 				slot="fixed"
 				horizontal="right"
@@ -35,13 +35,25 @@
 					<ion-icon :icon="add"></ion-icon>
 				</ion-fab-button>
 				<ion-fab-list side="top">
-					<ion-fab-button color="primary" @click="navigateTo('/noteform/')">
+					<ion-fab-button
+						color="primary"
+						mode="ios"
+						@click="navigateTo('/noteform/')"
+					>
 						<ion-icon :icon="reader" />
 					</ion-fab-button>
-					<ion-fab-button color="primary" @click="navigateTo('/shift/')">
+					<ion-fab-button
+						color="primary"
+						mode="ios"
+						@click="navigateTo('/shift/')"
+					>
 						<ion-icon :icon="time" />
 					</ion-fab-button>
-					<ion-fab-button color="primary" @click="navigateTo('/travelform/')">
+					<ion-fab-button
+						color="primary"
+						mode="ios"
+						@click="navigateTo('/travelform/')"
+					>
 						<ion-icon :icon="carSport" />
 					</ion-fab-button>
 				</ion-fab-list>
@@ -172,8 +184,8 @@
 		bottom: 0;
 		height: 50px;
 		color: #535353;
-		font-size: 1.7em;
-		padding: 8px 60px 8px 20px;
+		font-size: 2em;
+		padding: 2px 60px 8px 20px;
 		border-top: 1px dashed #ccc;
 		background-color: #f7f7f7;
 		position: relative;

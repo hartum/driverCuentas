@@ -1,6 +1,12 @@
 <template>
 	<ion-item-sliding>
-		<ion-item class="item-note" button="true" lines="none" @click="editNote">
+		<ion-item
+			class="item-note"
+			button="true"
+			lines="none"
+			mode="ios"
+			@click="editNote"
+		>
 			<span slot="start">
 				<ion-icon class="title-icon" :icon="readerOutline" />
 			</span>

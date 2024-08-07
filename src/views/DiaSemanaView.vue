@@ -22,7 +22,7 @@
 				<!-- FOOTER	 -->
 				<div class="shift-footer ion-padding">
 					<ion-radio-group v-model="selectedDay">
-						<ion-item lines="none">
+						<ion-item lines="none" mode="ios">
 							<ion-radio
 								justify="start"
 								value="lunes"
@@ -32,7 +32,7 @@
 								Lunes
 							</ion-radio>
 						</ion-item>
-						<ion-item lines="none">
+						<ion-item lines="none" mode="ios">
 							<ion-radio
 								justify="start"
 								value="domingo"

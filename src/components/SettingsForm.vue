@@ -7,22 +7,22 @@
 		</ion-header>
 		<ion-content class="ion-padding">
 			<div>
-				<ion-list>
-					<ion-list-header>
+				<ion-list mode="ios">
+					<ion-list-header mode="ios">
 						<ion-label>El mapa comienza aquí</ion-label>
 					</ion-list-header>
-					<ion-item button="true" @click="navigateTo('/map/')">
+					<ion-item mode="ios" button="true" @click="navigateTo('/map/')">
 						<ion-label>{{ mapInitialLocation }}</ion-label>
 					</ion-item>
 				</ion-list>
 			</div>
 			<div>
-				<ion-list>
-					<ion-list-header>
+				<ion-list mode="ios">
+					<ion-list-header mode="ios">
 						<ion-label>Primer día de la semana</ion-label>
 					</ion-list-header>
 					<ion-radio-group v-model="selectedDay" @ionChange="updateStartDay">
-						<ion-item>
+						<ion-item mode="ios">
 							<ion-radio
 								justify="start"
 								value="lunes"
@@ -32,7 +32,7 @@
 								Lunes
 							</ion-radio>
 						</ion-item>
-						<ion-item>
+						<ion-item mode="ios">
 							<ion-radio
 								justify="start"
 								value="domingo"
@@ -46,17 +46,18 @@
 				</ion-list>
 			</div>
 			<div>
-				<ion-list>
-					<ion-list-header>
+				<ion-list mode="ios">
+					<ion-list-header mode="ios">
 						<ion-label>Monedas</ion-label>
 					</ion-list-header>
-					<ion-item>
+					<ion-item mode="ios">
 						<ion-select
 							label="Moneda"
 							v-model="selectedCurrency"
 							ok-text="OK"
 							cancel-text="Cancelar"
 							@ionChange="updateCurrency"
+							mode="ios"
 						>
 							<ion-select-option
 								v-for="currency in currencies"
@@ -70,8 +71,8 @@
 				</ion-list>
 			</div>
 			<div>
-				<ion-list>
-					<ion-list-header>
+				<ion-list mode="ios">
+					<ion-list-header mode="ios">
 						<ion-label>Servicios</ion-label>
 					</ion-list-header>
 					<ion-reorder-group :disabled="false" @ionItemReorder="handleReorder">
@@ -80,7 +81,7 @@
 							:key="index"
 							ref="slidingItems"
 						>
-							<ion-item>
+							<ion-item mode="ios">
 								<ion-label>{{ service }}</ion-label>
 								<ion-reorder slot="end"></ion-reorder>
 							</ion-item>
@@ -94,7 +95,7 @@
 							</ion-item-options>
 						</ion-item-sliding>
 					</ion-reorder-group>
-					<ion-item>
+					<ion-item mode="ios">
 						<ion-input
 							label="Nuevo Servicio"
 							label-placement="stacked"

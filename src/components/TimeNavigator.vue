@@ -1,10 +1,15 @@
 <template>
 	<div class="time-navigator">
-		<ion-segment v-model="timeNavigator" @ionChange="handleSegmentChange">
+		<ion-segment
+			v-model="timeNavigator"
+			@ionChange="handleSegmentChange"
+			mode="ios"
+		>
 			<ion-segment-button
 				v-for="option in timeOptions"
 				:key="option.value"
 				:value="option.value"
+				mode="ios"
 			>
 				<ion-label>{{ option.label }}</ion-label>
 			</ion-segment-button>

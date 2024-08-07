@@ -3,7 +3,7 @@
 		<ion-card-header class="shift-header">
 			<ion-card-title class="shift-title">
 				<ion-item-sliding>
-					<ion-item button="true" lines="none" @click="editShift">
+					<ion-item button="true" lines="none" mode="ios" @click="editShift">
 						<div class="shift-tittle-info">
 							{{ formatTime(shift.startDate) }}
 							<ion-icon

@@ -8,11 +8,11 @@
 				</ion-card-header>
 				<ion-card-content>
 					<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
-					<ion-button @click="navigateTo('/travelform/')">
+					<ion-button @click="navigateTo('/travelform/')" mode="ios">
 						<ion-icon slot="start" :icon="carSport"></ion-icon>
 						Nuevo viaje
 					</ion-button>
-					<ion-button @click="navigateTo('/shift/')">
+					<ion-button @click="navigateTo('/shift/')" mode="ios">
 						<ion-icon slot="start" :icon="time"></ion-icon>
 						Nuevo turno
 					</ion-button>

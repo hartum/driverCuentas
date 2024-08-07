@@ -15,7 +15,7 @@
 					auto-apply
 					:enable-time-picker="false"
 				></vue-date-picker>
-				<ion-item>
+				<ion-item mode="ios">
 					<ion-button
 						expand="block"
 						@click="selectDate"
