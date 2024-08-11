@@ -260,6 +260,14 @@
 				form.value = { ...shift };
 				loadTravelsAndNotes();
 			}
+		} else {
+			// Inicializar con valores por defecto para un nuevo turno
+			form.value = {
+				startDate: moment().format('YYYY-MM-DDTHH:mm'),
+				endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+				initialKm: 0,
+				finalKm: 0,
+			};
 		}
 	};
 
@@ -273,7 +281,12 @@
 		notes.value = [...loadedNotes];
 	};
 
-	onMounted(loadShift);
+	onMounted(() => {
+		// Determinar el modo basado en la presencia de shiftId en la ruta
+		modeForm.value = route.params.shiftId ? 'edit' : 'create';
+		loadShift();
+	});
+
 	watch(
 		() => route.params.shiftId,
 		async (newShiftId) => {
@@ -294,23 +307,28 @@
 			return;
 		}
 
-		if (modeForm.value === 'edit') {
-			await updateShift(
-				parseInt(shiftId.value),
-				form.value.startDate,
-				form.value.endDate,
-				initialKm,
-				finalKm
-			);
-		} else {
-			await addShift(
-				form.value.startDate,
-				form.value.endDate,
-				initialKm,
-				finalKm
-			);
+		try {
+			if (modeForm.value === 'edit') {
+				await updateShift(
+					parseInt(shiftId.value),
+					form.value.startDate,
+					form.value.endDate,
+					initialKm,
+					finalKm
+				);
+			} else {
+				await addShift(
+					form.value.startDate,
+					form.value.endDate,
+					initialKm,
+					finalKm
+				);
+			}
+			history.back();
+		} catch (error) {
+			console.error('Error al guardar el turno:', error);
+			// Aquí podrías mostrar un mensaje de error al usuario
 		}
-		history.back();
 	};
 
 	const handleCancel = () => {

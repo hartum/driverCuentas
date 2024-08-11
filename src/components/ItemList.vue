@@ -25,7 +25,7 @@
 						<!-- Button New Travel -->
 						<div class="ion-padding" v-if="item.children.length === 0">
 							<ion-button
-								@click="navigateTo('/travelform/')"
+								@click="navigateTo('/travelform/', item.id)"
 								expand="block"
 								mode="ios"
 							>
@@ -203,17 +203,28 @@
 		return total.toFixed(2);
 	});
 
-	const navigateTo = (path) => {
-		router.push(path);
+	const navigateTo = (path, id = null) => {
+		if (path === '/shift/') {
+			router.push(`${path}${id || ''}`);
+		} else if (path === '/travelform/') {
+			router.push(`${path}${id}`);
+		} else {
+			router.push(path);
+		}
 	};
 
-	const editItem = (id, type) => {
+	const editItem = (id, type, shiftId = null) => {
 		const paths = {
 			travel: '/travelform/',
 			shift: '/shift/',
 			note: '/noteform/',
 		};
-		router.push(`${paths[type]}${id}`);
+
+		if (type === 'shift') {
+			router.push(`${paths[type]}${id}`);
+		} else {
+			router.push(`${paths[type]}${shiftId}/${id}`);
+		}
 	};
 
 	const actionSheetOpen = ref(false);
@@ -275,10 +286,20 @@
 		};
 	};
 
-	const getComponentEvents = (item) => ({
-		[`edit-${item.type}`]: () => editItem(item.id, item.type),
-		[`delete-${item.type}`]: () => confirmRemoveItem(item),
-	});
+	const getComponentEvents = (item) => {
+		if (item.type === 'shift') {
+			return {
+				'edit-shift': () => editItem(item.id, 'shift'),
+				'delete-shift': () => confirmRemoveItem(item),
+			};
+		} else {
+			return {
+				[`edit-${item.type}`]: () =>
+					editItem(item.id, item.type, item.parentShiftId),
+				[`delete-${item.type}`]: () => confirmRemoveItem(item),
+			};
+		}
+	};
 
 	watch(() => [route.fullPath, props.initialDate, props.endDate], loadItems);
 

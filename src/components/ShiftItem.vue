@@ -137,7 +137,11 @@
 	};
 
 	const navigateTo = (path) => {
-		router.push(path);
+		if (path.includes('/noteform/') || path.includes('/travelform/')) {
+			router.push(`${path}${props.shift.id}`);
+		} else {
+			router.push(path);
+		}
 	};
 
 	const subtotalBeforeExpenses = computed(() => {
