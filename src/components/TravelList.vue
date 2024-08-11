@@ -25,39 +25,6 @@
 		</ion-content>
 		<div class="total-container">
 			Total: <span class="total">{{ totalAmount }}{{ currency }}</span>
-			<ion-fab
-				slot="fixed"
-				horizontal="right"
-				vertical="top"
-				class="add-travel"
-			>
-				<ion-fab-button mode="ios">
-					<ion-icon :icon="add"></ion-icon>
-				</ion-fab-button>
-				<ion-fab-list side="top">
-					<ion-fab-button
-						color="primary"
-						mode="ios"
-						@click="navigateTo('/noteform/')"
-					>
-						<ion-icon :icon="reader" />
-					</ion-fab-button>
-					<ion-fab-button
-						color="primary"
-						mode="ios"
-						@click="navigateTo('/shift/')"
-					>
-						<ion-icon :icon="time" />
-					</ion-fab-button>
-					<ion-fab-button
-						color="primary"
-						mode="ios"
-						@click="navigateTo('/travelform/')"
-					>
-						<ion-icon :icon="carSport" />
-					</ion-fab-button>
-				</ion-fab-list>
-			</ion-fab>
 		</div>
 	</ion-page>
 </template>
@@ -80,14 +47,8 @@
 		IonToolbar,
 		IonTitle,
 		IonContent,
-		IonIcon,
-		IonFab,
-		IonFabButton,
-		IonFabList,
 	} from '@ionic/vue';
-	import { add, time, carSport, reader } from 'ionicons/icons';
 	import { ref, onMounted } from 'vue';
-	import { useRouter } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import ItemList from '@/components/ItemList.vue';
@@ -97,17 +58,11 @@
 	const currency = ref('€');
 	const initialDate = ref(moment().startOf('month').format('YYYY-MM-DD HH:mm'));
 	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
-	const router = useRouter();
 	const settingsStore = useSettingsStore();
 	const totalAmount = ref('0.00');
 
 	// Establecer el valor del primer día de la semana por defecto
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
-
-	const navigateTo = (path) => {
-		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-		router.push(path + now);
-	};
 
 	const handleDateChanged = ({ newDate, type }) => {
 		console.log({ newDate, type });
@@ -193,12 +148,6 @@
 			float: right;
 			color: #000;
 		}
-	}
-	.add-travel {
-		position: absolute;
-		font-size: 48px;
-		top: -30px;
-		right: 5px;
 	}
 	ion-item::part(native) {
 		background: transparent;

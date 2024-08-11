@@ -30,10 +30,7 @@ export const initializeDatabase = async () => {
           initialKm FLOAT, 
           finalKm FLOAT, 
           totalKm FLOAT, 
-          modeKM STRING, 
-          gasoline FLOAT, 
-          totalShift FLOAT, 
-          modeTotalShift STRING
+          totalShift FLOAT
         );
         CREATE TABLE IF NOT EXISTS notes (
           id INT PRIMARY KEY AUTO_INCREMENT, 

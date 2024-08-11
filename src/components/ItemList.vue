@@ -1,23 +1,10 @@
 <template>
 	<div class="travel-list">
-		<div v-if="organizedItems.length === 0">
-			<ion-card>
-				<ion-card-header>
-					<ion-card-title>Crea un viaje o turno</ion-card-title>
-					<ion-card-subtitle>Nada que mostrar en esta fecha</ion-card-subtitle>
-				</ion-card-header>
-				<ion-card-content>
-					<p>Puedes empezar creando un viaje o un turno desde aquí.</p>
-					<ion-button @click="navigateTo('/travelform/')" mode="ios">
-						<ion-icon slot="start" :icon="carSport"></ion-icon>
-						Nuevo viaje
-					</ion-button>
-					<ion-button @click="navigateTo('/shift/')" mode="ios">
-						<ion-icon slot="start" :icon="time"></ion-icon>
-						Nuevo turno
-					</ion-button>
-				</ion-card-content>
-			</ion-card>
+		<div v-if="organizedItems.length === 0" class="ion-padding">
+			<ion-button @click="navigateTo('/shift/')" expand="block" mode="ios">
+				<ion-icon slot="start" :icon="time"></ion-icon>
+				Nuevo turno
+			</ion-button>
 		</div>
 		<div v-else class="ion-padding">
 			<template v-for="item in organizedItems" :key="item.id">
@@ -34,11 +21,23 @@
 							v-bind="getComponentProps(childItem)"
 							v-on="getComponentEvents(childItem)"
 						/>
+
+						<!-- Button New Travel -->
+						<div class="ion-padding" v-if="item.children.length === 0">
+							<ion-button
+								@click="navigateTo('/travelform/')"
+								expand="block"
+								mode="ios"
+							>
+								<ion-icon slot="start" :icon="carSport"></ion-icon>
+								Nuevo viaje
+							</ion-button>
+						</div>
 					</template>
 				</component>
 			</template>
 		</div>
-		<!--<ion-button @click="borraDB">Borra la BBDD</ion-button>-->
+		<ion-button @click="borraDB">Borra la BBDD</ion-button>
 	</div>
 	<ion-action-sheet
 		:header="actionSheetHeader"
@@ -50,26 +49,17 @@
 
 <script setup>
 	import {
-		ref,
-		onMounted,
-		defineProps,
 		watch,
 		computed,
 		defineEmits,
+		defineProps,
+		onMounted,
+		ref,
 	} from 'vue';
 	import moment from 'moment';
-	import {
-		IonCard,
-		IonCardHeader,
-		IonCardTitle,
-		IonCardSubtitle,
-		IonCardContent,
-		IonButton,
-		IonIcon,
-		IonActionSheet,
-	} from '@ionic/vue';
+	import { IonButton, IonIcon, IonActionSheet } from '@ionic/vue';
 	import { time, carSport } from 'ionicons/icons';
-	import { useRouter } from 'vue-router';
+	import { useRouter, useRoute } from 'vue-router';
 	import { getTravels, deleteTravel } from '@/services/travelService';
 	import { getShifts, deleteShift } from '@/services/shiftService';
 	import { getNotes, deleteNote } from '@/services/noteService';
@@ -79,6 +69,7 @@
 	import NoteItem from './NoteItem.vue';
 	import ShiftItem from './ShiftItem.vue';
 
+	const route = useRoute();
 	const props = defineProps({
 		initialDate: {
 			type: String,
@@ -213,8 +204,7 @@
 	});
 
 	const navigateTo = (path) => {
-		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-		router.push(path + now);
+		router.push(path);
 	};
 
 	const editItem = (id, type) => {
@@ -271,17 +261,26 @@
 		await loadItems();
 	};
 
-	const getComponentProps = (item) => ({
-		[item.type]: item,
-		currency: currency.value,
-	});
+	const getComponentProps = (item) => {
+		if (item.type === 'shift') {
+			return {
+				shift: item,
+				currency: currency.value,
+				showNewTravelButton: item.children && item.children.length === 0,
+			};
+		}
+		return {
+			[item.type]: item,
+			currency: currency.value,
+		};
+	};
 
 	const getComponentEvents = (item) => ({
 		[`edit-${item.type}`]: () => editItem(item.id, item.type),
 		[`delete-${item.type}`]: () => confirmRemoveItem(item),
 	});
 
-	watch(() => [props.initialDate, props.endDate], loadItems);
+	watch(() => [route.fullPath, props.initialDate, props.endDate], loadItems);
 
 	watch(totalAmount, (newTotal) => {
 		emit('update:totalAmount', newTotal);

@@ -30,25 +30,12 @@
 
 				<div class="shift-footer">
 					<div class="subtotal-container">
-						<p class="fake-item">Viajes en el turno...</p>
-						<div v-if="form.modeTotalShift === 'fixTotal'" class="shift-total">
-							<div class="right">{{ form.totalShift }} {{ currency }}</div>
-						</div>
-						<div v-else>
-							<div class="subtotal">
-								<span class="subtotal-title">Subtotal</span>
-								<div class="right">{{ calculatedSubtotal }}{{ currency }}</div>
-							</div>
-							<div class="subtotal" v-if="form.gasoline > 0">
-								<span class="subtotal-title"> Gasolina </span>
-								<div class="right">-{{ form.gasoline }}{{ currency }}</div>
-							</div>
-							<div
-								class="shift-total"
-								:class="calculatedTotal < 0 ? 'expense' : ''"
-							>
-								<div class="right">{{ calculatedTotal }}{{ currency }}</div>
-							</div>
+						<p class="fake-item">
+							Hay {{ travels.length + notes.length }} viajes y notas en este
+							turno.
+						</p>
+						<div class="shift-total">
+							<div class="right">{{ calculatedSubtotal }} {{ currency }}</div>
 						</div>
 					</div>
 				</div>
@@ -82,48 +69,12 @@
 						</ion-list>
 					</div>
 				</ion-accordion>
-				<ion-accordion value="gas">
-					<ion-item slot="header" color="light" mode="ios">
-						<ion-label>Gasolina</ion-label>
-					</ion-item>
-					<div slot="content" class="ion-padding">
-						<ion-item lines="none" mode="ios">
-							<ion-input
-								label="Cantidad"
-								label-placement="fixed"
-								type="number"
-								placeholder="000.00"
-								v-model.number="form.gasoline"
-								inputmode="decimal"
-								max="999"
-								maxlength="6"
-								min="0"
-							>
-								<span slot="end">{{ currency }}</span>
-							</ion-input>
-						</ion-item>
-					</div>
-				</ion-accordion>
 				<ion-accordion value="km">
 					<ion-item slot="header" color="light" mode="ios">
 						<ion-label>Kilometraje</ion-label>
 					</ion-item>
 					<div slot="content" class="ion-padding">
 						<ion-item lines="none" mode="ios">
-							<ion-segment v-model="form.modeKM" mode="ios">
-								<ion-segment-button value="calculatedKm" mode="ios">
-									<ion-label>Calculado</ion-label>
-								</ion-segment-button>
-								<ion-segment-button value="fix" mode="ios">
-									<ion-label>Fijo</ion-label>
-								</ion-segment-button>
-							</ion-segment>
-						</ion-item>
-						<ion-item
-							v-if="form.modeKM === 'calculatedKm'"
-							lines="none"
-							mode="ios"
-						>
 							<ion-input
 								class="money-input"
 								label="Inicio turno"
@@ -132,14 +83,14 @@
 								placeholder="000000.00"
 								v-model.number="form.initialKm"
 								inputmode="decimal"
-								max="999"
+								max="999999"
 								maxlength="6"
 								min="0"
 							>
 								<span slot="end">Km</span>
 							</ion-input>
 						</ion-item>
-						<ion-item v-if="form.modeKM === 'calculatedKm'" mode="ios">
+						<ion-item mode="ios">
 							<ion-input
 								class="money-input"
 								label="Fin turno"
@@ -155,79 +106,12 @@
 								<span slot="end">Km</span>
 							</ion-input>
 						</ion-item>
-						<ion-item
-							v-if="form.modeKM === 'calculatedKm'"
-							lines="none"
-							mode="ios"
-						>
+						<ion-item lines="none" mode="ios">
 							<div>En este turno</div>
 							<span slot="end">
-								<span class="km-diff">{{ form.finalKm - form.initialKm }}</span>
+								<span class="km-diff">{{ kmValue }}</span>
 								Km
 							</span>
-						</ion-item>
-						<ion-item v-if="form.modeKM === 'fix'" lines="none" mode="ios">
-							<ion-input
-								label="En este turno"
-								label-placement="fixed"
-								type="number"
-								placeholder="000000.00"
-								v-model.number="form.totalKm"
-								inputmode="decimal"
-								max="999999"
-								maxlength="8"
-							>
-								<span slot="end">Km</span>
-							</ion-input>
-						</ion-item>
-					</div>
-				</ion-accordion>
-				<ion-accordion value="total">
-					<ion-item slot="header" color="light" mode="ios">
-						<ion-label>Total</ion-label>
-					</ion-item>
-					<div slot="content" class="ion-padding">
-						<ion-item lines="none" mode="ios">
-							<ion-segment v-model="form.modeTotalShift" mode="ios">
-								<ion-segment-button value="calculatedTotal" mode="ios">
-									<ion-label>Calculado</ion-label>
-								</ion-segment-button>
-								<ion-segment-button value="fixTotal" mode="ios">
-									<ion-label>Fijo</ion-label>
-								</ion-segment-button>
-							</ion-segment>
-						</ion-item>
-						<ion-item
-							v-if="form.modeTotalShift === 'calculatedTotal'"
-							lines="none"
-							mode="ios"
-						>
-							<p>
-								El <b>Total</b> se calcula automáticamente sumando los viajes
-								dentro del turno y restando los gastos. <br /><br />
-								<i
-									><b>*La gasolina</b> se toma como un gasto y se resta al
-									total.</i
-								>
-							</p>
-						</ion-item>
-						<ion-item
-							v-if="form.modeTotalShift === 'fixTotal'"
-							lines="none"
-							mode="ios"
-						>
-							<ion-input
-								label="Total"
-								label-placement="fixed"
-								type="number"
-								placeholder="000000.00"
-								v-model.number="form.totalShift"
-								inputmode="decimal"
-								max="999999"
-								maxlength="8"
-							>
-								<span slot="end">{{ currency }}</span>
-							</ion-input>
 						</ion-item>
 					</div>
 				</ion-accordion>
@@ -301,8 +185,6 @@
 		IonLabel,
 		IonList,
 		IonInput,
-		IonSegment,
-		IonSegmentButton,
 		IonFooter,
 		IonGrid,
 		IonRow,
@@ -311,31 +193,29 @@
 		IonToast,
 	} from '@ionic/vue';
 	import { timeOutline, timerOutline, warningOutline } from 'ionicons/icons';
-	import { ref, onMounted, computed } from 'vue';
-	import { useRouter, useRoute } from 'vue-router';
+	import { ref, onMounted, computed, watch } from 'vue';
+	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import {
 		addShift,
 		updateShift,
 		selectShiftByID,
 	} from '../services/shiftService';
+	import { getNotes } from '../services/noteService';
+	import { getTravels } from '../services/travelService';
 	import DateTimePicker from '@/components/DateTimePicker.vue';
 
 	const settingsStore = useSettingsStore();
 	const currency = ref('€');
-	const router = useRouter();
 	const route = useRoute();
+	const travels = ref([]);
+	const notes = ref([]);
 
 	const form = ref({
 		startDate: moment().format('YYYY-MM-DDTHH:mm'),
 		endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
 		initialKm: 0,
 		finalKm: 0,
-		totalKm: 0,
-		modeKM: 'calculatedKm',
-		gasoline: 0,
-		totalShift: 0,
-		modeTotalShift: 'calculatedTotal',
 	});
 
 	const firstDayOfWeek = ref(1);
@@ -347,48 +227,61 @@
 	);
 
 	const calculatedSubtotal = computed(() => {
-		// En un formulario de creación/edición, no tenemos los viajes reales,
-		// así que podríamos mostrar un valor de marcador de posición o 0
-		return '0.00';
-	});
-
-	const calculatedTotal = computed(() => {
-		if (form.value.modeTotalShift === 'fixTotal') {
-			return parseFloat(form.value.totalShift).toFixed(2);
-		}
-		return (parseFloat(calculatedSubtotal.value) - form.value.gasoline).toFixed(
-			2
-		);
+		let subtotal = 0;
+		travels.value.forEach((travel) => {
+			subtotal += travel.amount;
+		});
+		notes.value.forEach((note) => {
+			if (note.noteType === 'income') {
+				subtotal += note.amount;
+			} else if (note.noteType === 'expense') {
+				subtotal -= note.amount;
+			}
+		});
+		return subtotal.toFixed(2);
 	});
 
 	const shouldShowKmInfo = computed(() => {
-		return (
-			(form.value.totalKm > 0 && form.value.modeKM === 'fix') ||
-			(form.value.finalKm - form.value.initialKm > 0 &&
-				form.value.modeKM === 'calculatedKm')
-		);
+		return form.value.finalKm > form.value.initialKm;
 	});
 
 	const kmValue = computed(() => {
-		return form.value.modeKM === 'fix'
-			? form.value.totalKm
-			: form.value.finalKm - form.value.initialKm;
+		return form.value.finalKm - form.value.initialKm;
 	});
+
 	// Cargar el turno
 	const loadShift = async () => {
 		// Establecer el valor del primer día de la semana por defecto
-		// ======= MOVER ESTO A DATEPICKER =======
 		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 		if (modeForm.value === 'edit') {
 			const shift = await selectShiftByID(parseInt(shiftId.value));
 			if (shift) {
 				form.value = { ...shift };
+				loadTravelsAndNotes();
 			}
 		}
 	};
 
+	// Cargar los viajes y notas relacionados con el turno actual
+	const loadTravelsAndNotes = async () => {
+		const [loadedTravels, loadedNotes] = await Promise.all([
+			getTravels(form.value.startDate, form.value.endDate),
+			getNotes(form.value.startDate, form.value.endDate),
+		]);
+		travels.value = [...loadedTravels];
+		notes.value = [...loadedNotes];
+	};
+
 	onMounted(loadShift);
+	watch(
+		() => route.params.shiftId,
+		async (newShiftId) => {
+			if (newShiftId) {
+				await loadShift();
+			}
+		}
+	);
 
 	const formatTime = (date) => moment(date).format('HH:mm');
 
@@ -396,7 +289,7 @@
 		const initialKm = Number(form.value.initialKm);
 		const finalKm = Number(form.value.finalKm);
 
-		if (form.value.modeKM === 'calculatedKm' && finalKm < initialKm) {
+		if (finalKm < initialKm) {
 			showKmToast.value = true;
 			return;
 		}
@@ -407,33 +300,21 @@
 				form.value.startDate,
 				form.value.endDate,
 				initialKm,
-				finalKm,
-				form.value.totalKm,
-				form.value.modeKM,
-				form.value.gasoline,
-				form.value.totalShift,
-				form.value.modeTotalShift
+				finalKm
 			);
 		} else {
 			await addShift(
 				form.value.startDate,
 				form.value.endDate,
 				initialKm,
-				finalKm,
-				form.value.totalKm,
-				form.value.modeKM,
-				form.value.gasoline,
-				form.value.totalShift,
-				form.value.modeTotalShift
+				finalKm
 			);
 		}
-		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-		router.push('/tabs/tab1/' + now);
+		history.back();
 	};
 
 	const handleCancel = () => {
-		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-		router.push('/tabs/tab1/' + now);
+		history.back();
 	};
 
 	const handleStartDateChange = (event) => {
@@ -510,7 +391,7 @@
 			.subtotal-container {
 				padding-top: 0.2em;
 				padding-bottom: 0.2em;
-				border-top: 1px #666 dashed;
+				/*border-top: 1px #666 dashed;*/
 				font-size: 2.4em;
 				color: #8f8f8f;
 				background: #eaeaea;
@@ -521,19 +402,8 @@
 					background: transparent;
 					border-bottom: 1px #666 dashed;
 					text-align: center;
-					padding-bottom: 1em;
-				}
-
-				.subtotal {
-					padding: 0em 0.4em 0.2em 0.5em;
-
-					.subtotal-title {
-						font-size: 0.6em;
-						font-weight: 300;
-						.icon {
-							vertical-align: middle;
-						}
-					}
+					padding-bottom: 1.3em;
+					margin-block-end: 0;
 				}
 
 				.right {

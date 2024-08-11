@@ -39,20 +39,34 @@
 			<div class="right">{{ shift.finalKm - shift.initialKm }} Km</div>
 		</div>
 		<ion-card-content><slot></slot></ion-card-content>
-		<div class="shift-footer">
+		<div class="shift-footer" v-if="!showNewTravelButton">
+			<!-- Button Fab add Travel & Notes  -->
+			<ion-fab class="add-travel">
+				<ion-fab-button size="small" mode="ios">
+					<ion-icon :icon="add"></ion-icon>
+				</ion-fab-button>
+				<ion-fab-list side="end">
+					<ion-fab-button
+						color="primary"
+						mode="ios"
+						@click="navigateTo('/noteform/')"
+					>
+						<ion-icon :icon="reader" />
+					</ion-fab-button>
+					<ion-fab-button
+						color="primary"
+						mode="ios"
+						@click="navigateTo('/travelform/')"
+					>
+						<ion-icon :icon="carSport" />
+					</ion-fab-button>
+				</ion-fab-list>
+			</ion-fab>
 			<div class="subtotal-container">
 				<div v-if="shift.modeTotalShift == 'fixTotal'" class="shift-total">
 					<div class="right">{{ shift.totalShift }} {{ currency }}</div>
 				</div>
 				<div v-else>
-					<div class="subtotal">
-						<span class="subtotal-title">Subtotal</span>
-						<div class="right">{{ subtotalBeforeGasoline }}{{ currency }}</div>
-					</div>
-					<div class="subtotal" v-if="shift.gasoline > 0">
-						<span class="subtotal-title"> Gasolina </span>
-						<div class="right">-{{ shift.gasoline }}{{ currency }}</div>
-					</div>
 					<div
 						class="shift-total"
 						:class="calculatedTotal < 0 ? 'expense' : ''"
@@ -67,6 +81,7 @@
 
 <script setup>
 	import { defineProps, defineEmits, computed } from 'vue';
+	import { useRouter } from 'vue-router';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -78,8 +93,19 @@
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
+		IonFab,
+		IonFabButton,
+		IonFabList,
 	} from '@ionic/vue';
-	import { trash, timeOutline, timerOutline } from 'ionicons/icons';
+	import {
+		trash,
+		timeOutline,
+		timerOutline,
+		carSport,
+		reader,
+		add,
+	} from 'ionicons/icons';
+	const router = useRouter();
 
 	const props = defineProps({
 		shift: {
@@ -89,6 +115,10 @@
 		currency: {
 			type: String,
 			required: true,
+		},
+		showNewTravelButton: {
+			type: Boolean,
+			default: false,
 		},
 	});
 
@@ -106,7 +136,11 @@
 		return moment(date).format('HH:mm');
 	};
 
-	const subtotalBeforeGasoline = computed(() => {
+	const navigateTo = (path) => {
+		router.push(path);
+	};
+
+	const subtotalBeforeExpenses = computed(() => {
 		let total = 0;
 		if (props.shift.children) {
 			props.shift.children.forEach((item) => {
@@ -129,9 +163,7 @@
 			return props.shift.totalShift;
 		}
 
-		return (
-			parseFloat(subtotalBeforeGasoline.value) - props.shift.gasoline
-		).toFixed(2);
+		return parseFloat(subtotalBeforeExpenses.value).toFixed(2);
 	});
 </script>
 
@@ -146,6 +178,7 @@
 	.shift-card {
 		border: 1px solid #ccc;
 		margin: 20px 0;
+		position: relative;
 		.shift-header {
 			border-bottom: 1px #ccc solid;
 			background-color: rgba(255, 255, 255, 0.8);
@@ -188,7 +221,6 @@
 		.shift-footer {
 			background-color: rgba(255, 255, 255, 0.8);
 			.subtotal-container {
-				padding-top: 0.2em;
 				padding-bottom: 0.2em;
 				border-top: 1px #666 dashed;
 				font-size: 2.4em;
@@ -221,6 +253,11 @@
 					color: #333;
 					background-color: #fff;
 				}
+			}
+			.add-travel {
+				position: absolute;
+				bottom: 2px;
+				left: 7px;
 			}
 		}
 	}
