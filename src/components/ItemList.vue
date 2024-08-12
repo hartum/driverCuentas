@@ -19,7 +19,7 @@
 							:key="childItem.id"
 							:is="componentMap[childItem.type]"
 							v-bind="getComponentProps(childItem)"
-							v-on="getComponentEvents(childItem)"
+							v-on="getComponentEvents(childItem, item.id)"
 						/>
 
 						<!-- Button New Travel -->
@@ -38,6 +38,17 @@
 			</template>
 		</div>
 		<ion-button @click="borraDB">Borra la BBDD</ion-button>
+
+		<!-- Toast de error -->
+		<ion-toast
+			:is-open="showEditErrorToast"
+			:icon="closeCircle"
+			message="Muevelo dentro de un turno para poder editarlo"
+			:duration="1500"
+			@didDismiss="showEditErrorToast = false"
+			position="bottom"
+			swipe-gesture="vertical"
+		></ion-toast>
 	</div>
 	<ion-action-sheet
 		:header="actionSheetHeader"
@@ -57,8 +68,8 @@
 		ref,
 	} from 'vue';
 	import moment from 'moment';
-	import { IonButton, IonIcon, IonActionSheet } from '@ionic/vue';
-	import { time, carSport } from 'ionicons/icons';
+	import { IonButton, IonIcon, IonActionSheet, IonToast } from '@ionic/vue';
+	import { time, carSport, closeCircle } from 'ionicons/icons';
 	import { useRouter, useRoute } from 'vue-router';
 	import { getTravels, deleteTravel } from '@/services/travelService';
 	import { getShifts, deleteShift } from '@/services/shiftService';
@@ -100,6 +111,8 @@
 		note: NoteItem,
 		shift: ShiftItem,
 	};
+
+	const showEditErrorToast = ref(false);
 
 	const loadItems = async () => {
 		const initialDate = moment(props.initialDate).format('YYYY-MM-DDTHH:mm');
@@ -214,6 +227,11 @@
 	};
 
 	const editItem = (id, type, shiftId = null) => {
+		if (!shiftId && type != 'shift') {
+			showEditErrorToast.value = true;
+			return;
+		}
+
 		const paths = {
 			travel: '/travelform/',
 			shift: '/shift/',
@@ -286,7 +304,7 @@
 		};
 	};
 
-	const getComponentEvents = (item) => {
+	const getComponentEvents = (item, parentShiftId) => {
 		if (item.type === 'shift') {
 			return {
 				'edit-shift': () => editItem(item.id, 'shift'),
@@ -295,7 +313,7 @@
 		} else {
 			return {
 				[`edit-${item.type}`]: () =>
-					editItem(item.id, item.type, item.parentShiftId),
+					editItem(item.id, item.type, parentShiftId),
 				[`delete-${item.type}`]: () => confirmRemoveItem(item),
 			};
 		}
@@ -311,3 +329,9 @@
 		loadItems();
 	});
 </script>
+<style lang="scss" scoped>
+	ion-toast {
+		--background: #ff6200;
+		--color: #ffffff;
+	}
+</style>

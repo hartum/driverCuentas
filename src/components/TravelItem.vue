@@ -17,7 +17,10 @@
 						{{ day(travel.startDate) }} {{ month(travel.startDate) }}
 					</div>
 				</span>
-				<span class="money"> {{ formattedAmount }}{{ currency }} </span>
+				<span class="money">
+					{{ formattedAmount }}{{ currency }}
+					<div class="service-container">{{ travel.service }}</div>
+				</span>
 			</ion-label>
 		</ion-item>
 		<ion-item-options side="end">
@@ -115,10 +118,14 @@
 		}
 	}
 	.money {
-		font-size: 2em;
+		font-size: 1.5em;
 		text-align: right;
 		float: right;
 		color: #666;
+		.service-container {
+			font-size: 0.5em;
+			color: #616161;
+		}
 	}
 
 	.income {
