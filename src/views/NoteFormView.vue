@@ -8,54 +8,124 @@
 			</ion-toolbar>
 		</ion-header>
 		<ion-content class="ion-padding form-container">
-			<ion-segment v-model="form.noteType" mode="ios">
-				<ion-segment-button value="income" mode="ios">
-					<ion-label>Ingreso</ion-label>
-					<ion-icon :icon="thumbsUp" class="icons"></ion-icon>
-				</ion-segment-button>
-				<ion-segment-button value="expense" mode="ios">
-					<ion-label>Gasto</ion-label>
-					<ion-icon :icon="thumbsDown" class="icons"></ion-icon>
-				</ion-segment-button>
-				<ion-segment-button value="other" mode="ios">
-					<ion-label>Otro</ion-label>
-					<ion-icon :icon="reader" class="icons"></ion-icon>
-				</ion-segment-button>
-			</ion-segment>
-			<ion-list lines="none" :inset="true" mode="ios">
-				<ion-item mode="ios">
-					<ion-label>Fecha:</ion-label>
-					<DateTimePicker
-						:value="form.noteDate"
-						@dateTimeChange="handleNoteDateChange"
-					/>
-				</ion-item>
-				<ion-item mode="ios">
+			<!-- PREVIEW -->
+			<ion-item lines="none" class="preview-item" mode="ios">
+				<span slot="start">
+					<ion-icon class="title-icon" :icon="payIcons[form.noteType]" />
+				</span>
+				<ion-label mode="ios">
+					<span class="hour-date-container">
+						{{ formatDateTime(form.noteDate, 'HH:mm') }}
+						<div class="date-container">
+							{{ formatDateTime(form.noteDate, 'DD') }}
+							{{ formatDateTime(form.noteDate, 'MMM') }}
+						</div>
+					</span>
+					<span class="money"> {{ form.amount }}{{ currency }} </span>
+				</ion-label>
+			</ion-item>
+			<!-- CARD -->
+			<ion-card class="form-card" mode="ios">
+				<ion-card-content class="card-content">
+					<!-- NOTE TYPE -->
+					<ion-label mode="ios">Tipo nota</ion-label>
+					<ion-segment
+						v-model="form.noteType"
+						mode="ios"
+						class="segment-container"
+					>
+						<ion-segment-button value="income" mode="ios">
+							<ion-label mode="ios">Ingreso</ion-label>
+							<ion-icon
+								:icon="thumbsUpOutline"
+								class="icons"
+								size="large"
+							></ion-icon>
+						</ion-segment-button>
+						<ion-segment-button value="expense" mode="ios">
+							<ion-label mode="ios">Gasto</ion-label>
+							<ion-icon
+								:icon="thumbsDownOutline"
+								class="icons"
+								size="large"
+							></ion-icon>
+						</ion-segment-button>
+						<ion-segment-button value="other" mode="ios">
+							<ion-label mode="ios">Nota</ion-label>
+							<ion-icon
+								:icon="readerOutline"
+								class="icons"
+								size="large"
+							></ion-icon>
+						</ion-segment-button>
+					</ion-segment>
+					<!-- NOTE DATE -->
+					<ion-label class="label" mode="ios"></ion-label>
+					<ion-range
+						:min="0"
+						:max="100"
+						:value="rangeValue"
+						:pin="true"
+						:pin-formatter="formatRangePin"
+						@ionChange="handleRangeChange"
+						mode="ios"
+						class="time-range"
+					>
+						<div slot="start">
+							<div class="upper-text">Inicio turno</div>
+							<span class="hour-date-container">
+								{{ formatDateTime(shiftStartDate, 'HH:mm') }}
+								<div class="date-container">
+									{{ formatDateTime(shiftStartDate, 'DD') }}
+									{{ formatDateTime(shiftStartDate, 'MMM') }}
+								</div>
+							</span>
+						</div>
+						<div slot="end">
+							<div class="upper-text">Fin turno</div>
+							<span class="hour-date-container">
+								{{ formatDateTime(shiftEndDate, 'HH:mm') }}
+								<div class="date-container">
+									{{ formatDateTime(shiftEndDate, 'DD') }}
+									{{ formatDateTime(shiftEndDate, 'MMM') }}
+								</div>
+							</span>
+						</div>
+					</ion-range>
+					<!-- AMOUNT -->
+					<ion-label class="label" mode="ios">Importe</ion-label>
+					<ion-item
+						lines="none"
+						class="travel-item"
+						v-show="form.noteType != 'other'"
+						mode="ios"
+					>
+						<ion-input
+							class="money-input"
+							type="number"
+							inputmode="decimal"
+							placeholder="000.00"
+							max="999"
+							maxlength="6"
+							min="0"
+							v-model="form.amount"
+							:disabled="form.noteType == 'other'"
+						>
+							<span slot="end">€</span>
+						</ion-input>
+					</ion-item>
+					<!-- NOTE DESCRIPTION -->
+					<ion-label class="label" mode="ios">Concepto</ion-label>
 					<ion-textarea
-						label="Concepto:"
-						label-placement="fixed"
 						rows="5"
 						placeholder="Descripción de la nota, Ejem: ITV"
 						v-model="form.description"
+						class="travel-item area-padding"
 					></ion-textarea>
-				</ion-item>
-				<ion-item v-show="form.noteType != 'other'" mode="ios">
-					<ion-input
-						label="Importe:"
-						label-placement="fixed"
-						type="number"
-						inputmode="decimal"
-						placeholder="000.00"
-						max="999"
-						maxlength="6"
-						min="0"
-						v-model="form.amount"
-						:disabled="form.noteType == 'other'"
-					>
-						<span slot="end">€</span>
-					</ion-input>
-				</ion-item>
-			</ion-list>
+				</ion-card-content>
+			</ion-card>
+
+			<!-- TOAST -->
 			<ion-toast
 				:is-open="showToast"
 				:message="toastMessage"
@@ -105,7 +175,6 @@
 		IonToolbar,
 		IonTitle,
 		IonContent,
-		IonList,
 		IonItem,
 		IonLabel,
 		IonInput,
@@ -119,27 +188,34 @@
 		IonRow,
 		IonCol,
 		IonToast,
+		IonRange,
+		IonCard,
+		IonCardContent,
 	} from '@ionic/vue';
-	import { thumbsUp, thumbsDown, reader, warningOutline } from 'ionicons/icons';
-	import { useRouter, useRoute } from 'vue-router';
+	import {
+		thumbsUpOutline,
+		thumbsDownOutline,
+		readerOutline,
+		warningOutline,
+	} from 'ionicons/icons';
+	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { ref, onMounted } from 'vue';
+	import { ref, onMounted, watch, computed } from 'vue';
 	import { addNote, getNoteById, updateNote } from '@/services/noteService';
-	import DateTimePicker from '@/components/DateTimePicker.vue';
+	import { selectShiftByID } from '@/services/shiftService';
 
 	const settingsStore = useSettingsStore();
-	const firstDayOfWeek = ref(1);
-	const router = useRouter();
 	const route = useRoute();
 	const noteId = ref(route.params.noteId);
-	const modeForm = ref(null);
-	if (moment(noteId.value, moment.ISO_8601, true).isValid()) {
-		console.log('create');
-		modeForm.value = 'create';
-	} else {
-		console.log('edit');
-		modeForm.value = 'edit';
-	}
+	const shiftId = ref(route.params.shiftId);
+	const modeForm = ref(noteId.value ? 'edit' : 'create');
+	const currency = computed(() => {
+		const currencyMap = { EUR: '€', USD: '$' };
+		return (
+			currencyMap[settingsStore.selectedCurrency] ||
+			settingsStore.selectedCurrency
+		);
+	});
 
 	const form = ref({
 		noteType: 'income',
@@ -148,32 +224,99 @@
 		amount: '',
 	});
 
+	const shiftStartDate = ref(null);
+	const shiftEndDate = ref(null);
+	const rangeValue = ref(0);
+
 	const showToast = ref(false);
 	const toastMessage = ref('');
-
-	const handleNoteDateChange = (event) => {
-		form.value.noteDate = event;
+	const payIcons = {
+		income: thumbsUpOutline,
+		expense: thumbsDownOutline,
+		other: readerOutline,
 	};
 
-	const loadNote = async () => {
-		// Establecer el valor del primer día de la semana por defecto
-		firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
+	const handleRangeChange = (event) => {
+		const totalDuration = shiftEndDate.value.diff(shiftStartDate.value);
+		const elapsedDuration = totalDuration * (event.detail.value / 100);
+		const newDateTime = shiftStartDate.value
+			.clone()
+			.add(elapsedDuration, 'milliseconds');
+		form.value.noteDate = newDateTime.format('YYYY-MM-DDTHH:mm');
+	};
 
-		// Si estamos en modo de edición, cargar los datos de la nota
-		if (modeForm.value === 'edit') {
-			const note = await getNoteById(parseInt(noteId.value));
-			if (note) {
-				form.value = {
-					noteType: note.noteType,
-					noteDate: note.noteDate,
-					description: note.description,
-					amount: note.amount,
-				};
+	const loadNoteAndShift = async () => {
+		try {
+			const shift = await selectShiftByID(parseInt(shiftId.value));
+			if (shift) {
+				shiftStartDate.value = moment(shift.startDate);
+				shiftEndDate.value = moment(shift.endDate);
+
+				if (modeForm.value === 'create') {
+					const middleTime = shiftStartDate.value
+						.clone()
+						.add(
+							shiftEndDate.value.diff(shiftStartDate.value) / 2,
+							'milliseconds'
+						);
+					form.value.noteDate = middleTime.format('YYYY-MM-DDTHH:mm');
+					setRangeValueFromDateTime(middleTime);
+				}
 			}
+
+			if (modeForm.value === 'edit') {
+				const note = await getNoteById(parseInt(noteId.value));
+				if (note) {
+					form.value = {
+						noteType: note.noteType,
+						noteDate: note.noteDate,
+						description: note.description,
+						amount: note.amount,
+					};
+					setRangeValueFromDateTime(moment(note.noteDate));
+				}
+			}
+		} catch (error) {
+			console.error('Error loading note and shift:', error);
 		}
 	};
 
-	onMounted(loadNote);
+	const setRangeValueFromDateTime = (dateTime) => {
+		const totalDuration = shiftEndDate.value.diff(shiftStartDate.value);
+		const elapsedDuration = dateTime.diff(shiftStartDate.value);
+		rangeValue.value = (elapsedDuration / totalDuration) * 100;
+	};
+
+	const formatRangePin = (value) => {
+		const totalDuration = shiftEndDate.value.diff(shiftStartDate.value);
+		const elapsedDuration = totalDuration * (value / 100);
+		const pinDateTime = shiftStartDate.value
+			.clone()
+			.add(elapsedDuration, 'milliseconds');
+		form.value.noteDate = pinDateTime.format('YYYY-MM-DDTHH:mm');
+		return pinDateTime.format('HH:mm');
+	};
+
+	/*const hour = (date) => moment(date).format('HH:mm');
+	const day = (date) => moment(date).format('DD');
+	const month = (date) => moment(date).format('MMM');
+	*/
+
+	const formatDateTime = (date, format) => {
+		return date ? moment(date).format(format) : '';
+	};
+
+	// Watch para la ruta
+	watch(
+		() => route.params,
+		(newParams) => {
+			noteId.value = newParams.travelId;
+			shiftId.value = newParams.shiftId;
+			loadNoteAndShift();
+		}
+	);
+
+	onMounted(loadNoteAndShift);
 
 	const handleSave = async () => {
 		if (
@@ -208,16 +351,15 @@
 					form.value.description
 				);
 			}
-			const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-			router.push('/tabs/tab1/' + now);
+
+			history.back();
 		} catch (error) {
 			console.error('Error guardando la nota:', error);
 		}
 	};
 
 	const handleCancel = () => {
-		const now = moment().format('YYYY-MM-DDTHH:mm:ss');
-		router.push('/tabs/tab1/' + now);
+		history.back();
 	};
 </script>
 
@@ -232,9 +374,74 @@
 	ion-toast {
 		--background: #ffdd00;
 	}
+	/*---------------------------*/
+	.preview-item {
+		margin-top: 20px;
+		border: 1px solid #ccc;
+		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+	}
+
 	.form-container {
-		.icons {
-			margin-top: 0.5em;
+		color: #535353;
+		.title-icon {
+			vertical-align: middle;
+			font-size: 3em;
+			color: #8f8f8f;
 		}
+
+		.form-card {
+			border: 1px solid #ccc;
+			margin: 20px 0;
+			position: relative;
+			.icons {
+				margin-top: 0.5em;
+			}
+			.travel-item {
+				border: 1px solid #ccc;
+				border-radius: 8px;
+				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+			}
+			.area-padding {
+				padding: 0 1em;
+			}
+			.time-range {
+				padding-top: 0;
+			}
+			.label {
+				display: block;
+				margin-top: 20px;
+			}
+		}
+	}
+	.time-range {
+		padding-top: 0;
+	}
+
+	.upper-text {
+		font-size: 0.8em;
+		font-weight: 600;
+		border-bottom: 1px solid #ccc;
+	}
+
+	.hour-date-container {
+		font-size: 1.5em;
+		float: left;
+		color: #8f8f8f;
+		.date-container {
+			font-size: 0.5em;
+			color: #616161;
+		}
+	}
+	.money {
+		font-size: 2em;
+		vertical-align: text-bottom;
+		text-align: right;
+		float: right;
+		color: #666;
+	}
+
+	.segment-container {
+		background-color: #f0f0f0; /* Fondo gris claro */
+		border-radius: 8px;
 	}
 </style>

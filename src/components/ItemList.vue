@@ -1,12 +1,6 @@
 <template>
 	<div class="travel-list">
-		<div v-if="organizedItems.length === 0" class="ion-padding">
-			<ion-button @click="navigateTo('/shift/')" expand="block" mode="ios">
-				<ion-icon slot="start" :icon="time"></ion-icon>
-				Nuevo turno
-			</ion-button>
-		</div>
-		<div v-else class="ion-padding">
+		<div class="ion-padding">
 			<template v-for="item in organizedItems" :key="item.id">
 				<component
 					:is="componentMap[item.type]"
@@ -37,8 +31,15 @@
 				</component>
 			</template>
 		</div>
+		<div class="ion-padding no-padding-top">
+			<ion-button @click="navigateTo('/shift/')" expand="block" mode="ios">
+				<ion-icon slot="start" :icon="time"></ion-icon>
+				Nuevo turno
+			</ion-button>
+		</div>
+		<!--
 		<ion-button @click="borraDB">Borra la BBDD</ion-button>
-
+-->
 		<!-- Toast de error -->
 		<ion-toast
 			:is-open="showEditErrorToast"
@@ -183,37 +184,37 @@
 	});
 
 	const totalAmount = computed(() => {
-		let total = 0;
+		let total = 0.0; // Inicializa el total como un número flotante
 		organizedItems.value.forEach((item) => {
 			if (item.type === 'travel') {
-				total += item.amount;
+				total += parseFloat(item.amount) || 0; // Asegura que amount es un número
 			} else if (item.type === 'shift') {
 				if (item.modeTotalShift === 'fixTotal') {
-					total += parseFloat(item.totalShift);
+					total += parseFloat(item.totalShift) || 0;
 				} else {
-					let shiftTotal = 0;
+					let shiftTotal = 0.0;
 					item.children.forEach((child) => {
 						if (child.type === 'travel') {
-							shiftTotal += child.amount;
+							shiftTotal += parseFloat(child.amount) || 0;
 						} else if (child.type === 'note') {
 							if (child.noteType === 'income') {
-								shiftTotal += child.amount;
+								shiftTotal += parseFloat(child.amount) || 0;
 							} else if (child.noteType === 'expense') {
-								shiftTotal -= child.amount;
+								shiftTotal -= parseFloat(child.amount) || 0;
 							}
 						}
 					});
-					total += shiftTotal - parseFloat(item.gasoline);
+					total += shiftTotal - (parseFloat(item.gasoline) || 0);
 				}
 			} else if (item.type === 'note') {
 				if (item.noteType === 'income') {
-					total += item.amount;
+					total += parseFloat(item.amount) || 0;
 				} else if (item.noteType === 'expense') {
-					total -= item.amount;
+					total -= parseFloat(item.amount) || 0;
 				}
 			}
 		});
-		return total.toFixed(2);
+		return total.toFixed(2); // Devuelve el total formateado con 2 decimales
 	});
 
 	const navigateTo = (path, id = null) => {
@@ -330,6 +331,9 @@
 	});
 </script>
 <style lang="scss" scoped>
+	.no-padding-top {
+		padding-top: 0 !important;
+	}
 	ion-toast {
 		--background: #ff6200;
 		--color: #ffffff;
