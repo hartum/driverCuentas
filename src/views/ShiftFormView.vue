@@ -7,18 +7,31 @@
 				}}</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content class="form-container">
-			<ion-card class="shift-card">
+		<ion-content>
+			<!-- CARD -->
+			<ion-card class="shift-card" mode="ios">
 				<ion-card-header class="shift-header">
 					<ion-card-title class="shift-title">
 						<div class="shift-tittle-info">
 							{{ formatTime(form.startDate) }}
+							<div
+								v-show="form.startDate !== form.endDate"
+								class="day-tittle-start"
+							>
+								{{ formatDay(form.startDate) }}
+							</div>
 							<ion-icon
 								:icon="timeOutline"
 								class="shift-header-icon"
 								size="large"
 							/>
 							{{ formatTime(form.endDate) }}
+							<div
+								v-show="form.startDate !== form.endDate"
+								class="day-tittle-end"
+							>
+								{{ formatDay(form.endDate) }}
+							</div>
 						</div>
 					</ion-card-title>
 				</ion-card-header>
@@ -40,82 +53,70 @@
 					</div>
 				</div>
 			</ion-card>
+			<!-- CARD -->
+			<ion-card class="form-card" mode="ios">
+				<ion-card-content class="card-content">
+					<!-- SHIFT START -->
+					<ion-label mode="ios">Inicio turno</ion-label>
+					<DateTimePicker
+						:value="form.startDate"
+						@dateTimeChange="handleStartDateChange"
+					/>
+					<!-- SHIFT END	 -->
+					<ion-label mode="ios" class="label">Fin turno</ion-label>
+					<DateTimePicker
+						:value="form.endDate"
+						@dateTimeChange="handleEndDateChange"
+					/>
+					<!-- KM START -->
+					<ion-label mode="ios" class="label">Km en el turno</ion-label>
+					<ion-item lines="none" class="travel-item" mode="ios">
+						<ion-input
+							label="Al empezar"
+							label-placement="fixed"
+							type="number"
+							placeholder="000000"
+							v-model.number="form.initialKm"
+							inputmode="numeric"
+							max="9999999"
+							maxlength="7"
+							min="0"
+						>
+							<span slot="end">Km</span>
+						</ion-input>
+					</ion-item>
+					<!-- KM END -->
+					<ion-item
+						lines="none"
+						class="travel-item input-separation"
+						mode="ios"
+					>
+						<ion-input
+							label="Al acabar"
+							label-placement="fixed"
+							type="number"
+							placeholder="000000.00"
+							v-model.number="form.finalKm"
+							inputmode="numeric"
+							max="9999999"
+							maxlength="7"
+							min="0"
+						>
+							<span slot="end">Km</span>
+						</ion-input>
+					</ion-item>
 
-			<ion-accordion-group
-				value="shiftTime"
-				expand="inset"
-				class="accordion-group"
-			>
-				<ion-accordion value="shiftTime">
-					<ion-item slot="header" color="light" mode="ios">
-						<ion-label>Horario</ion-label>
+					<ion-item lines="none" mode="ios">
+						<div>Total Km:</div>
+						<span slot="end">
+							<span class="km-diff">{{ kmValue }}</span>
+							Km
+						</span>
 					</ion-item>
-					<div slot="content" class="ion-padding">
-						<ion-list lines="none" mode="ios">
-							<ion-item mode="ios">
-								<ion-label>Inicio</ion-label>
-								<DateTimePicker
-									:value="form.startDate"
-									@dateTimeChange="handleStartDateChange"
-								/>
-							</ion-item>
-							<ion-item mode="ios">
-								<ion-label>Fin</ion-label>
-								<DateTimePicker
-									:value="form.endDate"
-									@dateTimeChange="handleEndDateChange"
-								/>
-							</ion-item>
-						</ion-list>
-					</div>
-				</ion-accordion>
-				<ion-accordion value="km">
-					<ion-item slot="header" color="light" mode="ios">
-						<ion-label>Kilometraje</ion-label>
-					</ion-item>
-					<div slot="content" class="ion-padding">
-						<ion-item lines="none" mode="ios">
-							<ion-input
-								class="money-input"
-								label="Inicio turno"
-								label-placement="fixed"
-								type="number"
-								placeholder="000000.00"
-								v-model.number="form.initialKm"
-								inputmode="decimal"
-								max="999999"
-								maxlength="6"
-								min="0"
-							>
-								<span slot="end">Km</span>
-							</ion-input>
-						</ion-item>
-						<ion-item mode="ios">
-							<ion-input
-								class="money-input"
-								label="Fin turno"
-								label-placement="fixed"
-								type="number"
-								placeholder="000000.00"
-								v-model.number="form.finalKm"
-								inputmode="decimal"
-								max="999999"
-								maxlength="8"
-								min="0"
-							>
-								<span slot="end">Km</span>
-							</ion-input>
-						</ion-item>
-						<ion-item lines="none" mode="ios">
-							<div>En este turno</div>
-							<span slot="end">
-								<span class="km-diff">{{ kmValue }}</span>
-								Km
-							</span>
-						</ion-item>
-					</div>
-				</ion-accordion>
-			</ion-accordion-group>
+				</ion-card-content>
+			</ion-card>
+
+			<!-- TOAST -->
 			<IonToast
 				:is-open="showToast"
 				message="La fecha y hora de fin de turno debe ser mayor que la fecha y hora de inicio"
@@ -178,12 +179,10 @@
 		IonCard,
 		IonCardHeader,
 		IonCardTitle,
+		IonCardContent,
 		IonIcon,
-		IonAccordionGroup,
-		IonAccordion,
 		IonItem,
 		IonLabel,
-		IonList,
 		IonInput,
 		IonFooter,
 		IonGrid,
@@ -297,6 +296,7 @@
 	);
 
 	const formatTime = (date) => moment(date).format('HH:mm');
+	const formatDay = (date) => moment(date).format('DD MMM');
 
 	const handleSave = async () => {
 		const initialKm = Number(form.value.initialKm);
@@ -365,7 +365,6 @@
 	}
 	.shift-card {
 		border: 1px solid #ccc;
-		/*margin: 20px 0;*/
 		.shift-header {
 			border-bottom: 1px #ccc solid;
 			background-color: rgba(255, 255, 255, 0.8);
@@ -374,11 +373,23 @@
 			padding-right: 0;
 			.shift-title {
 				.shift-tittle-info {
+					position: relative;
 					font-size: 1.3em;
 					font-weight: 300 !important;
 					text-align: center;
 					width: 100%;
 					color: #666;
+					.day-tittle-start,
+					.day-tittle-end {
+						font-size: 0.4em;
+						position: absolute;
+						left: 50%;
+						margin-left: -80px;
+						bottom: -10px;
+					}
+					.day-tittle-end {
+						margin-left: 32px;
+					}
 				}
 				.shift-header-icon {
 					vertical-align: middle;
@@ -440,21 +451,21 @@
 			}
 		}
 	}
-	.accordion-group {
-		border: 1px solid var(--ion-color-light-shade);
-		border-radius: 8px;
-		overflow: hidden;
+	.form-card {
+		border: 1px solid #ccc;
+		position: relative;
+		.travel-item {
+			border: 1px solid #ccc;
+			border-radius: 8px;
+			box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+		}
+	}
+	.label {
+		display: block;
 		margin-top: 20px;
-		.header-no-margin {
-			margin-top: 0;
-		}
-		.native-input {
-			text-align: right;
-		}
-		.km-diff {
-			font-weight: bold;
-			margin-right: 10px;
-		}
+	}
+	.input-separation {
+		margin-top: 10px;
 	}
 	ion-toast {
 		--background: #ffdd00;

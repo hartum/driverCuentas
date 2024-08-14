@@ -125,11 +125,12 @@
 			input {
 				width: 60px;
 				min-height: 32px;
-				border: none;
+				border: 1px solid #ccc;
+				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
 				border-radius: 8px;
 				outline: 0;
-				line-height: 20px;
-				background: #edeef0;
+				line-height: 37px;
+				background: #fff;
 				-webkit-padding-start: 13px;
 				padding-inline-start: 13px;
 				-webkit-padding-end: 13px;

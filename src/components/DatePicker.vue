@@ -83,8 +83,9 @@
 <style scoped lang="scss">
 	.date-container {
 		width: auto;
-		cursor: pointer;
-		background-color: #f0f0f0;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
 		border-radius: 5px;
 		text-align: center;
 		border-radius: 8px;

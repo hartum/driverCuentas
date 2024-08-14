@@ -8,7 +8,7 @@
 			@click="editNote"
 		>
 			<span slot="start">
-				<ion-icon class="title-icon" :icon="readerOutline" />
+				<ion-icon class="title-icon" :icon="iconType[note.noteType]" />
 			</span>
 			<ion-label>
 				<span class="hour-date-container">
@@ -20,6 +20,7 @@
 				<span class="money" v-if="note.amount > 0">
 					<span v-if="note.noteType == 'expense'">-</span>
 					{{ formattedAmount }}{{ currency }}
+					<div class="service-container">{{ note.description }}</div>
 				</span>
 			</ion-label>
 		</ion-item>
@@ -42,7 +43,12 @@
 		IonItemOption,
 		IonIcon,
 	} from '@ionic/vue';
-	import { trash, readerOutline } from 'ionicons/icons';
+	import {
+		trash,
+		readerOutline,
+		thumbsUpOutline,
+		thumbsDownOutline,
+	} from 'ionicons/icons';
 
 	const props = defineProps({
 		note: {
@@ -56,6 +62,12 @@
 	});
 
 	const emit = defineEmits(['edit-note', 'delete-note']);
+
+	const iconType = {
+		income: thumbsUpOutline,
+		expense: thumbsDownOutline,
+		other: readerOutline,
+	};
 
 	const editNote = () => {
 		emit('edit-note', props.note.id);
@@ -113,9 +125,18 @@
 		}
 	}
 	.money {
-		font-size: 2em;
+		font-size: 1.5em;
 		text-align: right;
 		float: right;
+		color: #666;
+		.service-container {
+			font-size: 0.5em;
+			color: #616161;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 120px;
+		}
 	}
 
 	.income {

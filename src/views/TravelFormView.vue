@@ -12,6 +12,7 @@
 			:class="{ 'ion-padding': !isMapVisible }"
 		>
 			<div v-show="!isMapVisible">
+				<!-- PREVIEW -->
 				<ion-item lines="none" class="preview-item" mode="ios">
 					<span slot="start">
 						<ion-icon class="title-icon" :icon="payIcons[pay]" />
@@ -26,8 +27,10 @@
 						<span class="money"> {{ formattedAmount }}{{ currency }} </span>
 					</ion-label>
 				</ion-item>
+				<!-- CARD -->
 				<ion-card class="form-card" mode="ios">
 					<ion-card-content class="card-content">
+						<!-- PAYMENT METHOD -->
 						<ion-label mode="ios">Pago con</ion-label>
 						<ion-segment v-model="pay" mode="ios">
 							<ion-segment-button value="app" mode="ios">
@@ -55,21 +58,7 @@
 								></ion-icon>
 							</ion-segment-button>
 						</ion-segment>
-						<ion-label class="label" mode="ios">Importe</ion-label>
-						<ion-item lines="none" class="travel-item" mode="ios">
-							<ion-input
-								class="money-input"
-								type="number"
-								placeholder="000.00"
-								v-model="amountForm"
-								inputmode="decimal"
-								max="999"
-								maxlength="6"
-								min="0"
-							>
-								<span slot="end">{{ currency }}</span>
-							</ion-input>
-						</ion-item>
+						<!-- TRAVEL DATE -->
 						<ion-label class="label" mode="ios"></ion-label>
 						<ion-range
 							:min="0"
@@ -100,6 +89,24 @@
 								</span>
 							</div>
 						</ion-range>
+						<!-- AMOUNT -->
+						<ion-label class="label" mode="ios">Importe</ion-label>
+						<ion-item lines="none" class="travel-item" mode="ios">
+							<ion-input
+								class="money-input"
+								type="number"
+								placeholder="000.00"
+								v-model="amountForm"
+								inputmode="decimal"
+								max="999"
+								maxlength="6"
+								min="0"
+							>
+								<span slot="end">{{ currency }}</span>
+							</ion-input>
+						</ion-item>
+
+						<!-- TRAVEL LOCATION -->
 						<ion-label class="label" mode="ios">Trayecto</ion-label>
 						<div @click="openMap('origin')" class="origin-input">
 							<ion-icon
@@ -533,11 +540,6 @@
 		background: url('/bg_travel_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
 	}
-	.travel-item {
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
-	}
 	.form-container {
 		color: #535353;
 		.title-icon {
@@ -551,6 +553,11 @@
 			position: relative;
 			.icons {
 				margin-top: 0.5em;
+			}
+			.travel-item {
+				border: 1px solid #ccc;
+				border-radius: 8px;
+				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
 			}
 			.time-range {
 				padding-top: 0;
@@ -626,12 +633,6 @@
 		margin-top: 20px;
 		border: 1px solid #ccc;
 		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
-	}
-
-	.item-travel {
-		color: #535353;
-		line-height: 1.2em;
-		border-bottom: 1px dashed #ccc;
 	}
 	.upper-text {
 		font-size: 0.8em;

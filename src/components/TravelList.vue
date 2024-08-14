@@ -48,14 +48,20 @@
 		IonTitle,
 		IonContent,
 	} from '@ionic/vue';
-	import { ref, onMounted } from 'vue';
+	import { ref, computed } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import ItemList from '@/components/ItemList.vue';
 
 	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
 	const firstDayOfWeek = ref(1);
-	const currency = ref('€');
+	const currency = computed(() => {
+		const currencyMap = { EUR: '€', USD: '$' };
+		return (
+			currencyMap[settingsStore.selectedCurrency] ||
+			settingsStore.selectedCurrency
+		);
+	});
 	const initialDate = ref(moment().startOf('month').format('YYYY-MM-DD HH:mm'));
 	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
 	const settingsStore = useSettingsStore();
@@ -106,20 +112,6 @@
 	const updateTotalAmount = (newTotal) => {
 		totalAmount.value = newTotal;
 	};
-
-	onMounted(async () => {
-		// Establecer el valor de la moneda por defecto
-		switch (settingsStore.selectedCurrency) {
-			case 'EUR':
-				currency.value = '€';
-				break;
-			case 'USD':
-				currency.value = '$';
-				break;
-			default:
-				currency.value = settingsStore.selectedCurrency;
-		}
-	});
 </script>
 
 <style lang="scss" scoped>
@@ -130,7 +122,7 @@
 
 	.travels-view-container {
 		.container-items {
-			height: calc(100vh - 275px);
+			height: calc(100vh - 310px);
 			overflow-y: auto;
 		}
 	}
