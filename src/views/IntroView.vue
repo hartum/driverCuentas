@@ -34,18 +34,23 @@
 	}
 	.container {
 		background-color: #8ec5fc;
-		background-image: url('/bg_bmw.jpg');
+		background-image: url('/bg_intro.jpg');
 		background-size: cover;
 		background-position: center center;
-		box-shadow: inset 0px 200px 240px -123px rgba(0, 0, 0, 0.75);
+		box-shadow: inset 0px 200px 240px -123px rgba(0, 0, 0, 0.75),
+			inset 0px -200px 240px -123px rgba(0, 0, 0, 0.95);
 		display: flex;
 		p {
+			position: absolute;
+			top: 8em;
+			font-style: italic;
 			font-family: Arial, Helvetica, sans-serif;
-			font-size: 1.3em;
+			font-size: 1em;
 			font-weight: regular;
-			color: #f44213;
-			text-shadow: 3px 3px 0 #000, -3px 3px 0 #000, -3px -3px 0 #000,
-				3px -3px 0 #000;
+			color: #f76009;
+			text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000,
+				1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000,
+				-1px 0 0 #000;
 		}
 	}
 </style>
