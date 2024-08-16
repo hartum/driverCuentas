@@ -14,10 +14,7 @@
 					<ion-card-title class="shift-title">
 						<div class="shift-tittle-info">
 							{{ formatTime(form.startDate) }}
-							<div
-								v-show="form.startDate !== form.endDate"
-								class="day-tittle-start"
-							>
+							<div class="day-tittle-start">
 								{{ formatDay(form.startDate) }}
 							</div>
 							<ion-icon
@@ -26,10 +23,7 @@
 								size="large"
 							/>
 							{{ formatTime(form.endDate) }}
-							<div
-								v-show="form.startDate !== form.endDate"
-								class="day-tittle-end"
-							>
+							<div class="day-tittle-end">
 								{{ formatDay(form.endDate) }}
 							</div>
 						</div>
