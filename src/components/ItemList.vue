@@ -44,7 +44,7 @@
 		<ion-toast
 			:is-open="showEditErrorToast"
 			:icon="closeCircle"
-			message="Muevelo dentro de un turno para poder editarlo"
+			message="Solo puedes editarlo si está dentro de un turno"
 			:duration="1500"
 			@didDismiss="showEditErrorToast = false"
 			position="bottom"

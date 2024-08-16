@@ -116,16 +116,16 @@
 				</ion-card-content>
 			</ion-card>
 
-			<!-- TOAST -->
-			<IonToast
+			<!-- TOAST DE COMPROBACIÓN -->
+			<ion-toast
 				:is-open="showToast"
 				message="La fecha y hora de fin de turno debe ser mayor que la fecha y hora de inicio"
 				:duration="1500"
 				:icon="warningOutline"
 				@didDismiss="() => (showToast = false)"
 				position="bottom"
-			></IonToast>
-			<IonToast
+			></ion-toast>
+			<ion-toast
 				:is-open="showKmToast"
 				message="El kilometraje final no puede ser menor que el inicial"
 				:duration="1500"
@@ -134,7 +134,16 @@
 				position-anchor="form-footer"
 				position="bottom"
 				swipe-gesture="vertical"
-			></IonToast>
+			></ion-toast>
+			<ion-toast
+				:is-open="showOverlapToast"
+				message="El turno se solapa con otro existente. Por favor, ajusta las fechas."
+				:duration="3000"
+				:icon="warningOutline"
+				@didDismiss="() => (showOverlapToast = false)"
+				position="bottom"
+			></ion-toast>
+			<!-- FINAL TOAST DE COMPROBACIÓN -->
 		</ion-content>
 		<ion-footer id="form-footer">
 			<ion-toolbar>
@@ -199,6 +208,7 @@
 		addShift,
 		updateShift,
 		selectShiftByID,
+		getAllShifts,
 	} from '../services/shiftService';
 	import { getNotes } from '../services/noteService';
 	import { getTravels } from '../services/travelService';
@@ -219,6 +229,7 @@
 
 	const firstDayOfWeek = ref(1);
 	const showToast = ref(false);
+	const showOverlapToast = ref(false);
 	const showKmToast = ref(false);
 	const shiftId = ref(route.params.shiftId);
 	const modeForm = ref(
@@ -298,12 +309,45 @@
 	const formatTime = (date) => moment(date).format('HH:mm');
 	const formatDay = (date) => moment(date).format('DD MMM');
 
+	// Función para verificar solapamiento de turnos
+	const checkShiftOverlap = async (startDate, endDate) => {
+		const allShifts = await getAllShifts();
+		return allShifts.some((shift) => {
+			// Excluimos el turno actual si estamos en modo edición
+			if (modeForm.value === 'edit' && shift.id === parseInt(shiftId.value)) {
+				return false;
+			}
+			return (
+				moment(startDate).isBetween(
+					shift.startDate,
+					shift.endDate,
+					null,
+					'[]'
+				) ||
+				moment(endDate).isBetween(shift.startDate, shift.endDate, null, '[]') ||
+				(moment(startDate).isSameOrBefore(shift.startDate) &&
+					moment(endDate).isSameOrAfter(shift.endDate))
+			);
+		});
+	};
+
 	const handleSave = async () => {
 		const initialKm = Number(form.value.initialKm);
 		const finalKm = Number(form.value.finalKm);
 
+		// Validar KM
 		if (finalKm < initialKm) {
 			showKmToast.value = true;
+			return;
+		}
+
+		// Verificar solapamiento antes de guardar
+		const isOverlapping = await checkShiftOverlap(
+			form.value.startDate,
+			form.value.endDate
+		);
+		if (isOverlapping) {
+			showOverlapToast.value = true;
 			return;
 		}
 

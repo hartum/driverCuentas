@@ -21,6 +21,17 @@ export const addShift = async (startDate, endDate, initialKm, finalKm, totalKm, 
   }
 };
 
+// Función para obtener todos los turnos
+export const getAllShifts = async () => {
+  try {
+    const result = alasql('SELECT * FROM shifts ORDER BY startDate');
+    return result;
+  } catch (error) {
+    console.error('Error getting all shifts:', error);
+    throw error;
+  }
+};
+
 // Función para obtener todos los turnos entre dos fechas
 export const getShifts = async (initialDate, endDate) => {
   try {
