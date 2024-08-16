@@ -52,6 +52,7 @@
 	import { useSettingsStore } from '../store/settingsStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import ItemList from '@/components/ItemList.vue';
+	import { getTimeRange } from '@/services/getTimeRangeService';
 
 	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
 	const firstDayOfWeek = ref(1);
@@ -72,6 +73,14 @@
 
 	const handleDateChanged = ({ newDate, type }) => {
 		console.log({ newDate, type });
+		const { initialDate: start, endDate: end } = getTimeRange(
+			newDate,
+			type,
+			firstDayOfWeek.value
+		);
+		initialDate.value = start;
+		endDate.value = end;
+		/*
 		switch (type) {
 			case 'day':
 				initialDate.value = moment(newDate)
@@ -105,7 +114,7 @@
 					.endOf('year')
 					.format('YYYY-MM-DD HH:mm');
 				break;
-		}
+		}*/
 		console.log(`Updated date range: ${initialDate.value} to ${endDate.value}`);
 	};
 
@@ -116,7 +125,7 @@
 
 <style lang="scss" scoped>
 	ion-content::part(background) {
-		background: url('/bg_travel_list.jpg') center center / cover no-repeat;
+		background: url('/bg_notes_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
 	}
 
