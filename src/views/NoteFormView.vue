@@ -122,8 +122,31 @@
 						v-model="form.description"
 						class="travel-item area-padding"
 					></ion-textarea>
+					<!-- FUEL CHECKBOX -->
+					<ion-item lines="none" v-show="form.noteType === 'expense'">
+						<ion-checkbox
+							v-model="form.fuel"
+							label-placement="end"
+							justify="start"
+							mode="ios"
+						>
+							Combustible
+						</ion-checkbox>
+						<ion-icon :icon="informationCircle" @click="presentFuelInfo" />
+					</ion-item>
 				</ion-card-content>
 			</ion-card>
+
+			<!-- ALERT -->
+			<ion-alert
+				:is-open="showAlert"
+				header="Combustible"
+				sub-header="¿para que sirve esto?"
+				message="Si marcas el gasto como combustible, la App podrá ofrecerte mejores estadísticas sobre el consumo de combustible."
+				:buttons="['Entendido']"
+				@didDismiss="showAlert = false"
+				mode="ios"
+			></ion-alert>
 
 			<!-- TOAST -->
 			<ion-toast
@@ -191,12 +214,15 @@
 		IonRange,
 		IonCard,
 		IonCardContent,
+		IonCheckbox,
+		IonAlert,
 	} from '@ionic/vue';
 	import {
 		thumbsUpOutline,
 		thumbsDownOutline,
 		readerOutline,
 		warningOutline,
+		informationCircle,
 	} from 'ionicons/icons';
 	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
@@ -209,6 +235,7 @@
 	const noteId = ref(route.params.noteId);
 	const shiftId = ref(route.params.shiftId);
 	const modeForm = ref(noteId.value ? 'edit' : 'create');
+	const showAlert = ref(false);
 	const currency = computed(() => {
 		const currencyMap = { EUR: '€', USD: '$' };
 		return (
@@ -222,6 +249,7 @@
 		noteDate: moment().format('YYYY-MM-DDTHH:mm'),
 		description: '',
 		amount: '',
+		fuel: false,
 	});
 
 	const shiftStartDate = ref(null);
@@ -272,6 +300,7 @@
 						noteDate: note.noteDate,
 						description: note.description,
 						amount: note.amount,
+						fuel: note.fuel,
 					};
 					setRangeValueFromDateTime(moment(note.noteDate));
 				}
@@ -296,11 +325,6 @@
 		form.value.noteDate = pinDateTime.format('YYYY-MM-DDTHH:mm');
 		return pinDateTime.format('HH:mm');
 	};
-
-	/*const hour = (date) => moment(date).format('HH:mm');
-	const day = (date) => moment(date).format('DD');
-	const month = (date) => moment(date).format('MMM');
-	*/
 
 	const formatDateTime = (date, format) => {
 		return date ? moment(date).format(format) : '';
@@ -341,14 +365,17 @@
 					form.value.noteType,
 					parseFloat(form.value.amount),
 					form.value.noteDate,
-					form.value.description
+					form.value.description,
+					form.value.fuel
 				);
 			} else {
+				console.log('voya guardar la nota', form.value);
 				await addNote(
 					form.value.noteType,
 					parseFloat(form.value.amount),
 					form.value.noteDate,
-					form.value.description
+					form.value.description,
+					form.value.fuel
 				);
 			}
 
@@ -360,6 +387,10 @@
 
 	const handleCancel = () => {
 		history.back();
+	};
+
+	const presentFuelInfo = () => {
+		showAlert.value = true;
 	};
 </script>
 

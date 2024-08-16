@@ -2,14 +2,14 @@ import alasql from 'alasql';
 import { saveDatabaseToPreferences, getLastId } from './databaseService';
 
 // Añadir una nueva nota
-export const addNote = async (noteType, amount, noteDate, description) => {
+export const addNote = async (noteType, amount, noteDate, description, fuel) => {
   try {
     alasql('BEGIN TRANSACTION');
     
     const newId = getLastId('notes') + 1;
 
-    alasql('INSERT INTO notes (id, noteType, amount, noteDate, description) VALUES (?, ?, ?, ?, ?)', 
-           [newId, noteType, amount, noteDate, description]);
+    alasql('INSERT INTO notes (id, noteType, amount, noteDate, description, fuel) VALUES (?, ?, ?, ?, ?, ?)', 
+           [newId, noteType, amount, noteDate, description, fuel]);
     
     alasql('COMMIT TRANSACTION');
     await saveDatabaseToPreferences();
@@ -20,6 +20,7 @@ export const addNote = async (noteType, amount, noteDate, description) => {
     throw error;
   }
 };
+
 
 // Obtener todas las notas entre dos fechas
 export const getNotes = async (initialDate, endDate) => {
@@ -44,10 +45,10 @@ export const getNoteById = async (id) => {
 };
 
 // Actualizar una nota por ID
-export const updateNote = async (id, noteType, amount, noteDate, description) => {
+export const updateNote = async (id, noteType, amount, noteDate, description, fuel) => {
   try {
-    const result = alasql('UPDATE notes SET noteType = ?, amount = ?, noteDate = ?, description = ? WHERE id = ?', 
-                          [noteType, amount, noteDate, description, id]);
+    const result = alasql('UPDATE notes SET noteType = ?, amount = ?, noteDate = ?, description = ?, fuel = ? WHERE id = ?', 
+                          [noteType, amount, noteDate, description, fuel, id]);
     if (result === 0) {
       throw new Error('No note found with the given ID');
     }

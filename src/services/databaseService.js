@@ -37,7 +37,8 @@ export const initializeDatabase = async () => {
           noteType STRING, 
           amount FLOAT, 
           noteDate DATE, 
-          description STRING
+          description STRING,
+          fuel BOOLEAN
         );
       `;
 
