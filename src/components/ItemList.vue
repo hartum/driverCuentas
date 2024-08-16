@@ -1,6 +1,9 @@
 <template>
 	<div class="travel-list">
 		<div class="ion-padding">
+			<ion-button @click="borraDB" expand="block" mode="ios" color="danger"
+				>Borra la BBDD</ion-button
+			>
 			<template v-for="item in organizedItems" :key="item.id">
 				<component
 					:is="componentMap[item.type]"
@@ -37,9 +40,7 @@
 				Nuevo turno
 			</ion-button>
 		</div>
-		<!--
-		<ion-button @click="borraDB">Borra la BBDD</ion-button>
--->
+
 		<!-- Toast de error -->
 		<ion-toast
 			:is-open="showEditErrorToast"
@@ -287,6 +288,7 @@
 	};
 
 	const borraDB = async () => {
+		removeSettings();
 		await Preferences.remove({ key: 'database' });
 		await loadItems();
 	};
@@ -318,6 +320,11 @@
 				[`delete-${item.type}`]: () => confirmRemoveItem(item),
 			};
 		}
+	};
+
+	const removeSettings = async () => {
+		await Preferences.remove({ key: 'appSettings' });
+		console.log('initial settings removed');
 	};
 
 	watch(() => [route.fullPath, props.initialDate, props.endDate], loadItems);

@@ -27,7 +27,9 @@
 				settingsStore.setSelectedCurrency(appSettings.selectedCurrency);
 				settingsStore.setMapDetails(appSettings.mapDetails);
 				settingsStore.setServicesList(appSettings.servicesList);
-				router.push('/tabs/tab1');
+
+				// Cambia router.push por router.replace aquí
+				router.replace('/tabs/tab1');
 			} else {
 				compSettings.value = markRaw(IntroView);
 			}
