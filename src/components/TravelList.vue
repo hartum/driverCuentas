@@ -72,7 +72,6 @@
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 	const handleDateChanged = ({ newDate, type }) => {
-		console.log({ newDate, type });
 		const { initialDate: start, endDate: end } = getTimeRange(
 			newDate,
 			type,
@@ -80,42 +79,6 @@
 		);
 		initialDate.value = start;
 		endDate.value = end;
-		/*
-		switch (type) {
-			case 'day':
-				initialDate.value = moment(newDate)
-					.startOf('day')
-					.format('YYYY-MM-DD HH:mm');
-				endDate.value = moment(newDate).endOf('day').format('YYYY-MM-DD HH:mm');
-				break;
-			case 'week':
-				initialDate.value = moment(newDate)
-					.isoWeekday(firstDayOfWeek.value)
-					.startOf('day')
-					.format('YYYY-MM-DD HH:mm');
-				endDate.value = moment(newDate)
-					.isoWeekday(firstDayOfWeek.value + 6)
-					.endOf('day')
-					.format('YYYY-MM-DD HH:mm');
-				break;
-			case 'month':
-				initialDate.value = moment(newDate)
-					.startOf('month')
-					.format('YYYY-MM-DD HH:mm');
-				endDate.value = moment(newDate)
-					.endOf('month')
-					.format('YYYY-MM-DD HH:mm');
-				break;
-			case 'year':
-				initialDate.value = moment(newDate)
-					.startOf('year')
-					.format('YYYY-MM-DD HH:mm');
-				endDate.value = moment(newDate)
-					.endOf('year')
-					.format('YYYY-MM-DD HH:mm');
-				break;
-		}*/
-		console.log(`Updated date range: ${initialDate.value} to ${endDate.value}`);
 	};
 
 	const updateTotalAmount = (newTotal) => {
