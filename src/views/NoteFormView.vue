@@ -9,21 +9,24 @@
 		</ion-header>
 		<ion-content class="ion-padding form-container">
 			<!-- PREVIEW -->
-			<ion-item lines="none" class="preview-item" mode="ios">
-				<span slot="start">
-					<ion-icon class="title-icon" :icon="payIcons[form.noteType]" />
-				</span>
-				<ion-label mode="ios">
-					<span class="hour-date-container">
-						{{ formatDateTime(form.noteDate, 'HH:mm') }}
-						<div class="date-container">
-							{{ formatDateTime(form.noteDate, 'DD') }}
-							{{ formatDateTime(form.noteDate, 'MMM') }}
-						</div>
+			<div class="preview-container">
+				<ion-item lines="none" class="preview-item" mode="ios">
+					<span slot="start">
+						<ion-icon class="title-icon" :icon="payIcons[form.noteType]" />
 					</span>
-					<span class="money"> {{ form.amount }}{{ currency }} </span>
-				</ion-label>
-			</ion-item>
+					<ion-label mode="ios">
+						<span class="hour-date-container">
+							{{ formatDateTime(form.noteDate, 'HH:mm') }}
+							<div class="date-container">
+								{{ formatDateTime(form.noteDate, 'DD') }}
+								{{ formatDateTime(form.noteDate, 'MMM') }}
+							</div>
+						</span>
+						<span class="money"> {{ form.amount }}{{ currency }} </span>
+					</ion-label>
+				</ion-item>
+			</div>
+
 			<!-- CARD -->
 			<ion-card class="form-card" mode="ios">
 				<ion-card-content class="card-content">
@@ -398,6 +401,11 @@
 	ion-content::part(background) {
 		background: url('/bg_notes_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
+	}
+	.preview-container {
+		ion-item::part(native) {
+			background: rgba(234, 234, 234, 0.9);
+		}
 	}
 	ion-segment {
 		--background: rgba(255, 255, 255, 0.5);

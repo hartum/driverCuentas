@@ -13,20 +13,22 @@
 		>
 			<div v-show="!isMapVisible">
 				<!-- PREVIEW -->
-				<ion-item lines="none" class="preview-item" mode="ios">
-					<span slot="start">
-						<ion-icon class="title-icon" :icon="payIcons[pay]" />
-					</span>
-					<ion-label mode="ios">
-						<span class="hour-date-container">
-							{{ hour(datetimeStart) }}
-							<div class="date-container">
-								{{ day(datetimeStart) }} {{ month(datetimeStart) }}
-							</div>
+				<div class="preview-container">
+					<ion-item lines="none" class="preview-item" mode="ios">
+						<span slot="start">
+							<ion-icon class="title-icon" :icon="payIcons[pay]" />
 						</span>
-						<span class="money"> {{ formattedAmount }}{{ currency }} </span>
-					</ion-label>
-				</ion-item>
+						<ion-label mode="ios">
+							<span class="hour-date-container">
+								{{ hour(datetimeStart) }}
+								<div class="date-container">
+									{{ day(datetimeStart) }} {{ month(datetimeStart) }}
+								</div>
+							</span>
+							<span class="money"> {{ formattedAmount }}{{ currency }} </span>
+						</ion-label>
+					</ion-item>
+				</div>
 				<!-- CARD -->
 				<ion-card class="form-card" mode="ios">
 					<ion-card-content class="card-content">
@@ -540,6 +542,12 @@
 		background: url('/bg_travel_form.jpg') center center / cover no-repeat;
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
 	}
+	.preview-container {
+		ion-item::part(native) {
+			background: rgba(234, 234, 234, 0.9);
+		}
+	}
+
 	.form-container {
 		color: #535353;
 		.title-icon {
