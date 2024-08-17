@@ -16,17 +16,10 @@
 					<ion-col class="stat-container">
 						<div>Ingresos</div>
 						<div class="amount">{{ totalIncome }}{{ currency }}</div>
-						<!-- <IncomeChart :chartData="incomeData" :chartOptions="chartOptions" /> -->
 					</ion-col>
 					<ion-col class="stat-container">
 						<div>Gastos</div>
 						<div class="amount">{{ totalExpense }}{{ currency }}</div>
-						<!--
-						<ExpenseChart
-							:chartData="expenseData"
-							:chartOptions="chartOptions"
-						/>
-						-->
 					</ion-col>
 				</ion-row>
 				<ion-row>
@@ -35,6 +28,18 @@
 						<div class="amount">
 							{{ totalIncome - totalExpense }}{{ currency }}
 						</div>
+					</ion-col>
+				</ion-row>
+				<ion-row>
+					<ion-col class="stat-container">
+						<div>Ingresos por Servicios</div>
+						<ServicePieChart :travels="travels" />
+					</ion-col>
+				</ion-row>
+				<ion-row>
+					<ion-col class="stat-container">
+						<div>Tipos de Pagos</div>
+						<PaymentMethodPieChart :travels="travels" />
 					</ion-col>
 				</ion-row>
 			</ion-grid>
@@ -54,14 +59,18 @@
 		IonRow,
 		IonCol,
 	} from '@ionic/vue';
-	import { ref, onMounted, computed } from 'vue';
+	import { useRoute } from 'vue-router';
+	import { ref, onMounted, computed, watch } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import { getTimeRange } from '@/services/getTimeRangeService';
 	import { getTravels } from '@/services/travelService';
 	import { getNotes } from '@/services/noteService';
+	import ServicePieChart from '@/components/charts/ServicePieChart.vue';
+	import PaymentMethodPieChart from '@/components/charts/PaymentMethodPieChart.vue';
 
 	const settingsStore = useSettingsStore();
+	const route = useRoute();
 
 	// -- VARIABLES DE TIEMPO --
 	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
@@ -71,6 +80,9 @@
 
 	const totalIncome = ref(0);
 	const totalExpense = ref(0);
+
+	const travels = ref([]);
+	const notes = ref([]);
 
 	const currency = computed(() => {
 		const currencyMap = { EUR: '€', USD: '$' };
@@ -84,7 +96,6 @@
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
 
 	const handleDateChanged = async ({ newDate, type }) => {
-		console.log({ newDate, type });
 		const { initialDate: start, endDate: end } = getTimeRange(
 			newDate,
 			type,
@@ -99,19 +110,19 @@
 	const calculateStats = async () => {
 		try {
 			// Obtener todos los viajes y notas entre las fechas seleccionadas
-			const travels = await getTravels(initialDate.value, endDate.value);
-			const notes = await getNotes(initialDate.value, endDate.value);
+			travels.value = await getTravels(initialDate.value, endDate.value);
+			notes.value = await getNotes(initialDate.value, endDate.value);
 
 			// Resetear los valores
 			totalIncome.value = 0;
 			totalExpense.value = 0;
 
 			// Calcular ingresos y gastos
-			travels.forEach((travel) => {
+			travels.value.forEach((travel) => {
 				totalIncome.value += travel.amount;
 			});
 
-			notes.forEach((note) => {
+			notes.value.forEach((note) => {
 				if (note.noteType === 'income') {
 					totalIncome.value += note.amount;
 				} else if (note.noteType === 'expense') {
@@ -123,6 +134,13 @@
 		}
 	};
 
+	// Watch para la ruta
+	watch(
+		() => route.params,
+		() => {
+			calculateStats();
+		}
+	);
 	// Llamar a la función calculateStats en la carga inicial
 	onMounted(calculateStats);
 </script>
@@ -135,7 +153,7 @@
 	.grid-container {
 		color: #fff;
 		.stat-container {
-			background-color: rgba(255, 255, 255, 0.3);
+			background-color: rgba(255, 255, 255, 0.5);
 			border-radius: 5px;
 			padding: 10px;
 			margin: 2px;
