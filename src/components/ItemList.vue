@@ -1,9 +1,11 @@
 <template>
 	<div class="travel-list">
 		<div class="ion-padding">
+			<!--
 			<ion-button @click="borraDB" expand="block" mode="ios" color="danger"
 				>Borra la BBDD</ion-button
 			>
+			-->
 			<template v-for="item in organizedItems" :key="item.id">
 				<component
 					:is="componentMap[item.type]"
