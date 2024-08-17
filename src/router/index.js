@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
+import MIBView from '@/views/MIBWiew.vue'
 
 const routes = [
   {
     path: '/',
-    component: WelcomeView
+    component: MIBView
   },
   {
     path: '/tabs/',
