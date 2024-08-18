@@ -96,7 +96,10 @@
 						</div>
 					</ion-range>
 					<!-- AMOUNT -->
-					<ion-label class="label" mode="ios">Importe</ion-label>
+
+					<ion-label class="label" mode="ios" v-show="form.noteType != 'other'">
+						Importe
+					</ion-label>
 					<ion-item
 						lines="none"
 						class="travel-item"
