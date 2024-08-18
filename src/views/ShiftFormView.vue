@@ -216,7 +216,7 @@
 
 	const form = ref({
 		startDate: moment().format('YYYY-MM-DDTHH:mm'),
-		endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+		endDate: moment().add(4, 'hour').format('YYYY-MM-DDTHH:mm'),
 		initialKm: 0,
 		finalKm: 0,
 	});
@@ -268,7 +268,7 @@
 			// Inicializar con valores por defecto para un nuevo turno
 			form.value = {
 				startDate: moment().format('YYYY-MM-DDTHH:mm'),
-				endDate: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+				endDate: moment().add(4, 'hour').format('YYYY-MM-DDTHH:mm'),
 				initialKm: 0,
 				finalKm: 0,
 			};
@@ -390,7 +390,7 @@
 		if (end.isSameOrBefore(start)) {
 			showToast.value = true;
 			form.value.endDate = moment(start)
-				.add(1, 'hour')
+				.add(4, 'hour')
 				.format('YYYY-MM-DDTHH:mm');
 		}
 	};
