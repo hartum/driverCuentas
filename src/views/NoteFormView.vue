@@ -229,9 +229,11 @@
 	} from 'ionicons/icons';
 	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { ref, onMounted, watch, computed } from 'vue';
+	import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue';
 	import { addNote, getNoteById, updateNote } from '@/services/noteService';
 	import { selectShiftByID } from '@/services/shiftService';
+	import { Capacitor } from '@capacitor/core';
+	import { Keyboard } from '@capacitor/keyboard';
 
 	const settingsStore = useSettingsStore();
 	const route = useRoute();
@@ -325,6 +327,11 @@
 		const pinDateTime = shiftStartDate.value
 			.clone()
 			.add(elapsedDuration, 'milliseconds');
+		// Compara si la fecha y hora actual es igual al inicio del turno
+		if (pinDateTime.isSame(shiftStartDate.value, 'minute')) {
+			// Suma 1 minuto si son iguales
+			pinDateTime.add(1, 'minute');
+		}
 		form.value.noteDate = pinDateTime.format('YYYY-MM-DDTHH:mm');
 		return pinDateTime.format('HH:mm');
 	};
@@ -343,7 +350,24 @@
 		}
 	);
 
-	onMounted(loadNoteAndShift);
+	onMounted(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.addListener('keyboardDidShow', () => {
+				document.getElementById('form-footer').style.display = 'none';
+			});
+
+			Keyboard.addListener('keyboardDidHide', () => {
+				document.getElementById('form-footer').style.display = 'block';
+			});
+		}
+		loadNoteAndShift();
+	});
+
+	onBeforeUnmount(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.removeAllListeners();
+		}
+	});
 
 	const handleSave = async () => {
 		if (

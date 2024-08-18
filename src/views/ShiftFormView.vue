@@ -195,7 +195,7 @@
 		IonToast,
 	} from '@ionic/vue';
 	import { timeOutline, timerOutline, warningOutline } from 'ionicons/icons';
-	import { ref, onMounted, computed, watch } from 'vue';
+	import { ref, onMounted, computed, watch, onBeforeUnmount } from 'vue';
 	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import {
@@ -207,6 +207,8 @@
 	import { getNotes } from '../services/noteService';
 	import { getTravels } from '../services/travelService';
 	import DateTimePicker from '@/components/DateTimePicker.vue';
+	import { Capacitor } from '@capacitor/core';
+	import { Keyboard } from '@capacitor/keyboard';
 
 	const settingsStore = useSettingsStore();
 	const currency = ref('€');
@@ -226,9 +228,7 @@
 	const showOverlapToast = ref(false);
 	const showKmToast = ref(false);
 	const shiftId = ref(route.params.shiftId);
-	const modeForm = ref(
-		moment(shiftId.value, moment.ISO_8601, true).isValid() ? 'create' : 'edit'
-	);
+	const modeForm = ref(shiftId.value ? 'edit' : 'create');
 
 	const calculatedSubtotal = computed(() => {
 		let subtotal = 0;
@@ -286,9 +286,24 @@
 	};
 
 	onMounted(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.addListener('keyboardDidShow', () => {
+				document.getElementById('form-footer').style.display = 'none';
+			});
+
+			Keyboard.addListener('keyboardDidHide', () => {
+				document.getElementById('form-footer').style.display = 'block';
+			});
+		}
 		// Determinar el modo basado en la presencia de shiftId en la ruta
 		modeForm.value = route.params.shiftId ? 'edit' : 'create';
 		loadShift();
+	});
+
+	onBeforeUnmount(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.removeAllListeners();
+		}
 	});
 
 	watch(

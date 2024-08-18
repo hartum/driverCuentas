@@ -269,7 +269,7 @@
 		pinOutline,
 		flagOutline,
 	} from 'ionicons/icons';
-	import { ref, onMounted, watch, computed } from 'vue';
+	import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue';
 	import { useRoute } from 'vue-router';
 	import { useSettingsStore } from '../store/settingsStore';
 	import MapViewer from '../components/MapViewer.vue';
@@ -279,6 +279,8 @@
 		selectTravelByID,
 		updateTravel,
 	} from '@/services/travelService'; // Importar el servicio
+	import { Capacitor } from '@capacitor/core';
+	import { Keyboard } from '@capacitor/keyboard';
 
 	const settingsStore = useSettingsStore();
 	const openAccordion = ref('amount');
@@ -369,11 +371,20 @@
 
 	const handleRangeChange = (event) => {
 		const percentage = event.detail.value;
-		const totalDuration = shiftEndDate.value.diff(shiftStartDate.value);
-		const elapsedDuration = totalDuration * (percentage / 100);
+		const elapsedDuration =
+			shiftEndDate.value.diff(shiftStartDate.value) * (percentage / 100);
+
+		// Calcula la nueva fecha y hora
 		currentDateTime.value = shiftStartDate.value
 			.clone()
 			.add(elapsedDuration, 'milliseconds');
+
+		// Compara si la fecha y hora actual es igual al inicio del turno
+		if (currentDateTime.value.isSame(shiftStartDate.value, 'minute')) {
+			// Suma 1 minuto si son iguales
+			currentDateTime.value.add(1, 'minute');
+		}
+
 		datetimeStart.value = currentDateTime.value.format('YYYY-MM-DDTHH:mm');
 	};
 
@@ -386,7 +397,25 @@
 		}
 	);
 
-	onMounted(loadShiftAndTravel);
+	onMounted(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.addListener('keyboardDidShow', () => {
+				document.getElementById('form-footer').style.display = 'none';
+			});
+
+			Keyboard.addListener('keyboardDidHide', () => {
+				document.getElementById('form-footer').style.display = 'block';
+			});
+		}
+
+		loadShiftAndTravel();
+	});
+
+	onBeforeUnmount(() => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.removeAllListeners();
+		}
+	});
 
 	// Guardar el viaje
 	const handleSave = async () => {
@@ -536,6 +565,13 @@
 		const pinDateTime = shiftStartDate.value
 			.clone()
 			.add(elapsedDuration, 'milliseconds');
+
+		// Compara si la fecha y hora actual es igual al inicio del turno
+		if (pinDateTime.isSame(shiftStartDate.value, 'minute')) {
+			// Suma 1 minuto si son iguales
+			pinDateTime.add(1, 'minute');
+		}
+
 		datetimeStart.value = pinDateTime.format('YYYY-MM-DDTHH:mm');
 		return pinDateTime.format('HH:mm');
 	};
