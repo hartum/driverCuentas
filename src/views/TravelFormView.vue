@@ -288,12 +288,12 @@
 	const datetimeStart = ref(moment().format('YYYY-MM-DDTHH:mm'));
 	const timeStart = ref(moment().format('HH:mm'));
 	const dateStart = ref(moment().format('YYYY-MM-DD'));
-	//const firstDayOfWeek = ref(1);
 	const locationStart = ref({});
 	const locationEnd = ref({});
 	const isMapVisible = ref(false);
 	const mapMode = ref('origin');
 	const mapDetails = ref(settingsStore.mapDetails);
+	const addressFromTraveledition = ref(false);
 	const showToast = ref(false);
 	const route = useRoute();
 	const travelId = ref(route.params.travelId);
@@ -344,14 +344,14 @@
 					datetimeStart.value = travel.startDate;
 					dateStart.value = moment(travel.startDate).format('YYYY-MM-DD');
 					timeStart.value = moment(travel.startDate).format('HH:mm');
+					// Cargar el origen y destino correctamente
+					locationStart.value = travel.origin || {};
+					locationEnd.value = travel.destination || {};
 
-					// Asignar las direcciones solo si existen en el viaje
-					if (travel.origin && travel.origin.address) {
-						locationStart.value = travel.origin;
-					}
-					if (travel.destination && travel.destination.address) {
-						locationEnd.value = travel.destination;
-					}
+					addressFromTraveledition.value = true;
+
+					console.log('locationStart', locationStart.value);
+					console.log('locationEnd', locationEnd.value);
 					// Ajustar el valor del range basado en la fecha de inicio del viaje
 					setRangeValueFromDateTime(moment(travel.startDate));
 				}
@@ -441,8 +441,12 @@
 	};
 
 	const handleMapUpdated = (mapEventDetails) => {
-		mapDetails.value = mapEventDetails;
-		settingsStore.setMapDetails(mapEventDetails);
+		if (!addressFromTraveledition.value) {
+			mapDetails.value = mapEventDetails;
+			settingsStore.setMapDetails(mapEventDetails);
+		} else {
+			addressFromTraveledition.value = false;
+		}
 	};
 
 	const handleCancelMap = () => {

@@ -6,12 +6,18 @@
 					<ion-item button="true" lines="none" mode="ios" @click="editShift">
 						<div class="shift-tittle-info">
 							{{ formatTime(shift.startDate) }}
+							<div class="day-tittle-start">
+								{{ formatDay(shift.startDate) }}
+							</div>
 							<ion-icon
 								:icon="timeOutline"
 								class="shift-header-icon"
 								size="large"
 							/>
 							{{ formatTime(shift.endDate) }}
+							<div class="day-tittle-end">
+								{{ formatDay(shift.endDate) }}
+							</div>
 						</div>
 					</ion-item>
 					<ion-item-options side="end">
@@ -135,6 +141,7 @@
 	const formatTime = (date) => {
 		return moment(date).format('HH:mm');
 	};
+	const formatDay = (date) => moment(date).format('DD MMM');
 
 	const navigateTo = (path) => {
 		if (path.includes('/noteform/') || path.includes('/travelform/')) {
@@ -196,6 +203,18 @@
 					text-align: center;
 					width: 100%;
 					color: #666;
+					padding: 10px;
+					.day-tittle-start,
+					.day-tittle-end {
+						font-size: 0.4em;
+						position: absolute;
+						left: 50%;
+						margin-left: -100px;
+						bottom: 0px;
+					}
+					.day-tittle-end {
+						margin-left: 15px;
+					}
 				}
 				.shift-header-icon {
 					vertical-align: middle;
