@@ -97,14 +97,12 @@
 					</ion-reorder-group>
 					<ion-item mode="ios">
 						<ion-input
-							label="Nuevo Servicio"
-							label-placement="stacked"
 							placeholder="Nombre del Servicio"
 							v-model="newService"
+							class="new-service-input"
 						></ion-input>
 						<ion-button mode="ios" @click="addService">
-							<ion-icon slot="end" :icon="addCircle"></ion-icon>
-							Añadir
+							<ion-icon :icon="addCircle" size="large"></ion-icon>
 						</ion-button>
 					</ion-item>
 				</ion-list>
@@ -297,5 +295,12 @@
 	ion-toast {
 		--background: #ffdd00;
 		--color: #000000;
+	}
+	.new-service-input {
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+		margin: 0.5em 0.5em 0.5em 0;
+		padding-left: 0.5em;
 	}
 </style>

@@ -34,3 +34,17 @@
 	} from '@ionic/vue';
 	import { settings, statsChart, carSport } from 'ionicons/icons';
 </script>
+<style lang="scss">
+	@font-face {
+		font-family: 'Helvetica';
+		src: url('/Helvetica.ttf');
+	}
+	body,
+	ion-content,
+	ion-label,
+	ion-input,
+	ion-button {
+		font-family: Helvetica, 'Arial';
+		--ion-font-family: Helvetica, 'Arial';
+	}
+</style>

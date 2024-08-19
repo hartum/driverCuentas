@@ -3,11 +3,17 @@
 		<ion-header mode="ios">
 			<h1>DriverCuentas</h1>
 			<h2>La app para controlar tus viajes</h2>
+			<p>"Porque si no lo puedes medir, no lo puedes mejorar"</p>
 		</ion-header>
 
 		<ion-nav-link router-direction="forward" :component="component">
-			<p>"Porque si no lo puedes medir, no lo puedes mejorar"</p>
-			<ion-button expand="block" fill="outline" mode="ios" color="light">
+			<ion-button
+				expand="block"
+				fill="outline"
+				color="light"
+				class="btn-light"
+				mode="ios"
+			>
 				Empezar
 			</ion-button>
 		</ion-nav-link>
@@ -41,8 +47,6 @@
 			inset 0px -200px 240px -123px rgba(0, 0, 0, 0.95);
 		display: flex;
 		p {
-			position: absolute;
-			top: 8em;
 			font-style: italic;
 			font-family: Arial, Helvetica, sans-serif;
 			font-size: 1em;
@@ -51,6 +55,9 @@
 			text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000,
 				1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000,
 				-1px 0 0 #000;
+		}
+		ion-button {
+			--ion-color-base: #f4f5f8 !important;
 		}
 	}
 </style>
