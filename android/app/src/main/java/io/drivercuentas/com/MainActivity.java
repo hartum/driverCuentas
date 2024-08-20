@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package io.drivercuentas.com;
 
 import com.getcapacitor.BridgeActivity;
 
