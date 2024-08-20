@@ -7,15 +7,7 @@
 		</ion-header>
 
 		<ion-nav-link router-direction="forward" :component="component">
-			<ion-button
-				expand="block"
-				fill="outline"
-				color="light"
-				class="btn-light"
-				mode="ios"
-			>
-				Empezar
-			</ion-button>
+			<ion-button expand="block" mode="ios"> Empezar </ion-button>
 		</ion-nav-link>
 	</ion-page>
 </template>

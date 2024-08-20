@@ -41,13 +41,7 @@
 		</ion-content>
 		<ion-footer class="ion-padding">
 			<ion-nav-link router-direction="forward" :component="component">
-				<ion-button
-					expand="block"
-					fill="outline"
-					mode="ios"
-					color="light"
-					@click="saveCurrency"
-				>
+				<ion-button expand="block" mode="ios" @click="saveCurrency">
 					Siguiente
 				</ion-button>
 			</ion-nav-link>

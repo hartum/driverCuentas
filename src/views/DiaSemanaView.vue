@@ -50,13 +50,7 @@
 		</ion-content>
 		<ion-footer class="ion-padding">
 			<ion-nav-link router-direction="forward" :component="component">
-				<ion-button
-					expand="block"
-					fill="outline"
-					mode="ios"
-					color="light"
-					@click="saveStartDayOfWeek"
-				>
+				<ion-button expand="block" mode="ios" @click="saveStartDayOfWeek">
 					Siguiente
 				</ion-button>
 			</ion-nav-link>

@@ -27,13 +27,7 @@
 			<MapViewer @mapUpdated="handleMapUpdated" />
 		</ion-content>
 		<ion-footer class="ion-padding">
-			<ion-button
-				expand="block"
-				fill="outline"
-				mode="ios"
-				@click="navigateToTabs"
-				color="light"
-			>
+			<ion-button expand="block" mode="ios" @click="navigateToTabs">
 				Siguiente
 			</ion-button>
 		</ion-footer>

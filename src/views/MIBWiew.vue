@@ -8,9 +8,7 @@
 		<p v-show="datosBorrados">Pide la nueva versión a Ivan</p>
 		<ion-button
 			expand="block"
-			fill="outline"
 			mode="ios"
-			color="light"
 			@click="borrartodo"
 			v-show="!datosBorrados"
 		>

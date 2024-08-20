@@ -59,9 +59,7 @@
 		></ion-action-sheet>
 		<ion-footer class="ion-padding">
 			<ion-nav-link router-direction="forward" :component="component">
-				<ion-button expand="block" fill="outline" mode="ios">
-					Siguiente
-				</ion-button>
+				<ion-button expand="block" mode="ios"> Siguiente </ion-button>
 			</ion-nav-link>
 		</ion-footer>
 	</ion-page>
