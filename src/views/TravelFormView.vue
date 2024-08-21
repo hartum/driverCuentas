@@ -103,6 +103,7 @@
 								max="999"
 								maxlength="6"
 								min="0"
+								@keyup.enter="hideKeyboard"
 							>
 								<span slot="end">{{ currency }}</span>
 							</ion-input>
@@ -574,6 +575,11 @@
 
 		datetimeStart.value = pinDateTime.format('YYYY-MM-DDTHH:mm');
 		return pinDateTime.format('HH:mm');
+	};
+	const hideKeyboard = () => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.hide();
+		}
 	};
 </script>
 

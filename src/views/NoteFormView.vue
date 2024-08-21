@@ -116,6 +116,7 @@
 							min="0"
 							v-model="form.amount"
 							:disabled="form.noteType == 'other'"
+							@keyup.enter="hideKeyboard"
 						>
 							<span slot="end">€</span>
 						</ion-input>
@@ -421,6 +422,12 @@
 
 	const presentFuelInfo = () => {
 		showAlert.value = true;
+	};
+
+	const hideKeyboard = () => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.hide();
+		}
 	};
 </script>
 
