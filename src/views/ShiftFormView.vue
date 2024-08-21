@@ -75,6 +75,7 @@
 							max="9999999"
 							maxlength="7"
 							min="0"
+							@keyup.enter="hideKeyboard"
 						>
 							<span slot="end">Km</span>
 						</ion-input>
@@ -95,6 +96,7 @@
 							max="9999999"
 							maxlength="7"
 							min="0"
+							@keyup.enter="hideKeyboard"
 						>
 							<span slot="end">Km</span>
 						</ion-input>
@@ -407,6 +409,12 @@
 			form.value.endDate = moment(start)
 				.add(4, 'hour')
 				.format('YYYY-MM-DDTHH:mm');
+		}
+	};
+
+	const hideKeyboard = () => {
+		if (Capacitor.isNativePlatform()) {
+			Keyboard.hide();
 		}
 	};
 </script>
