@@ -126,11 +126,11 @@
 				width: 60px;
 				min-height: 32px;
 				border: 1px solid #ccc;
-				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+				box-shadow: var(--ion-color-light-shade) 0px 4px 16px 0px;
 				border-radius: 8px;
 				outline: 0;
 				line-height: 37px;
-				background: #fff;
+				background: var(--background);
 				-webkit-padding-start: 13px;
 				padding-inline-start: 13px;
 				-webkit-padding-end: 13px;

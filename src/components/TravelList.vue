@@ -104,7 +104,7 @@
 		height: 50px;
 		color: #535353;
 		font-size: 2em;
-		padding: 2px 60px 8px 20px;
+		padding: 5px 60px 0px 20px;
 		border-top: 1px dashed #ccc;
 		background-color: #f7f7f7;
 		position: relative;

@@ -77,7 +77,7 @@
 			week: () => ({
 				em: 'Semana',
 				strong: date.format('MMM'),
-				span: `${Math.ceil(date.date() / 7)}ª semana`,
+				span: `${Math.ceil(date.date() / 7)}ª`,
 			}),
 			month: () => ({
 				em: '',

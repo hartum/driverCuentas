@@ -611,7 +611,7 @@
 			.travel-item {
 				border: 1px solid #ccc;
 				border-radius: 8px;
-				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+				box-shadow: var(--ion-color-light-shade) 0px 4px 16px 0px;
 			}
 			.time-range {
 				padding-top: 0;
@@ -619,16 +619,16 @@
 			.origin-input {
 				border: 1px solid #ccc;
 				border-radius: 8px 8px 0 0;
-				background-color: #fff;
-				box-shadow: rgba(0, 0, 0, 0.12) 0px -4px 16px 0px;
+				background-color: var(--background);
+				box-shadow: var(--ion-color-light-shade) 0px -4px 16px 0px;
 				display: flex;
 				align-items: center;
 			}
 			.destination-input {
 				border: 1px solid #ccc;
 				border-radius: 0 0 8px 8px;
-				background-color: #fff;
-				box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+				background-color: var(--background);
+				box-shadow: var(--ion-color-light-shade) 0px 4px 16px 0px;
 				margin-top: -1px;
 				display: flex;
 				align-items: center;
@@ -686,7 +686,7 @@
 	.preview-item {
 		margin-top: 20px;
 		border: 1px solid #ccc;
-		box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+		box-shadow: var(--ion-color-light-shade) 0px 4px 16px 0px;
 	}
 	.upper-text {
 		font-size: 0.8em;

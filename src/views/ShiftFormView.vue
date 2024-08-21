@@ -518,7 +518,7 @@
 		.travel-item {
 			border: 1px solid #ccc;
 			border-radius: 8px;
-			box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+			box-shadow: var(--ion-color-light-shade) 0px 4px 16px 0px;
 		}
 	}
 	.label {
