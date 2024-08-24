@@ -5,108 +5,115 @@
 				<ion-title>Configuración</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content class="ion-padding">
-			<div>
-				<ion-list mode="ios">
-					<ion-list-header mode="ios">
-						<ion-label>El mapa comienza aquí</ion-label>
-					</ion-list-header>
-					<ion-item mode="ios" button="true" @click="navigateTo('/map/')">
-						<ion-label>{{ mapInitialLocation }}</ion-label>
-					</ion-item>
-				</ion-list>
-			</div>
-			<div>
-				<ion-list mode="ios">
-					<ion-list-header mode="ios">
-						<ion-label>Primer día de la semana</ion-label>
-					</ion-list-header>
-					<ion-radio-group v-model="selectedDay" @ionChange="updateStartDay">
-						<ion-item mode="ios">
-							<ion-radio
-								justify="start"
-								value="lunes"
-								label-placement="end"
-								mode="ios"
-							>
-								Lunes
-							</ion-radio>
+		<ion-content>
+			<!-- CARD -->
+			<ion-card class="shift-card" mode="ios">
+				<div>
+					<ion-list mode="ios">
+						<ion-list-header mode="ios">
+							<ion-label>Última ubicación</ion-label>
+						</ion-list-header>
+						<ion-item mode="ios" button="true" @click="navigateTo('/map/')">
+							<ion-label>{{ mapInitialLocation }}</ion-label>
 						</ion-item>
-						<ion-item mode="ios">
-							<ion-radio
-								justify="start"
-								value="domingo"
-								label-placement="end"
-								mode="ios"
-							>
-								Domingo
-							</ion-radio>
-						</ion-item>
-					</ion-radio-group>
-				</ion-list>
-			</div>
-			<div>
-				<ion-list mode="ios">
-					<ion-list-header mode="ios">
-						<ion-label>Monedas</ion-label>
-					</ion-list-header>
-					<ion-item mode="ios">
-						<ion-select
-							label="Moneda"
-							v-model="selectedCurrency"
-							ok-text="OK"
-							cancel-text="Cancelar"
-							@ionChange="updateCurrency"
-							mode="ios"
-						>
-							<ion-select-option
-								v-for="currency in currencies"
-								:key="currency.code"
-								:value="currency.code"
-							>
-								{{ currency.name }}
-							</ion-select-option>
-						</ion-select>
-					</ion-item>
-				</ion-list>
-			</div>
-			<div>
-				<ion-list mode="ios">
-					<ion-list-header mode="ios">
-						<ion-label>Servicios</ion-label>
-					</ion-list-header>
-					<ion-reorder-group :disabled="false" @ionItemReorder="handleReorder">
-						<ion-item-sliding
-							v-for="(service, index) in services"
-							:key="index"
-							ref="slidingItems"
-						>
+					</ion-list>
+				</div>
+				<div>
+					<ion-list mode="ios">
+						<ion-list-header mode="ios">
+							<ion-label>Primer día de la semana</ion-label>
+						</ion-list-header>
+						<ion-radio-group v-model="selectedDay" @ionChange="updateStartDay">
 							<ion-item mode="ios">
-								<ion-label>{{ service }}</ion-label>
-								<ion-reorder slot="end"></ion-reorder>
-							</ion-item>
-							<ion-item-options side="end">
-								<ion-item-option
-									color="danger"
-									@click="confirmRemoveService(index, $event)"
+								<ion-radio
+									justify="start"
+									value="lunes"
+									label-placement="end"
+									mode="ios"
 								>
-									<ion-icon slot="icon-only" :icon="trash"></ion-icon>
-								</ion-item-option>
-							</ion-item-options>
-						</ion-item-sliding>
-					</ion-reorder-group>
-					<ion-item mode="ios">
-						<ion-input
-							placeholder="Nombre del Servicio"
-							v-model="newService"
-							class="new-service-input"
-						></ion-input>
-						<ion-button mode="ios" @click="addService">
-							<ion-icon :icon="addCircle" size="large"></ion-icon>
-						</ion-button>
-					</ion-item>
-				</ion-list>
-			</div>
+									Lunes
+								</ion-radio>
+							</ion-item>
+							<ion-item mode="ios">
+								<ion-radio
+									justify="start"
+									value="domingo"
+									label-placement="end"
+									mode="ios"
+								>
+									Domingo
+								</ion-radio>
+							</ion-item>
+						</ion-radio-group>
+					</ion-list>
+				</div>
+
+				<div>
+					<ion-list mode="ios">
+						<ion-list-header mode="ios">
+							<ion-label>Monedas</ion-label>
+						</ion-list-header>
+						<ion-item mode="ios">
+							<ion-select
+								label="Moneda"
+								v-model="selectedCurrency"
+								ok-text="OK"
+								cancel-text="Cancelar"
+								@ionChange="updateCurrency"
+								mode="ios"
+							>
+								<ion-select-option
+									v-for="currency in currencies"
+									:key="currency.code"
+									:value="currency.code"
+								>
+									{{ currency.name }}
+								</ion-select-option>
+							</ion-select>
+						</ion-item>
+					</ion-list>
+				</div>
+				<div>
+					<ion-list mode="ios">
+						<ion-list-header mode="ios">
+							<ion-label>Servicios</ion-label>
+						</ion-list-header>
+						<ion-reorder-group
+							:disabled="false"
+							@ionItemReorder="handleReorder"
+						>
+							<ion-item-sliding
+								v-for="(service, index) in services"
+								:key="index"
+								ref="slidingItems"
+							>
+								<ion-item mode="ios">
+									<ion-label>{{ service }}</ion-label>
+									<ion-reorder slot="end"></ion-reorder>
+								</ion-item>
+								<ion-item-options side="end">
+									<ion-item-option
+										color="danger"
+										@click="confirmRemoveService(index, $event)"
+									>
+										<ion-icon slot="icon-only" :icon="trash"></ion-icon>
+									</ion-item-option>
+								</ion-item-options>
+							</ion-item-sliding>
+						</ion-reorder-group>
+						<ion-item mode="ios">
+							<ion-input
+								placeholder="Nombre del Servicio"
+								v-model="newService"
+								class="new-service-input"
+							></ion-input>
+							<ion-button mode="ios" @click="addService">
+								<ion-icon :icon="addCircle" size="large"></ion-icon>
+							</ion-button>
+						</ion-item>
+					</ion-list>
+				</div>
+			</ion-card>
 		</ion-content>
 		<ion-action-sheet
 			:header="actionSheetHeader"
@@ -290,7 +297,7 @@
 		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
 	}
 	.list-ios {
-		background: rgba(255, 255, 255, 0.9);
+		/*background: rgba(255, 255, 255, 0.9);*/
 	}
 	ion-toast {
 		--background: #ffdd00;

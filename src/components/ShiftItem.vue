@@ -55,16 +55,16 @@
 					<ion-fab-button
 						color="primary"
 						mode="ios"
-						@click="navigateTo('/noteform/')"
+						@click="navigateTo('/travelform/')"
 					>
-						<ion-icon :icon="reader" />
+						<ion-icon :icon="carSport" />
 					</ion-fab-button>
 					<ion-fab-button
 						color="primary"
 						mode="ios"
-						@click="navigateTo('/travelform/')"
+						@click="navigateTo('/noteform/')"
 					>
-						<ion-icon :icon="carSport" />
+						<ion-icon :icon="reader" />
 					</ion-fab-button>
 				</ion-fab-list>
 			</ion-fab>

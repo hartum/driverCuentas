@@ -48,3 +48,30 @@
 		//removeSettings();
 	});
 </script>
+<style lang="scss">
+	ion-button {
+		//--background: #e35b00;
+		/*
+		--background-hover: #e35b00;
+		--background-activated: #e35b00;
+		--background-focused: #e35b00;
+		*/
+		//--color: #fff;
+
+		//--border-radius: 0;
+		//--border-color: #e35b00;
+		//--border-style: solid;
+		//--border-width: 1px;
+
+		/*--box-shadow: 0 2px 6px 0 rgb(0, 0, 0, 0.25);*/
+
+		//--ripple-color: deeppink;
+		/*
+		--padding-top: 10px;
+		--padding-bottom: 10px;
+		*/
+		--ion-color-primary: #e93500;
+		--background-activated: rgba(233, 53, 0, 0.8);
+		--background-focused: rgba(233, 53, 0, 0.8);
+	}
+</style>

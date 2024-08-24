@@ -149,7 +149,7 @@
 				:is-open="showAlert"
 				header="Combustible"
 				sub-header="¿para que sirve esto?"
-				message="Si marcas el gasto como combustible, la App podrá ofrecerte mejores estadísticas sobre el consumo de combustible."
+				message="Si marcas el gasto como combustible, la App podrá ofrecerte estadísticas sobre el consumo de combustible."
 				:buttons="['Entendido']"
 				@didDismiss="showAlert = false"
 				mode="ios"

@@ -57,7 +57,9 @@
 						@dateTimeChange="handleStartDateChange"
 					/>
 					<!-- SHIFT END	 -->
-					<ion-label mode="ios" class="label">Fin turno</ion-label>
+					<ion-label mode="ios" class="label"
+						>Fin turno <small>(estimado)</small></ion-label
+					>
 					<DateTimePicker
 						:value="form.endDate"
 						@dateTimeChange="handleEndDateChange"
