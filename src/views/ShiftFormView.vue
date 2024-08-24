@@ -532,5 +532,6 @@
 	}
 	ion-toast {
 		--background: #ffdd00;
+		color: #535353;
 	}
 </style>
