@@ -17,7 +17,7 @@
 
 		<ion-icon
 			size="large"
-			color="light"
+			color="primary"
 			:icon="arrowBackCircle"
 			@click="navigateDate('prev')"
 		/>
@@ -30,7 +30,7 @@
 
 		<ion-icon
 			size="large"
-			color="light"
+			color="primary"
 			:icon="arrowForwardCircle"
 			@click="navigateDate('next')"
 		/>
@@ -132,6 +132,8 @@
 			height: 1.5em;
 			font-size: 2em;
 			margin: 0 0.5em;
+			background-color: #fff;
+			border-radius: 25px;
 		}
 	}
 	ion-segment {
