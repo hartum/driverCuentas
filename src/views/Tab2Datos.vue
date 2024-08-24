@@ -25,15 +25,19 @@
 				<ion-row>
 					<ion-col class="stat-container">
 						<div>Total</div>
-						<div class="amount">
-							{{ totalIncome - totalExpense }}{{ currency }}
-						</div>
+						<div class="amount">{{ total }}{{ currency }}</div>
 					</ion-col>
 				</ion-row>
 				<ion-row>
 					<ion-col class="stat-container">
-						<div>Ingresos por Servicios</div>
+						<div>Tipos de Viajes</div>
 						<ServicePieChart :travels="travels" />
+					</ion-col>
+				</ion-row>
+				<ion-row>
+					<ion-col class="stat-container">
+						<div>Gastos</div>
+						<ExpenseChart :notes="notes" />
 					</ion-col>
 				</ion-row>
 				<ion-row>
@@ -68,6 +72,7 @@
 	import { getNotes } from '@/services/noteService';
 	import ServicePieChart from '@/components/charts/ServicePieChart.vue';
 	import PaymentMethodPieChart from '@/components/charts/PaymentMethodPieChart.vue';
+	import ExpenseChart from '@/components/charts/ExpenseChart.vue';
 
 	const settingsStore = useSettingsStore();
 	const route = useRoute();
@@ -80,6 +85,11 @@
 
 	const totalIncome = ref(0);
 	const totalExpense = ref(0);
+	const total = computed(() => {
+		return (
+			Math.round((totalIncome.value - totalExpense.value) * 100) / 100
+		).toFixed(2);
+	});
 
 	const travels = ref([]);
 	const notes = ref([]);
@@ -112,6 +122,8 @@
 			// Obtener todos los viajes y notas entre las fechas seleccionadas
 			travels.value = await getTravels(initialDate.value, endDate.value);
 			notes.value = await getNotes(initialDate.value, endDate.value);
+
+			console.log({ travels: travels.value, notes: notes.value });
 
 			// Resetear los valores
 			totalIncome.value = 0;

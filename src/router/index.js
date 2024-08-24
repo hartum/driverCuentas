@@ -21,7 +21,7 @@ const routes = [
       },
       {
         path: 'tab2',
-        component: () => import('@/views/Tab2Page.vue')
+        component: () => import('@/views/Tab2Datos.vue')
       },
       {
         path: 'tab3/:refresh?',

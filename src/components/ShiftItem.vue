@@ -198,7 +198,7 @@
 			padding-right: 0;
 			.shift-title {
 				.shift-tittle-info {
-					font-size: 2.3em;
+					font-size: 2.2em;
 					font-weight: 300 !important;
 					text-align: center;
 					width: 100%;
