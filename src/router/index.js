@@ -26,6 +26,10 @@ const routes = [
       {
         path: 'tab3/:refresh?',
         component: () => import('@/views/SettingsView.vue')
+      },
+      {
+        path: 'tab4',
+        component: () => import('@/views/ImportExportView.vue')
       }
     ]
   },

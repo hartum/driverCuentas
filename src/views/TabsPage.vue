@@ -17,6 +17,11 @@
 					<ion-icon aria-hidden="true" :icon="settings" />
 					<ion-label>Controles</ion-label>
 				</ion-tab-button>
+
+				<ion-tab-button tab="tab4" href="/tabs/tab4">
+					<ion-icon aria-hidden="true" :icon="cloudDownload" />
+					<ion-label>Exportar</ion-label>
+				</ion-tab-button>
 			</ion-tab-bar>
 		</ion-tabs>
 	</ion-page>
@@ -32,7 +37,12 @@
 		IonPage,
 		IonRouterOutlet,
 	} from '@ionic/vue';
-	import { settings, statsChart, carSport } from 'ionicons/icons';
+	import {
+		settings,
+		statsChart,
+		carSport,
+		cloudDownload,
+	} from 'ionicons/icons';
 </script>
 <style lang="scss">
 	@font-face {
