@@ -141,6 +141,10 @@
 					totalExpense.value += note.amount;
 				}
 			});
+
+			// Redondear a dos decimales
+			totalIncome.value = Math.round(totalIncome.value * 100) / 100;
+			totalExpense.value = Math.round(totalExpense.value * 100) / 100;
 		} catch (error) {
 			console.error('Error calculating stats:', error);
 		}

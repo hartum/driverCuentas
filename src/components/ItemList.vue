@@ -6,6 +6,10 @@
 				>Borra la BBDD</ion-button
 			>
 			-->
+			<!--
+			<ion-button @click="forceCrash" expand="block" mode="ios" color="danger"
+				>Crash test</ion-button
+			> -->
 			<template v-for="item in organizedItems" :key="item.id">
 				<component
 					:is="componentMap[item.type]"
