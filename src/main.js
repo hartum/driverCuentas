@@ -38,6 +38,10 @@ import '@ionic/vue/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
+/* Import App from Capacitor */
+import { App as CapacitorApp } from '@capacitor/app';
+import { Filesystem } from '@capacitor/filesystem';
+
 const app = createApp(App)
   .use(IonicVue)
   .use(createPinia())
@@ -47,4 +51,30 @@ app.component('VueDatePicker', VueDatePicker);
 
 router.isReady().then(() => {
   app.mount('#app');
+
+  // Add listener for app URL open (handles incoming Intents)
+  CapacitorApp.addListener('appUrlOpen', async (event) => {
+    if (event.url) {
+      try {
+        // Extract the file path from the received URL
+        const fileUrl = event.url;
+        
+        // Read the file content using Filesystem API
+        const file = await Filesystem.readFile({
+          path: fileUrl,
+        });
+
+        // Parse the JSON data
+        const jsonData = JSON.parse(file.data);
+        
+        // You can navigate to a specific route and pass the data if needed
+        router.push({ path: '/tabs/tab4', query: { importedData: JSON.stringify(jsonData) } });
+
+        console.log('Datos importados exitosamente', jsonData);
+      } catch (error) {
+        console.error('Error al manejar archivo recibido:', error);
+      }
+    }
+  });
+
 });

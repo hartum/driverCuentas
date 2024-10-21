@@ -1,13 +1,46 @@
 <template>
 	<ion-page>
-		<ion-header>
+		<ion-header mode="ios">
 			<ion-toolbar>
 				<ion-title>Importar/Exportar Datos</ion-title>
 			</ion-toolbar>
 		</ion-header>
 		<ion-content class="ion-padding">
-			<ion-button expand="block" @click="exportData">Exportar Datos</ion-button>
-			<ion-button expand="block" @click="importData">Importar Datos</ion-button>
+			<ion-grid>
+				<ion-row>
+					<ion-col>
+						<ion-button
+							expand="block"
+							shape="round"
+							mode="ios"
+							@click="exportData"
+						>
+							<ion-icon
+								slot="start"
+								:icon="cloudDownload"
+								size="large"
+							></ion-icon>
+							Exportar Datos
+						</ion-button>
+					</ion-col>
+					<ion-col>
+						<ion-button
+							fill="outline"
+							expand="block"
+							shape="round"
+							mode="ios"
+							@click="importData"
+						>
+							<ion-icon
+								slot="start"
+								:icon="cloudUploadOutline"
+								size="large"
+							></ion-icon>
+							Importar Datos
+						</ion-button>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
 			<ion-text v-if="message">
 				<p>{{ message }}</p>
 			</ion-text>
@@ -26,7 +59,12 @@
 		IonButton,
 		IonText,
 		alertController,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonIcon,
 	} from '@ionic/vue';
+	import { cloudUploadOutline, cloudDownload } from 'ionicons/icons';
 	import {
 		initializeDatabase,
 		saveDatabaseToPreferences,
@@ -51,7 +89,7 @@
 			}
 		}
 	};
-
+	// sudo npm install @capacitor/permissions
 	const exportData = async () => {
 		try {
 			// Verificar y solicitar permisos
@@ -157,3 +195,9 @@
 		}
 	};
 </script>
+<style lang="scss" scoped>
+	ion-content::part(background) {
+		background: url('/bg_cloud.jpg') center center / cover no-repeat;
+		box-shadow: inset 0px -200px 240px -123px rgba(0, 0, 0, 0.75);
+	}
+</style>
