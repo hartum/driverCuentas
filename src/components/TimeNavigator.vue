@@ -105,7 +105,6 @@
 	};
 
 	const emitDateChanged = () => {
-		console.log('emito la fecha: ', fechaUnica.value);
 		emit('date-changed', {
 			newDate: fechaUnica.value,
 			type: timeNavigator.value,

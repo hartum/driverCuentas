@@ -24,6 +24,15 @@
 		return `hsl(${hue},50%,50%)`;
 	};
 
+	// Function to decode UTF-8 text
+	const decodeUTF8 = (text) => {
+		try {
+			return decodeURIComponent(escape(text));
+		} catch (e) {
+			return text; // Si falla la decodificación, devuelve el texto original
+		}
+	};
+
 	const chartData = computed(() => {
 		const expenseData = props.notes
 			.filter((note) => note.noteType === 'expense')
@@ -32,7 +41,7 @@
 				if (note.fuel) {
 					category = 'Combustible';
 				} else if (note.description && note.description.trim() !== '') {
-					category = note.description.trim();
+					category = decodeUTF8(note.description.trim());
 				} else {
 					category = 'Otros';
 				}
@@ -45,12 +54,19 @@
 			}, {});
 
 		const sortedCategories = Object.entries(expenseData)
-			.sort((a, b) => b[1] - a[1]) // Ordenar de mayor a menor gasto
+			.sort((a, b) => b[1] - a[1])
 			.reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+
+		const formatter = new Intl.NumberFormat('es-ES', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
 
 		const labels = Object.keys(sortedCategories).map(
 			(category) =>
-				`${category} ${sortedCategories[category].toFixed(2)}${currency.value}`
+				`${category} ${formatter.format(sortedCategories[category])}${
+					currency.value
+				}`
 		);
 		const data = Object.values(sortedCategories);
 		const backgroundColor = labels.map((_, index) => generateColor(index));
@@ -77,6 +93,7 @@
 		plugins: {
 			legend: {
 				position: 'top',
+				align: 'start',
 				labels: {
 					color: 'white',
 					font: {
@@ -87,16 +104,22 @@
 			tooltip: {
 				callbacks: {
 					label: function (context) {
+						const formatter = new Intl.NumberFormat('es-ES', {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2,
+						});
+
 						let label = context.label || '';
 						if (label) {
 							label = label.split(' ')[0] + ': '; // Extraer solo el nombre de la categoría
 						}
 						if (context.parsed !== null) {
-							label += `${context.parsed.toFixed(2)}${currency.value} (${(
-								(context.parsed /
-									context.dataset.data.reduce((a, b) => a + b, 0)) *
-								100
-							).toFixed(2)}%)`;
+							const amount = formatter.format(context.parsed);
+							const total = context.dataset.data.reduce((a, b) => a + b, 0);
+							const percentage = formatter.format(
+								(context.parsed / total) * 100
+							);
+							label += `${amount}${currency.value} (${percentage}%)`;
 						}
 						return label;
 					},

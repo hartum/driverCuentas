@@ -1,9 +1,11 @@
 <template>
 	<div class="travel-list">
 		<div class="ion-padding">
+			<!--
 			<ion-button @click="borraDB" expand="block" mode="ios" color="danger">
 				Borra la BBDD
 			</ion-button>
+			-->
 
 			<!--
 			<ion-button @click="forceCrash" expand="block" mode="ios" color="danger"
@@ -82,7 +84,7 @@
 	import { getShifts, deleteShift } from '@/services/shiftService';
 	import { getNotes, deleteNote } from '@/services/noteService';
 	import { useSettingsStore } from '../store/settingsStore';
-	import { Preferences } from '@capacitor/preferences';
+	// import { Preferences } from '@capacitor/preferences';
 	import TravelItem from './TravelItem.vue';
 	import NoteItem from './NoteItem.vue';
 	import ShiftItem from './ShiftItem.vue';
@@ -292,12 +294,6 @@
 		itemToRemove.value = null;
 	};
 
-	const borraDB = async () => {
-		removeSettings();
-		await Preferences.remove({ key: 'database' });
-		await loadItems();
-	};
-
 	const getComponentProps = (item) => {
 		if (item.type === 'shift') {
 			return {
@@ -327,11 +323,6 @@
 		}
 	};
 
-	const removeSettings = async () => {
-		await Preferences.remove({ key: 'appSettings' });
-		console.log('initial settings removed');
-	};
-
 	watch(() => [route.fullPath, props.initialDate, props.endDate], loadItems);
 
 	watch(totalAmount, (newTotal) => {
@@ -341,6 +332,18 @@
 	onMounted(() => {
 		loadItems();
 	});
+	/*
+	const borraDB = async () => {
+		removeSettings();
+		await Preferences.remove({ key: 'database' });
+		await loadItems();
+	};
+
+	const removeSettings = async () => {
+		await Preferences.remove({ key: 'appSettings' });
+		console.log('initial settings removed');
+	};
+	*/
 </script>
 <style lang="scss" scoped>
 	.no-padding-top {

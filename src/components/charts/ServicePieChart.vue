@@ -34,7 +34,11 @@
 		}, {});
 
 		const labels = Object.keys(serviceData).map(
-			(service) => `${service} ${serviceData[service]}${currency.value}`
+			(service) =>
+				`${service} ${new Intl.NumberFormat('es-ES', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				}).format(serviceData[service])}${currency.value}`
 		);
 		const data = Object.values(serviceData);
 		const backgroundColor = labels.map((_, index) => generateColor(index));
@@ -61,6 +65,7 @@
 		plugins: {
 			legend: {
 				position: 'top',
+				align: 'start',
 				labels: {
 					color: 'white',
 					font: {

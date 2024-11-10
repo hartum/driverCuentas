@@ -15,17 +15,17 @@
 				<ion-row>
 					<ion-col class="stat-container">
 						<div>Ingresos</div>
-						<div class="amount">{{ totalIncome }}{{ currency }}</div>
+						<div class="amount">{{ totalIncomeFormated }}</div>
 					</ion-col>
 					<ion-col class="stat-container">
 						<div>Gastos</div>
-						<div class="amount">{{ totalExpense }}{{ currency }}</div>
+						<div class="amount">{{ totalExpenseFormated }}</div>
 					</ion-col>
 				</ion-row>
 				<ion-row>
 					<ion-col class="stat-container">
 						<div>Total</div>
-						<div class="amount">{{ total }}{{ currency }}</div>
+						<div class="amount">{{ total }}</div>
 					</ion-col>
 				</ion-row>
 				<ion-row>
@@ -84,23 +84,18 @@
 	const firstDayOfWeek = ref(1);
 
 	const totalIncome = ref(0);
+	const totalIncomeFormated = ref('0.00');
 	const totalExpense = ref(0);
+	const totalExpenseFormated = ref('0.00');
 	const total = computed(() => {
-		return (
-			Math.round((totalIncome.value - totalExpense.value) * 100) / 100
-		).toFixed(2);
+		return new Intl.NumberFormat('es-ES', {
+			style: 'currency',
+			currency: settingsStore.selectedCurrency,
+		}).format(totalIncome.value - totalExpense.value);
 	});
 
 	const travels = ref([]);
 	const notes = ref([]);
-
-	const currency = computed(() => {
-		const currencyMap = { EUR: '€', USD: '$' };
-		return (
-			currencyMap[settingsStore.selectedCurrency] ||
-			settingsStore.selectedCurrency
-		);
-	});
 
 	// -- Establecer el valor del primer día de la semana por defecto --
 	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
@@ -119,11 +114,11 @@
 
 	const calculateStats = async () => {
 		try {
+			initialDate.value = moment(initialDate.value).format('YYYY-MM-DDTHH:mm');
+			endDate.value = moment(endDate.value).format('YYYY-MM-DDTHH:mm');
 			// Obtener todos los viajes y notas entre las fechas seleccionadas
 			travels.value = await getTravels(initialDate.value, endDate.value);
 			notes.value = await getNotes(initialDate.value, endDate.value);
-
-			console.log({ travels: travels.value, notes: notes.value });
 
 			// Resetear los valores
 			totalIncome.value = 0;
@@ -142,9 +137,15 @@
 				}
 			});
 
-			// Redondear a dos decimales
-			totalIncome.value = Math.round(totalIncome.value * 100) / 100;
-			totalExpense.value = Math.round(totalExpense.value * 100) / 100;
+			totalIncomeFormated.value = new Intl.NumberFormat('es-ES', {
+				style: 'currency',
+				currency: settingsStore.selectedCurrency,
+			}).format(totalIncome.value);
+
+			totalExpenseFormated.value = new Intl.NumberFormat('es-ES', {
+				style: 'currency',
+				currency: settingsStore.selectedCurrency,
+			}).format(totalExpense.value);
 		} catch (error) {
 			console.error('Error calculating stats:', error);
 		}
@@ -169,12 +170,12 @@
 	.grid-container {
 		color: #fff;
 		.stat-container {
-			background-color: rgba(255, 255, 255, 0.5);
+			background-color: rgba(59, 59, 59, 0.8);
 			border-radius: 5px;
 			padding: 10px;
 			margin: 2px;
 			.amount {
-				font-size: 2em;
+				font-size: 1.5em;
 			}
 		}
 	}

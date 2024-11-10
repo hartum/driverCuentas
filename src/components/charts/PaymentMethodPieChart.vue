@@ -34,8 +34,13 @@
 		}, {});
 
 		const labels = Object.keys(paymentData).map(
-			(method) => `${payType[method]} ${paymentData[method]}${currency.value}`
+			(method) =>
+				`${payType[method]} ${new Intl.NumberFormat('es-ES', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				}).format(paymentData[method])}${currency.value}`
 		);
+
 		const data = Object.values(paymentData);
 		const backgroundColor = labels.map((_, index) => generateColor(index));
 		const borderColor = backgroundColor.map((color) =>
@@ -61,6 +66,7 @@
 		plugins: {
 			legend: {
 				position: 'top',
+				align: 'start',
 				labels: {
 					color: 'white',
 					font: {
