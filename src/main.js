@@ -3,6 +3,8 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router';
 
+import moment from 'moment';
+
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -41,6 +43,8 @@ import './theme/variables.css';
 /* Import App from Capacitor */
 import { App as CapacitorApp } from '@capacitor/app';
 import { Filesystem } from '@capacitor/filesystem';
+import { saveTemporalDatabase } from './services/databaseService';
+import { useDatabaseStore } from './store/databaseStore';
 
 const app = createApp(App)
   .use(IonicVue)
@@ -64,13 +68,27 @@ router.isReady().then(() => {
           path: fileUrl,
         });
 
-        // Parse the JSON data
-        const jsonData = JSON.parse(file.data);
-        
-        // You can navigate to a specific route and pass the data if needed
-        router.push({ path: '/tabs/tab4', query: { importedData: JSON.stringify(jsonData) } });
+        // Decode base64 content to text
+        const base64Data = atob(file.data);
 
-        console.log('Datos importados exitosamente', jsonData);
+        // Parse the JSON data
+        const jsonString = JSON.parse(base64Data);
+        
+        // Save the data in mobile
+        await saveTemporalDatabase(jsonString);
+
+        // Update store to indicate temporal data is available
+        const databaseStore = useDatabaseStore();
+        databaseStore.setTemporalDatabase(true);
+
+        console.log('Datos guardados en Preferences:', jsonString);
+
+        // Navigate to Import/Export screen
+        const now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        router.push({ path: '/tabs/tab4' + now });
+
+
+        
       } catch (error) {
         console.error('Error al manejar archivo recibido:', error);
       }

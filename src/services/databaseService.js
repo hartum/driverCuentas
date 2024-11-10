@@ -76,6 +76,31 @@ export const loadDatabase = async () => {
   }
 };
 
+// Función para almacenar temporalmente datos en Preferences
+export const saveTemporalDatabase = async (data) => {
+  try {
+    await Preferences.set({ key: 'temporalDatabase', value: JSON.stringify(data) });
+  } catch (error) {
+    console.error('Error saving temporal data to preferences:', error);
+    throw error;
+  }
+};
+
+// Función para cargar datos temporales desde Preferences
+export const loadTemporalDatabase = async () => {
+  try {
+    const { value } = await Preferences.get({ key: 'temporalDatabase' });
+    if (value) {
+      return JSON.parse(value);
+    }
+    return null;
+  } catch (error) {
+    console.error('Error loading temporal data from preferences:', error);
+    throw error;
+  }
+};
+
+
 // Función para resetear la base de datos (útil para testing o depuración)
 export const resetDatabase = async () => {
   try {

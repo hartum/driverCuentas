@@ -28,7 +28,7 @@ const routes = [
         component: () => import('@/views/SettingsView.vue')
       },
       {
-        path: 'tab4',
+        path: 'tab4/:refresh?',
         component: () => import('@/views/ImportExportView.vue')
       }
     ]

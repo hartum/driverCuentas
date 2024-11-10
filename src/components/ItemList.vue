@@ -1,11 +1,10 @@
 <template>
 	<div class="travel-list">
 		<div class="ion-padding">
-			<!--
-			<ion-button @click="borraDB" expand="block" mode="ios" color="danger"
-				>Borra la BBDD</ion-button
-			>
-			-->
+			<ion-button @click="borraDB" expand="block" mode="ios" color="danger">
+				Borra la BBDD
+			</ion-button>
+
 			<!--
 			<ion-button @click="forceCrash" expand="block" mode="ios" color="danger"
 				>Crash test</ion-button

@@ -7,7 +7,8 @@ export const useDatabaseStore = defineStore('database', {
   state: () => ({
     travels: [],
     shifts: [],
-    notes: []
+    notes: [],
+    temporalDatabase:false
   }),
   actions: {
     async initializeDatabase() {
@@ -183,6 +184,9 @@ export const useDatabaseStore = defineStore('database', {
         alasql('ROLLBACK');
         console.error('Error deleting note:', error);
       }
+    },
+    setTemporalDatabase(value) {
+      this.temporalDatabase = value;
     }
   }
 });

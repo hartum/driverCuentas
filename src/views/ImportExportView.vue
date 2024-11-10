@@ -49,7 +49,8 @@
 </template>
 
 <script setup>
-	import { ref } from 'vue';
+	import { ref, watch, onMounted } from 'vue';
+	import { useRoute } from 'vue-router';
 	import {
 		IonPage,
 		IonHeader,
@@ -70,7 +71,9 @@
 		saveDatabaseToPreferences,
 		loadDatabase,
 		resetDatabase,
+		loadTemporalDatabase,
 	} from '../services/databaseService';
+	import { useDatabaseStore } from '@/store/databaseStore';
 	import alasql from 'alasql';
 	import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 	import { Share } from '@capacitor/share';
@@ -78,6 +81,21 @@
 	import { Capacitor } from '@capacitor/core';
 
 	const message = ref('');
+	const databaseStore = useDatabaseStore();
+	const route = useRoute();
+
+	// Watch para detectar cambios en la ruta
+	watch(
+		async () => route.params,
+		() => {
+			handleTemporalDatabase();
+		}
+	);
+
+	// Lógica para manejar temporalDatabase al montar el componente
+	onMounted(async () => {
+		await handleTemporalDatabase();
+	});
 
 	// Función para verificar y solicitar permisos de almacenamiento
 	const checkPermissions = async () => {
@@ -192,6 +210,27 @@
 		} catch (error) {
 			console.error('Error al importar datos:', error);
 			message.value = 'Error al importar datos';
+		}
+	};
+
+	// Función para manejar temporalDatabase
+	const handleTemporalDatabase = async () => {
+		if (databaseStore.temporalDatabase) {
+			console.log('Temporal database is true');
+			// Cambiar temporalDatabase a false
+			databaseStore.setTemporalDatabase(false);
+
+			try {
+				// Cargar los datos temporales de Preferences
+				const temporalData = await loadTemporalDatabase();
+				if (temporalData) {
+					console.log('Datos temporales cargados:', temporalData);
+
+					await confirmImport(temporalData);
+				}
+			} catch (error) {
+				console.error('Error al cargar los datos temporales:', error);
+			}
 		}
 	};
 </script>
