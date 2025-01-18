@@ -202,9 +202,9 @@
 				} else {
 					let shiftTotal = 0.0;
 					item.children.forEach((child) => {
-						if (child.type === 'travel') {
+						if (child.type === 'travel' && !child.isHidden) {
 							shiftTotal += parseFloat(child.amount) || 0;
-						} else if (child.type === 'note') {
+						} else if (child.type === 'note' && !child.isHidden) {
 							if (child.noteType === 'income') {
 								shiftTotal += parseFloat(child.amount) || 0;
 							} else if (child.noteType === 'expense') {
@@ -251,6 +251,30 @@
 			router.push(`${paths[type]}${id}`);
 		} else {
 			router.push(`${paths[type]}${shiftId}/${id}`);
+		}
+	};
+	const toggleVisibility = (id, type, parentShiftId) => {
+		// Iterar sobre organizedItems para encontrar el nodo padre
+		const parent = organizedItems.value.find(
+			(item) => item.id === parentShiftId && item.type === 'shift'
+		);
+
+		if (parent && Array.isArray(parent.children)) {
+			// Buscar el hijo dentro de los children del nodo padre
+			const child = parent.children.find(
+				(child) => child.id === id && child.type === type
+			);
+			if (!('isHidden' in child)) {
+				child.isHidden = true; // Inicializa si no existe
+			} else {
+				child.isHidden = !child.isHidden; // Cambia el valor
+			}
+			// Asegúrate de que allItems se actualice
+			organizedItems.value = [...organizedItems.value];
+		} else {
+			console.warn(
+				`No se encontró un nodo padre con id ${parentShiftId} o no tiene hijos.`
+			);
 		}
 	};
 
@@ -319,6 +343,9 @@
 				[`edit-${item.type}`]: () =>
 					editItem(item.id, item.type, parentShiftId),
 				[`delete-${item.type}`]: () => confirmRemoveItem(item),
+				[`toggle-visibility`]: () => {
+					toggleVisibility(item.id, item.type, parentShiftId);
+				},
 			};
 		}
 	};

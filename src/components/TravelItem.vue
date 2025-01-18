@@ -17,12 +17,20 @@
 						{{ day(travel.startDate) }} {{ month(travel.startDate) }}
 					</div>
 				</span>
-				<span class="money">
+				<span :class="['money', { 'hidden-amount': isHidden }]">
 					{{ formattedAmount }}{{ currency }}
 					<div class="service-container">{{ travel.service }}</div>
 				</span>
 			</ion-label>
 		</ion-item>
+		<ion-item-options side="start">
+			<ion-item-option color="primary" @click="toggleVisibility">
+				<ion-icon
+					slot="icon-only"
+					:icon="isHidden ? eyeOffOutline : eyeOutline"
+				></ion-icon>
+			</ion-item-option>
+		</ion-item-options>
 		<ion-item-options side="end">
 			<ion-item-option color="danger" @click="confirmRemoveTravel($event)">
 				<ion-icon slot="icon-only" :icon="trash"></ion-icon>
@@ -32,7 +40,7 @@
 </template>
 
 <script setup>
-	import { defineProps, defineEmits, computed } from 'vue';
+	import { defineProps, defineEmits, computed, ref } from 'vue';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -47,6 +55,8 @@
 		phonePortraitOutline,
 		cashOutline,
 		cardOutline,
+		eyeOffOutline,
+		eyeOutline,
 	} from 'ionicons/icons';
 
 	const props = defineProps({
@@ -59,8 +69,13 @@
 			required: true,
 		},
 	});
-	console.log('travel', props.travel);
-	const emit = defineEmits(['edit-travel', 'delete-travel']);
+
+	const emit = defineEmits([
+		'edit-travel',
+		'delete-travel',
+		'toggle-visibility',
+	]);
+	const isHidden = ref(false);
 
 	const payIcons = {
 		app: phonePortraitOutline,
@@ -70,6 +85,11 @@
 
 	const editTravel = () => {
 		emit('edit-travel', props.travel.id);
+	};
+
+	const toggleVisibility = () => {
+		isHidden.value = !isHidden.value;
+		emit('toggle-visibility', { id: props.travel.id, hidden: isHidden.value });
 	};
 
 	const confirmRemoveTravel = (event) => {
@@ -122,13 +142,13 @@
 		text-align: right;
 		float: right;
 		color: #666;
+		&.hidden-amount {
+			text-decoration: line-through;
+			opacity: 0.5;
+		}
 		.service-container {
 			font-size: 0.5em;
 			color: #616161;
 		}
-	}
-
-	.income {
-		color: #087702;
 	}
 </style>

@@ -155,9 +155,9 @@
 		let total = 0;
 		if (props.shift.children) {
 			props.shift.children.forEach((item) => {
-				if (item.type === 'travel') {
+				if (item.type === 'travel' && !item.isHidden) {
 					total += item.amount;
-				} else if (item.type === 'note') {
+				} else if (item.type === 'note' && !item.isHidden) {
 					if (item.noteType === 'income') {
 						total += item.amount;
 					} else if (item.noteType === 'expense') {

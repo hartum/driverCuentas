@@ -5,7 +5,6 @@
 			<h2>Controla tu dinero</h2>
 			<p>
 				<div>Porque si no lo puedes medir</div>
-
 				<div>No lo puedes mejorar</div>
 			</p>
 		</ion-header>
@@ -42,7 +41,7 @@
 
 	.container {
 		background-color: #8ec5fc;
-		background-image: url('/bg_intro.jpg');
+		background-image: url('/bg_bmw.jpg');
 		background-size: cover;
 		background-position: center center;
 		box-shadow: inset 0px 200px 240px -123px rgba(0, 0, 0, 0.75),
@@ -50,7 +49,7 @@
 		display: flex;
 		p {
 			font-family: Arial, Helvetica, sans-serif;
-			font-size: 6em;
+			font-size: 3.5em;
 			line-height: 0.6em;
 			font-weight: bolder;
 			color: rgba(233, 53, 0, 0.8);
@@ -63,6 +62,9 @@
 			}
 		}
 		ion-button {
+			position: absolute;
+			bottom: 20px;
+			width: 90%;
 			--ion-color-base: #f4f5f8 !important;
 		}
 	}

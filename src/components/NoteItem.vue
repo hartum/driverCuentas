@@ -17,13 +17,24 @@
 						{{ day(note.noteDate) }} {{ month(note.noteDate) }}
 					</div>
 				</span>
-				<span class="money" v-if="note.amount > 0">
+				<span
+					:class="['money', { 'hidden-amount': isHidden }]"
+					v-if="note.amount > 0"
+				>
 					<span v-if="note.noteType == 'expense'">-</span>
 					{{ formattedAmount }}{{ currency }}
 					<div class="service-container">{{ note.description }}</div>
 				</span>
 			</ion-label>
 		</ion-item>
+		<ion-item-options side="start">
+			<ion-item-option color="primary" @click="toggleVisibility">
+				<ion-icon
+					slot="icon-only"
+					:icon="isHidden ? eyeOffOutline : eyeOutline"
+				></ion-icon>
+			</ion-item-option>
+		</ion-item-options>
 		<ion-item-options side="end">
 			<ion-item-option color="danger" @click="confirmRemoveNote($event)">
 				<ion-icon slot="icon-only" :icon="trash"></ion-icon>
@@ -33,7 +44,7 @@
 </template>
 
 <script setup>
-	import { defineProps, defineEmits, computed } from 'vue';
+	import { defineProps, defineEmits, computed, ref } from 'vue';
 	import moment from 'moment';
 	import {
 		IonItemSliding,
@@ -48,6 +59,8 @@
 		readerOutline,
 		thumbsUpOutline,
 		thumbsDownOutline,
+		eyeOffOutline,
+		eyeOutline,
 	} from 'ionicons/icons';
 
 	const props = defineProps({
@@ -61,7 +74,8 @@
 		},
 	});
 
-	const emit = defineEmits(['edit-note', 'delete-note']);
+	const emit = defineEmits(['edit-note', 'delete-note', 'toggle-visibility']);
+	const isHidden = ref(false);
 
 	const iconType = {
 		income: thumbsUpOutline,
@@ -71,6 +85,11 @@
 
 	const editNote = () => {
 		emit('edit-note', props.note.id);
+	};
+
+	const toggleVisibility = () => {
+		isHidden.value = !isHidden.value;
+		emit('toggle-visibility', { id: props.note.id, hidden: isHidden.value });
 	};
 
 	const confirmRemoveNote = (event) => {
@@ -129,6 +148,10 @@
 		text-align: right;
 		float: right;
 		color: #666;
+		&.hidden-amount {
+			text-decoration: line-through;
+			opacity: 0.5;
+		}
 		.service-container {
 			font-size: 0.5em;
 			color: #616161;

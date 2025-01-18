@@ -45,6 +45,7 @@
 	};*/
 
 	const checkAppVersion = async () => {
+		return;
 		try {
 			const response = await fetch(
 				'https://hartum.net/version-driver-cuentas.php'

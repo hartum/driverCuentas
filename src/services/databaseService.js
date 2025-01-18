@@ -1,3 +1,5 @@
+// Install and use alasql.fs.js
+
 import alasql from 'alasql';
 import { Preferences } from '@capacitor/preferences';
 
