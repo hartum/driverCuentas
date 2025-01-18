@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-	import { ref, computed, onMounted } from 'vue';
+	import { ref, computed, onMounted, watch } from 'vue';
 	import { IonSegment, IonSegmentButton, IonLabel, IonIcon } from '@ionic/vue';
 	import { arrowBackCircle, arrowForwardCircle } from 'ionicons/icons';
 	import moment from 'moment';
@@ -58,13 +58,29 @@
 
 	const timeNavigator = ref(props.initialNavigator);
 	const fechaUnica = ref(props.initialDate);
-
 	const timeOptions = [
 		{ value: 'day', label: 'Día' },
 		{ value: 'week', label: 'Semana' },
 		{ value: 'month', label: 'Mes' },
 		{ value: 'year', label: 'Año' },
 	];
+
+	// Observar los cambios en initialDate y sincronizar con fechaUnica
+	watch(
+		() => props.initialDate,
+		(newVal) => {
+			fechaUnica.value = newVal;
+			console.log('po zi me entero');
+		}
+	);
+
+	// Observar los cambios en initialNavigator
+	watch(
+		() => props.initialNavigator,
+		(newVal) => {
+			timeNavigator.value = newVal;
+		}
+	);
 
 	const calendarData = computed(() => {
 		const date = moment(fechaUnica.value);

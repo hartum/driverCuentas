@@ -7,8 +7,8 @@
 		</ion-header>
 		<ion-content class="ion-padding">
 			<TimeNavigator
-				:initial-date="fechaUnica"
-				:initial-navigator="'month'"
+				:initial-date="currentDate"
+				:initial-navigator="currentNavigator"
 				@date-changed="handleDateChanged"
 			/>
 			<ion-grid class="grid-container">
@@ -63,9 +63,9 @@
 		IonRow,
 		IonCol,
 	} from '@ionic/vue';
-	import { useRoute } from 'vue-router';
-	import { ref, onMounted, computed, watch } from 'vue';
+	import { ref, onMounted, computed } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
+	import { useTimeStore } from '../store/timeStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import { getTimeRange } from '@/services/getTimeRangeService';
 	import { getTravels } from '@/services/travelService';
@@ -75,13 +75,15 @@
 	import ExpenseChart from '@/components/charts/ExpenseChart.vue';
 
 	const settingsStore = useSettingsStore();
-	const route = useRoute();
+	const timeStore = useTimeStore();
 
 	// -- VARIABLES DE TIEMPO --
-	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
+	const currentDate = computed(() => timeStore.currentDate);
+	const currentNavigator = computed(() => timeStore.currentNavigator);
+	const firstDayOfWeek = ref(settingsStore.startDayOfWeek === 'lunes' ? 1 : 0);
+
 	const initialDate = ref(moment().startOf('month').format('YYYY-MM-DD HH:mm'));
 	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
-	const firstDayOfWeek = ref(1);
 
 	const totalIncome = ref(0);
 	const totalIncomeFormated = ref('0.00');
@@ -97,9 +99,6 @@
 	const travels = ref([]);
 	const notes = ref([]);
 
-	// -- Establecer el valor del primer día de la semana por defecto --
-	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
-
 	const handleDateChanged = async ({ newDate, type }) => {
 		const { initialDate: start, endDate: end } = getTimeRange(
 			newDate,
@@ -108,7 +107,8 @@
 		);
 		initialDate.value = start;
 		endDate.value = end;
-
+		// Update store
+		timeStore.updateTimeNavigation({ newDate, type });
 		await calculateStats();
 	};
 
@@ -151,13 +151,6 @@
 		}
 	};
 
-	// Watch para la ruta
-	watch(
-		() => route.params,
-		() => {
-			calculateStats();
-		}
-	);
 	// Llamar a la función calculateStats en la carga inicial
 	onMounted(calculateStats);
 </script>

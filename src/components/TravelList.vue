@@ -9,8 +9,8 @@
 			<!--TIME RANGE NAVIGATOR -->
 			<div class="travel-filters ion-padding">
 				<TimeNavigator
-					:initial-date="fechaUnica"
-					:initial-navigator="'month'"
+					:initial-date="currentDate"
+					:initial-navigator="currentNavigator"
 					@date-changed="handleDateChanged"
 				/>
 			</div>
@@ -50,12 +50,23 @@
 	} from '@ionic/vue';
 	import { ref, computed } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
+	import { useTimeStore } from '../store/timeStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
 	import ItemList from '@/components/ItemList.vue';
 	import { getTimeRange } from '@/services/getTimeRangeService';
 
-	const fechaUnica = ref(moment().format('YYYY-MM-DD'));
-	const firstDayOfWeek = ref(1);
+	// Store instances
+	const settingsStore = useSettingsStore();
+	const timeStore = useTimeStore();
+
+	// -- VARIABLES DE TIEMPO --
+	const currentDate = computed(() => timeStore.currentDate);
+	const currentNavigator = computed(() => timeStore.currentNavigator);
+	const firstDayOfWeek = ref(settingsStore.startDayOfWeek === 'lunes' ? 1 : 0);
+	const initialDate = ref(moment().startOf('month').format('YYYY-MM-DD HH:mm'));
+	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
+
+	//const firstDayOfWeek = ref(1);
 	const currency = computed(() => {
 		const currencyMap = { EUR: '€', USD: '$' };
 		return (
@@ -63,13 +74,8 @@
 			settingsStore.selectedCurrency
 		);
 	});
-	const initialDate = ref(moment().startOf('month').format('YYYY-MM-DD HH:mm'));
-	const endDate = ref(moment().endOf('month').format('YYYY-MM-DD HH:mm'));
-	const settingsStore = useSettingsStore();
-	const totalAmount = ref('0.00');
 
-	// Establecer el valor del primer día de la semana por defecto
-	firstDayOfWeek.value = settingsStore.startDayOfWeek === 'lunes' ? 1 : 0;
+	const totalAmount = ref('0.00');
 
 	const handleDateChanged = ({ newDate, type }) => {
 		const { initialDate: start, endDate: end } = getTimeRange(
@@ -79,6 +85,8 @@
 		);
 		initialDate.value = start;
 		endDate.value = end;
+		// Update store
+		timeStore.updateTimeNavigation({ newDate, type });
 	};
 
 	const updateTotalAmount = (newTotal) => {
