@@ -143,7 +143,7 @@
 
 	//------ Calendar -------
 	div.calendar {
-		font-size: 0.7em; /* change icon size */
+		font-size: 0.7em; /* Tamaño base del calendario */
 		display: inline-block;
 		position: relative;
 		margin: auto;
@@ -153,41 +153,42 @@
 		border-radius: 0.6em;
 		border: 1px solid #d63d00;
 		overflow: hidden;
-	}
 
-	div.calendar * {
-		display: block;
-		width: 100%;
-		font-size: 2em;
-		font-weight: bold;
-		font-style: normal;
-		text-align: center;
-	}
+		* {
+			display: block;
+			width: 100%;
+			font-size: 2em;
+			font-weight: bold;
+			font-style: normal;
+			text-align: center;
+		}
 
-	div.calendar strong {
-		font-size: 1.5em;
-		position: absolute;
-		top: 0;
-		text-transform: uppercase;
-		padding: 0.2em 0;
-		color: #fff;
-		background-color: #d63d00;
-		border-bottom: 1px dashed #fff;
-		box-shadow: 0 2px 0 #d63d00;
-	}
+		strong {
+			font-size: 1.5em;
+			position: absolute;
+			top: 0;
+			text-transform: uppercase;
+			padding: 0.2em 0;
+			color: #fff;
+			background-color: #d63d00;
+			border-bottom: 1px dashed #fff;
+			box-shadow: 0 2px 0 #d63d00;
+		}
 
-	div.calendar em {
-		font-size: 1em;
-		position: absolute;
-		bottom: 0.3em;
-		color: #2f2f2f;
-	}
+		em {
+			font-size: 1em;
+			position: absolute;
+			bottom: 0.3em;
+			color: #2f2f2f;
+		}
 
-	div.calendar span {
-		width: 100%;
-		font-size: 2.8em;
-		letter-spacing: -0.05em;
-		padding-top: 1em;
-		color: #2f2f2f;
+		span {
+			width: 100%;
+			font-size: 2.3em;
+			letter-spacing: -0.05em;
+			padding-top: 50%;
+			margin-top: -0.1em;
+			color: #2f2f2f;
+		}
 	}
 </style>
