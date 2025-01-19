@@ -63,7 +63,8 @@
 		IonRow,
 		IonCol,
 	} from '@ionic/vue';
-	import { ref, onMounted, computed } from 'vue';
+	import { useRoute } from 'vue-router';
+	import { ref, onMounted, computed, watch } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
 	import { useTimeStore } from '../store/timeStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
@@ -76,6 +77,7 @@
 
 	const settingsStore = useSettingsStore();
 	const timeStore = useTimeStore();
+	const route = useRoute();
 
 	// -- VARIABLES DE TIEMPO --
 	const currentDate = computed(() => timeStore.currentDate);
@@ -150,6 +152,17 @@
 			console.error('Error calculating stats:', error);
 		}
 	};
+
+	// Recalculate stats every time enter the view
+	watch(
+		() => route.params,
+		() => {
+			handleDateChanged({
+				newDate: currentDate.value,
+				type: currentNavigator.value,
+			});
+		}
+	);
 
 	// Llamar a la función calculateStats en la carga inicial
 	onMounted(calculateStats);

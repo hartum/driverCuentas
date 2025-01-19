@@ -48,7 +48,8 @@
 		IonTitle,
 		IonContent,
 	} from '@ionic/vue';
-	import { ref, computed } from 'vue';
+	import { useRoute } from 'vue-router';
+	import { ref, computed, watch } from 'vue';
 	import { useSettingsStore } from '../store/settingsStore';
 	import { useTimeStore } from '../store/timeStore';
 	import TimeNavigator from '@/components/TimeNavigator.vue';
@@ -58,6 +59,7 @@
 	// Store instances
 	const settingsStore = useSettingsStore();
 	const timeStore = useTimeStore();
+	const route = useRoute();
 
 	// -- VARIABLES DE TIEMPO --
 	const currentDate = computed(() => timeStore.currentDate);
@@ -92,6 +94,16 @@
 	const updateTotalAmount = (newTotal) => {
 		totalAmount.value = newTotal;
 	};
+
+	watch(
+		() => route.params,
+		() => {
+			handleDateChanged({
+				newDate: currentDate.value,
+				type: currentNavigator.value,
+			});
+		}
+	);
 </script>
 
 <style lang="scss" scoped>

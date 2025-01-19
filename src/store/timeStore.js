@@ -17,7 +17,6 @@ export const useTimeStore = defineStore('time',() => {
   const updateTimeNavigation = ({newDate, type} ) => {
     currentDate.value = newDate;
     currentNavigator.value = type;
-    console.log('actualizo en el store');
   };
 
   return {
