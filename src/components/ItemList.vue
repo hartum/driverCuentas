@@ -101,7 +101,7 @@
 		},
 	});
 
-	const emit = defineEmits(['update:totalAmount']);
+	const emit = defineEmits(['update:totalAmount', 'update:totalKm']);
 
 	const router = useRouter();
 	const settingsStore = useSettingsStore();
@@ -148,7 +148,7 @@
 			...notes.map((note) => ({ ...note, type: 'note', date: note.noteDate })),
 		];
 
-		console.log('Elementos cargados:', allItems.value);
+		//console.log('Elementos cargados:', allItems.value);
 	};
 
 	const organizedItems = computed(() => {
@@ -223,6 +223,16 @@
 			}
 		});
 		return total.toFixed(2); // Devuelve el total formateado con 2 decimales
+	});
+
+	const totalKm = computed(() => {
+		let total = 0;
+		organizedItems.value.forEach((item) => {
+			if (item.type === 'shift') {
+				total += item.finalKm - item.initialKm;
+			}
+		});
+		return total;
 	});
 
 	const navigateTo = (path, id = null) => {
@@ -352,8 +362,9 @@
 
 	watch(() => [route.fullPath, props.initialDate, props.endDate], loadItems);
 
-	watch(totalAmount, (newTotal) => {
-		emit('update:totalAmount', newTotal);
+	watch([totalAmount, totalKm], ([newTotalAmount, newTotalKm]) => {
+		emit('update:totalAmount', newTotalAmount);
+		emit('update:totalKm', newTotalKm);
 	});
 
 	onMounted(() => {

@@ -20,11 +20,17 @@
 					:initialDate="initialDate"
 					:endDate="endDate"
 					@update:totalAmount="updateTotalAmount"
+					@update:totalKm="updateTotalKm"
 				/>
 			</ion-content>
 		</ion-content>
 		<div class="total-container">
-			Total: <span class="total">{{ totalAmount }}{{ currency }}</span>
+			<div>
+				Total: <span class="total">{{ totalAmount }}{{ currency }}</span>
+			</div>
+			<div>
+				<span class="total-km">{{ totalKm }} Km</span>
+			</div>
 		</div>
 	</ion-page>
 </template>
@@ -78,6 +84,7 @@
 	});
 
 	const totalAmount = ref('0.00');
+	const totalKm = ref('0');
 
 	const handleDateChanged = ({ newDate, type }) => {
 		const { initialDate: start, endDate: end } = getTimeRange(
@@ -93,6 +100,10 @@
 
 	const updateTotalAmount = (newTotal) => {
 		totalAmount.value = newTotal;
+	};
+
+	const updateTotalKm = (newTotal) => {
+		totalKm.value = newTotal;
 	};
 
 	watch(
@@ -121,9 +132,9 @@
 	.total-container {
 		position: absolute;
 		bottom: 0;
-		height: 50px;
+		height: 60px;
 		color: #535353;
-		font-size: 2em;
+		font-size: 1.8em;
 		padding: 5px 60px 0px 20px;
 		border-top: 1px dashed #ccc;
 		background-color: #f7f7f7;
@@ -131,6 +142,10 @@
 		.total {
 			float: right;
 			color: #000;
+		}
+		.total-km {
+			float: right;
+			font-size: 0.6em;
 		}
 	}
 	ion-item::part(native) {
