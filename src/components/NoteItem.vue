@@ -25,6 +25,9 @@
 					{{ formattedAmount }}{{ currency }}
 					<div class="service-container">{{ note.description }}</div>
 				</span>
+				<span v-else-if="note.noteType == 'other'" class="note-decription">
+					{{ note.description }}
+				</span>
 			</ion-label>
 		</ion-item>
 		<ion-item-options side="start">
@@ -161,7 +164,14 @@
 			max-width: 120px;
 		}
 	}
-
+	.note-decription {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		float: right;
+		width: 50%;
+		vertical-align: middle;
+	}
 	.income {
 		color: #087702;
 	}
