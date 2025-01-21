@@ -23,7 +23,14 @@
 				>
 					<span v-if="note.noteType == 'expense'">-</span>
 					{{ formattedAmount }}{{ currency }}
-					<div class="service-container">{{ note.description }}</div>
+					<div class="service-container">
+						{{ note.description }}
+						<ion-icon
+							v-show="note.fuel"
+							slot="icon-only"
+							:icon="water"
+						></ion-icon>
+					</div>
 				</span>
 				<span v-else-if="note.noteType == 'other'" class="note-decription">
 					{{ note.description }}
@@ -64,6 +71,7 @@
 		thumbsDownOutline,
 		eyeOffOutline,
 		eyeOutline,
+		water,
 	} from 'ionicons/icons';
 
 	const props = defineProps({
