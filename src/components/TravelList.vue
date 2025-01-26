@@ -11,8 +11,7 @@
 				<TimeNavigator
 					:initial-date="currentDate"
 					:initial-navigator="currentNavigator"
-					@date-changed="handleDateChanged"
-				/>
+					@date-changed="handleDateChanged" />
 			</div>
 			<ion-content class="container-items">
 				<!--TRAVEL/NOTES/SHIFTS LIST -->
@@ -20,8 +19,7 @@
 					:initialDate="initialDate"
 					:endDate="endDate"
 					@update:totalAmount="updateTotalAmount"
-					@update:totalKm="updateTotalKm"
-				/>
+					@update:totalKm="updateTotalKm" />
 			</ion-content>
 		</ion-content>
 		<div class="total-container">
